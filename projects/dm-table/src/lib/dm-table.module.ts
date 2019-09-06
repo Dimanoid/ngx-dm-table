@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { DmTableComponent } from './dm-table.component';
+import { DmTableComponent } from './table';
 
 @NgModule({
     declarations: [DmTableComponent],
