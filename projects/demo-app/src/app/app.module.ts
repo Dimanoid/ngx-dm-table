@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { DmTableModule } from 'dm-table';
+import { DmTableModule } from '@dimanoid/ngx-dm-table';
 
 import { AppComponent } from './app.component';
 

@@ -29,10 +29,10 @@ function propDecoratorFactory<T, D>(name: string, fallback: (v: T) => D): (targe
 
         Object.defineProperty(target, propName, {
             get(): string {
-                return this[privatePropName]; // tslint:disable-line:no-invalid-this
+                return this[privatePropName];
             },
             set(value: T): void {
-                this[privatePropName] = fallback(value); // tslint:disable-line:no-invalid-this
+                this[privatePropName] = fallback(value);
             }
         });
     }
