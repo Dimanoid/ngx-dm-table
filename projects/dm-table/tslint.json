@@ -3,13 +3,15 @@
     "rules": {
         "directive-selector": [
             true,
-            "attribute",
-            "lib",
-            "camelCase"
+            "attribute"
         ],
         "component-selector": [
             true,
             "element"
+        ],
+        "variable-name": [
+            true,
+            "allow-leading-underscore"
         ]
     }
 }

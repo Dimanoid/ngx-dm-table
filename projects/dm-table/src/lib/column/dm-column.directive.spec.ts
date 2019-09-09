@@ -1,19 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DmTableComponent } from './dm-table.component';
+import { DmColumnDirective } from './dm-column.directive';
 
-describe('DmTableComponent', () => {
-    let component: DmTableComponent;
-    let fixture: ComponentFixture<DmTableComponent>;
+describe('DmColumnDirective', () => {
+    let component: DmColumnDirective;
+    let fixture: ComponentFixture<DmColumnDirective>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DmTableComponent]
+            declarations: [DmColumnDirective]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(DmTableComponent);
+        fixture = TestBed.createComponent(DmColumnDirective);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
