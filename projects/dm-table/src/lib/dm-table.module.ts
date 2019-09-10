@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DmTableComponent } from './table/dm-table.component';
 import { DmColumnDirective } from './column/dm-column.directive';
 
@@ -7,7 +8,7 @@ import { DmColumnDirective } from './column/dm-column.directive';
         DmTableComponent,
         DmColumnDirective
     ],
-    imports: [],
+    imports: [CommonModule],
     exports: [
         DmTableComponent,
         DmColumnDirective

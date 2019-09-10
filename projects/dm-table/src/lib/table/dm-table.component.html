@@ -1,3 +1,15 @@
-<p>
-    dm-table works! QQ
-</p>
+<table class="ngx-dm-table">
+    <colgroup>
+        <col *ngFor="let ct of columnTemplates" [style.min-width]="ct.minWidth">
+    </colgroup>
+    <thead>
+        <tr>
+            <th *ngFor="let ct of columnTemplates">
+                <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
+                <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>

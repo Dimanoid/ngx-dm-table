@@ -1,4 +1,4 @@
-import { Directive, OnInit, ChangeDetectionStrategy, ViewEncapsulation, Input, ContentChild, TemplateRef } from '@angular/core';
+import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
 import { InputBoolean, InputCssPixel } from '../utils';
 
 @Directive({

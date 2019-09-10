@@ -1,0 +1,45 @@
+@import '../variables';
+
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: $tableBgColor;
+    & > thead {
+        & > tr {
+            & > th {
+                white-space: nowrap;
+                text-align: center;
+                border-width: 1px 0 1px 0;
+                border-color: transparent;
+                border-style: solid;
+                padding: 3px 5px;
+                background-color: $headerBgColor;
+            }
+        }
+    }
+    & > thead {
+        & > tr {
+            & > td {
+                cursor: pointer;
+                white-space: nowrap;
+                text-align: left;
+                border-width: 1px 0 1px 0;
+                border-color: transparent;
+                border-style: solid;
+                padding: 3px 5px;
+                background-color: $bodyBgColor;
+            }
+            &:hover > td {
+                border-color: $hoveredBorderColor;
+                background-color: $hoveredBgColor !important;
+            }
+            &.ngx-dm-table-selected > td {
+                border-color: $selectedBorderColor;
+                background-color: $selectedBgColor !important;
+            }
+        }
+    }
+    &.ngx-dm-table-stripes > tbody > tr:nth-child(even) > td {
+        background-color: $bodyBgColor2;
+    }
+}
