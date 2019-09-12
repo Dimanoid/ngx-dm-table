@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    background-color: #fff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: .875rem;
+    line-height: 1.42857143;
+}
+
+pre {
+    font-size: 0.8rem !important;
+}
+
+.no-events {
+    pointer-events: none;
+}
+
+.pull-right {
+    float: right;
+}
+
+.fs-3xl {
+    font-size: 26px !important;
+}
+.fs-xxl {
+    font-size: 22px !important;
+}
+.fs-xl {
+    font-size: 18px !important;
+}
+.fs-l {
+    font-size: 16px !important;
+}
+.fs-m {
+    font-size: 14px !important;
+}
+.fs-s {
+    font-size: 12px !important;
+}
+.fs-xs {
+    font-size: 11px !important;
+}
+.fs-xxs {
+    font-size: 10px !important;
+}
+.fs-3xs {
+    font-size: 8px !important;
+}

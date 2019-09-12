@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { _D } from '../utils';
+import { InputBoolean } from '../utils';
 
 @Component({
     selector: 'dm-table, [dm-table]',
@@ -28,6 +29,8 @@ export class DmTableComponent implements OnInit {
     get columnTemplates(): QueryList<DmColumnDirective> {
         return this._columnTemplates;
     }
+
+    @Input() @InputBoolean() stripes: boolean = false;
 
     constructor() { }
 

@@ -1,45 +1,83 @@
 @import '../variables';
 
-table {
-    border-collapse: separate;
-    border-spacing: 0;
-    background-color: $tableBgColor;
-    & > thead {
-        & > tr {
-            & > th {
-                white-space: nowrap;
-                text-align: center;
-                border-width: 1px 0 1px 0;
-                border-color: transparent;
-                border-style: solid;
-                padding: 3px 5px;
-                background-color: $headerBgColor;
+.ngx-dm-table-wrapper {
+    width: 100%;
+    position: relative;
+    table.ngx-dm-table {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        background-color: $tableBgColor;
+        width: 100%;
+        & > thead {
+            & > tr {
+                & > th {
+                    white-space: nowrap;
+                    text-align: center;
+                    text-overflow: ellipsis;
+                    border-width: 0 1px 2px 0;
+                    border-color: $tableBorderColor;
+                    border-style: solid;
+                    padding: 5px 10px;
+                    background-color: $headerBgColor;
+                    font-weight: bold;
+                    position: relative;
+                    &:last-child {
+                        border-right-color: transparent;
+                    }
+                    & > div.ngx-dm-table-resizer {
+                        display: inline-block;
+                        position: absolute;
+                        right: -3px;
+                        top: 0;
+                        bottom: 0;
+                        width: 5px;
+                        z-index: 1;
+                        cursor: ew-resize;
+                        background-color: transparent;
+                        transition: background-color .3s;
+                        &:hover {
+                            background-color: $headerResizerColor;
+                        }
+                    }
+                }
             }
         }
-    }
-    & > thead {
-        & > tr {
-            & > td {
-                cursor: pointer;
-                white-space: nowrap;
-                text-align: left;
-                border-width: 1px 0 1px 0;
-                border-color: transparent;
-                border-style: solid;
-                padding: 3px 5px;
-                background-color: $bodyBgColor;
-            }
-            &:hover > td {
-                border-color: $hoveredBorderColor;
-                background-color: $hoveredBgColor !important;
-            }
-            &.ngx-dm-table-selected > td {
-                border-color: $selectedBorderColor;
-                background-color: $selectedBgColor !important;
+        & > tbody {
+            & > tr {
+                & > td {
+                    cursor: pointer;
+                    white-space: nowrap;
+                    text-align: left;
+                    border-width: 1px 1px 1px 0;
+                    border-color: transparent;
+                    border-right-color: $tableBorderColor !important;
+                    border-style: solid;
+                    padding: 5px 10px;
+                    background-color: $bodyBgColor;
+                    font-weight: normal;
+                }
+                &:hover > td {
+                    border-color: $hoveredBorderColor;
+                    background-color: $hoveredBgColor !important;
+                }
+                &.ngx-dm-table-selected {
+                    &:hover {
+                        background-color: $hoveredBgColor !important;
+                    }
+                    & > td {
+                        border-color: $selectedBorderColor;
+                        background-color: $selectedBgColor !important;
+                    }
+                }
             }
         }
-    }
-    &.ngx-dm-table-stripes > tbody > tr:nth-child(even) > td {
-        background-color: $bodyBgColor2;
+        &.ngx-dm-table-stripes > tbody > tr:nth-child(even) > td {
+            background-color: $bodyBgColor2;
+        }
     }
 }

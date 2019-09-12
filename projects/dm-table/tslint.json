@@ -12,6 +12,9 @@
         "variable-name": [
             true,
             "allow-leading-underscore"
+        ],
+        "no-inferrable-types": [
+            false
         ]
     }
 }

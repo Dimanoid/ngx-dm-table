@@ -8,10 +8,11 @@ import { InputBoolean, InputCssPixel } from '../utils';
 export class DmColumnDirective implements OnInit {
 
     @Input() title: string;
-    @Input() @InputBoolean() pinnable = false;
-    @Input() @InputBoolean() sortable = false;
-    @Input() @InputBoolean() draggable = false;
-    @Input() @InputCssPixel() minWidth;
+    @Input() @InputBoolean() pinnable: boolean = false;
+    @Input() @InputBoolean() sortable: boolean = false;
+    @Input() @InputBoolean() draggable: boolean = false;
+    @Input() @InputBoolean() resizeable: boolean = false;
+    @Input() @InputCssPixel() minWidth: string | number;
     @Input() frozen: 'left' | 'right' | 'no' = 'no';
 
     @ContentChild('header', { static: true }) headerTpl: TemplateRef<any>;

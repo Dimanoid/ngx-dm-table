@@ -1,8 +1,15 @@
 $tableBgColor: #ffffff;
+$tableBorderColor: rgba(0,112,175,.3);
+
 $headerBgColor: #ffffff;
+$headerResizerColor: rgba(#000, .1);
+
 $bodyBgColor: #ffffff;
 $bodyBgColor2: #f2f2f2;
-$selectedBorderColor: #99ccff;
-$selectedBgColor: #eeeeff;
-$hoveredBorderColor: #cccccc;
-$hoveredBgColor: #ff0000;
+
+// $selectedBorderColor: #88cc99;
+$selectedBorderColor: '';
+$selectedBgColor: rgba(0,175,112,.2);
+
+$hoveredBorderColor: #79acdf;
+$hoveredBgColor: rgba(0,112,175,.2);

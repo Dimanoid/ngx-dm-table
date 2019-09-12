@@ -1,14 +1,14 @@
 <h1>Demo Application for DM-Table Lib</h1>
 <div>
 
-    <dm-table [rows]="data">
-        <dm-column title="ID" minWidth="3rem"></dm-column>
+    <dm-table #example1 [rows]="data" stripes="true">
+        <dm-column title="ID" minWidth="3rem" resizeable="true"></dm-column>
         <dm-column minWidth="50">
             <ng-template #header>
-                <b style="color: red">String</b>
+                <i style="color: red"><u>String</u></i>
             </ng-template>
         </dm-column>
-        <dm-column title="Mid string w spaces"></dm-column>
+        <dm-column title="Mid string w spaces" resizeable="true"></dm-column>
         <dm-column title="Mid string w/o spaces"></dm-column>
     </dm-table>
 

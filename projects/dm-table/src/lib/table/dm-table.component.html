@@ -1,15 +1,36 @@
-<table class="ngx-dm-table">
-    <colgroup>
-        <col *ngFor="let ct of columnTemplates" [style.min-width]="ct.minWidth">
-    </colgroup>
-    <thead>
-        <tr>
-            <th *ngFor="let ct of columnTemplates">
-                <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
-                <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div class="ngx-dm-table-wrapper">
+    <table class="ngx-dm-table"
+        [class.ngx-dm-table-stripes]="stripes">
+        <colgroup>
+            <col *ngFor="let ct of columnTemplates" [style.min-width]="ct.minWidth">
+        </colgroup>
+        <thead>
+            <tr>
+                <th *ngFor="let ct of columnTemplates">
+                    <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
+                    <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
+                    <div *ngIf="ct.resizeable" class="ngx-dm-table-resizer"></div>
+                </th>
+            </tr>
+        </thead>
+        <tbody *ngIf="rows">
+            <tr *ngFor="let r of rows; let ri = index">
+                <td *ngFor="let ct of columnTemplates; let i = index">
+                    <ng-container *ngIf="ct.cellTpl"
+                        [ngTemplateOutlet]="ct.cellTpl"
+                        [ngTemplateOutletContext]="{ row: r, ct: ct, $implicit: r[i], ci: i, ri: ri }">
+                    </ng-container>
+                    <ng-template [ngIf]="!ct.cellTpl">{{ r[i] }}</ng-template>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th *ngFor="let ct of columnTemplates">
+                    <ng-container *ngIf="ct.footerTpl" [ngTemplateOutlet]="ct.footerTpl"></ng-container>
+                    <ng-template [ngIf]="!ct.footerTpl">&nbsp;</ng-template>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
