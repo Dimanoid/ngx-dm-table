@@ -1,33 +1,36 @@
 <div class="dmtd-page layout fit vertical">
     <h1>DM-Table demo</h1>
-    <div class="dmtd-panel layout flex">
+    <div class="layout flex relative">
 
-        <div class="dmtd-panel-left layout vertical">
-            <div class="layout center">
-                <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
-                <span class="ml05">Zebra stripped</span>
+        <div class="dmtd-panel layout fit">
+            <div class="dmtd-panel-left layout vertical">
+                <b class="mb1 fs-l">Table options:</b>
+                <div class="layout center">
+                    <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
+                    <span class="ml05">Zebra stripped</span>
+                </div>
             </div>
-        </div>
 
-        <div class="layout flex relative">
-            <div class="layout fit">
-                <dm-table #example1 [rows]="data" [stripes]="stripes">
-                    <dm-column title="ID" minWidth="70" maxWidth="150" resizeable="true" frozen="left"></dm-column>
-                    <dm-column minWidth="50" frozen="left">
-                        <ng-template #header>
-                            <div class="tal">
-                                <i style="color: red">
-                                    <i class="dmtd-crown-king-1 mr025 top1"></i>
-                                    <u>String</u>
-                                </i>
-                            </div>
-                        </ng-template>
-                    </dm-column>
-                    <dm-column title="Mid string w spaces" resizeable="true"></dm-column>
-                    <dm-column title="Mid string w/o spaces" resizeable="true"></dm-column>
-                    <dm-column title="Long string w spaces" resizeable="true"></dm-column>
-                    <dm-column title="Long string w/o spaces" resizeable="true"></dm-column>
-                </dm-table>
+            <div class="layout flex relative">
+                <div class="layout fit scroll-y">
+                    <dm-table #example1 [rows]="data" [stripes]="stripes">
+                        <dm-column title="ID" minWidth="70" maxWidth="150" resizeable="true" frozen="left"></dm-column>
+                        <dm-column minWidth="50" frozen="left">
+                            <ng-template #header>
+                                <div class="tal">
+                                    <i style="color: red">
+                                        <i class="dmtd-crown-king-1 mr025 top1"></i>
+                                        <u>String</u>
+                                    </i>
+                                </div>
+                            </ng-template>
+                        </dm-column>
+                        <dm-column title="Mid string w spaces" resizeable="true"></dm-column>
+                        <dm-column title="Mid string w/o spaces" resizeable="true"></dm-column>
+                        <dm-column title="Long string w spaces" resizeable="true"></dm-column>
+                        <dm-column title="Long string w/o spaces" resizeable="true"></dm-column>
+                    </dm-table>
+                </div>
             </div>
         </div>
 
