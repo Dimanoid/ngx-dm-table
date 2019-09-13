@@ -28,7 +28,8 @@
                             "projects/demo-app/src/assets"
                         ],
                         "styles": [
-                            "projects/demo-app/src/styles.scss"
+                            "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+                            "projects/demo-app/src/styles/main.scss"
                         ],
                         "scripts": []
                     },
@@ -93,7 +94,8 @@
                             "projects/demo-app/src/assets"
                         ],
                         "styles": [
-                            "projects/demo-app/src/styles.scss"
+                            "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+                            "projects/demo-app/src/styles/main.scss"
                         ],
                         "scripts": []
                     }

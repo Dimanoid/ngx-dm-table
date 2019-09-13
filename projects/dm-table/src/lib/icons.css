@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: "dm-table";
+    src:url("fonts/dm-table.eot");
+    src:url("fonts/dm-table.eot?#iefix") format("embedded-opentype"),
+        url("fonts/dm-table.woff") format("woff"),
+        url("fonts/dm-table.ttf") format("truetype"),
+        url("fonts/dm-table.svg#dm-table") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+[data-icon]:before {
+    font-family: "dm-table" !important;
+    content: attr(data-icon);
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="ngx-dm-table-icon-"], [class*=" ngx-dm-table-icon-"] {
+    line-height: 1;
+}
+
+[class^="ngx-dm-table-icon-"]:before,
+[class*=" ngx-dm-table-icon-"]:before {
+    font-family: "dm-table" !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ngx-dm-table-icon-sort-amount-asc:before {
+      content: "\61";
+}
+.ngx-dm-table-icon-sort-amount-desc:before {
+      content: "\62";
+}
+.ngx-dm-table-icon-pin:before {
+    content: "\63";
+}

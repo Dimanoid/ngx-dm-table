@@ -1,3 +1,15 @@
+.dmtd-page {
+    padding: 10px;
+    .dmtd-panel {
+        .dmtd-panel-left {
+            width: 300px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            margin-right: 10px;
+        }
+    }
+}
+
 dm-table {
     table.ngx-dm-table {
         & > thead > tr > th {

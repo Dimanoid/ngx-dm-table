@@ -1,4 +1,5 @@
 @import '../variables';
+@import '../icons';
 
 .ngx-dm-table-wrapper {
     width: 100%;
@@ -60,6 +61,9 @@
                     padding: 5px 10px;
                     background-color: $bodyBgColor;
                     font-weight: normal;
+                    &:last-child {
+                        border-right-color: transparent !important;
+                    }
                 }
                 &:hover > td {
                     border-color: $hoveredBorderColor;
