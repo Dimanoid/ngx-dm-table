@@ -7,8 +7,10 @@
         <thead>
             <tr>
                 <th *ngFor="let ct of columnTemplates">
-                    <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
-                    <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
+                    <div class="ngx-dm-table-column-title">
+                        <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
+                        <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
+                    </div>
                     <div *ngIf="ct.resizeable" class="ngx-dm-table-resizer"></div>
                 </th>
             </tr>

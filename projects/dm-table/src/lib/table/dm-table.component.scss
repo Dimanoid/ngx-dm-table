@@ -2,24 +2,22 @@
 @import '../icons';
 
 .ngx-dm-table-wrapper {
-    width: 100%;
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     table.ngx-dm-table {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
         border-collapse: separate;
         border-spacing: 0;
         background-color: $tableBgColor;
         width: 100%;
+        table-layout: fixed;
         & > thead {
             & > tr {
                 & > th {
                     white-space: nowrap;
                     text-align: center;
-                    text-overflow: ellipsis;
                     border-width: 0 1px 2px 0;
                     border-color: $tableBorderColor;
                     border-style: solid;
@@ -27,16 +25,21 @@
                     background-color: $headerBgColor;
                     font-weight: bold;
                     position: relative;
+                    &.ngx-dm-table-column-title {
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        width: 100%;
+                    }
                     &:last-child {
                         border-right-color: transparent;
                     }
                     & > div.ngx-dm-table-resizer {
                         display: inline-block;
                         position: absolute;
-                        right: -3px;
+                        right: -($headerResizerWidth / 2);
                         top: 0;
                         bottom: 0;
-                        width: 5px;
+                        width: $headerResizerWidth;
                         z-index: 1;
                         cursor: ew-resize;
                         background-color: transparent;
@@ -61,6 +64,8 @@
                     padding: 5px 10px;
                     background-color: $bodyBgColor;
                     font-weight: normal;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                     &:last-child {
                         border-right-color: transparent !important;
                     }

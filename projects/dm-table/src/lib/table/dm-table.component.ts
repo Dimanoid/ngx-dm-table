@@ -2,7 +2,7 @@ import {
     Component, OnInit,
     ChangeDetectionStrategy, ViewEncapsulation,
     Input,
-    ContentChildren, QueryList
+    ContentChildren, QueryList, HostBinding
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { _D } from '../utils';
@@ -17,6 +17,8 @@ import { InputBoolean } from '../utils';
     encapsulation: ViewEncapsulation.None
 })
 export class DmTableComponent implements OnInit {
+    @HostBinding('style.position') _hostPosition = 'relative';
+    @HostBinding('style.width') _hostWidth = '100%';
 
     @Input() rows: any[][];
 

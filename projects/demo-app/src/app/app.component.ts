@@ -15,12 +15,17 @@ export class AppComponent implements OnInit {
         for (let i = 1; i <= 100; i++) {
             this.data.push(
                 [
-                    `Id${i}`,
-                    `String${i}`,
-                    `Not very long string with spaces${i}`,
-                    `Not_very_long_string_without_spaces${i}`,
-                    `Long long long long long long long long long long long long long long long long long long long string with spaces${i}`,
-                    `Long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_string_without_spaces${i}`,
+                    `${i}_Id`,
+                    `${i}_String`,
+                    `${i}_Not very long string with spaces`,
+                    `${i}_Not_very_long_string_without_spaces`,
+                    `${i}_Long long long long long long long long long long long long long long long long long long string with spaces`,
+                    `${i}_Long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_string_without_spaces`,
+                    `${i}_Extremely long long long long long long long long long long long long long long long long long long long long`
+                        + ` long long long long long long long long long long long long long long long long long long long long long long`
+                        + ` long long long long long long long long long long long long long long long long long long long long long long`
+                        + ` long long long long long long long long long long long long long long long long long long long long long long`
+                        + ` string with spaces`,
                 ]
             );
         }
