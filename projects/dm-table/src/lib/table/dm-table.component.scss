@@ -1,92 +1,151 @@
 @import '../variables';
 @import '../icons';
 
-.ngx-dm-table-wrapper {
+.ngx-dm-table-container,
+.ngx-dm-table-header-wrapper,
+.ngx-dm-table-footer-wrapper,
+.ngx-dm-table-body-wrapper,
+.ngx-dm-table-body-wrapper-inner {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+}
+
+.ngx-dm-table-container {
+    overflow: hidden;
+}
+
+.ngx-dm-table-body-wrapper {
+    position: relative;
+}
+
+.ngx-dm-table-body-wrapper-inner {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    table.ngx-dm-table {
-        border-collapse: separate;
-        border-spacing: 0;
-        background-color: $tableBgColor;
-        width: 100%;
-        table-layout: fixed;
-        & > thead {
-            & > tr {
-                & > th {
-                    white-space: nowrap;
-                    text-align: center;
-                    border-width: 0 1px 2px 0;
-                    border-color: $tableBorderColor;
-                    border-style: solid;
-                    padding: 5px 10px;
-                    background-color: $headerBgColor;
-                    font-weight: bold;
-                    position: relative;
-                    &.ngx-dm-table-column-title {
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                        width: 100%;
-                    }
-                    &:last-child {
-                        border-right-color: transparent;
-                    }
-                    & > div.ngx-dm-table-resizer {
-                        display: inline-block;
-                        position: absolute;
-                        right: -($headerResizerWidth / 2);
-                        top: 0;
-                        bottom: 0;
-                        width: $headerResizerWidth;
-                        z-index: 1;
-                        cursor: ew-resize;
-                        background-color: transparent;
-                        transition: background-color .3s;
-                        &:hover {
-                            background-color: $headerResizerColor;
-                        }
-                    }
-                }
-            }
-        }
-        & > tbody {
-            & > tr {
-                & > td {
-                    cursor: pointer;
-                    white-space: nowrap;
-                    text-align: left;
-                    border-width: 1px 1px 1px 0;
-                    border-color: transparent;
-                    border-right-color: $tableBorderColor !important;
-                    border-style: solid;
-                    padding: 5px 10px;
-                    background-color: $bodyBgColor;
-                    font-weight: normal;
+    overflow-y: scroll;
+}
+
+.ngx-dm-table-header-wrapper,
+.ngx-dm-table-footer-wrapper {
+    flex-grow: 0;
+}
+
+
+table.ngx-dm-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: $tableBgColor;
+    width: 100%;
+    table-layout: fixed;
+    & > thead {
+        & > tr {
+            & > th {
+                white-space: nowrap;
+                text-align: center;
+                border-width: 0 1px 2px 0;
+                border-color: $tableBorderColor;
+                border-style: solid;
+                padding: 5px 10px;
+                background-color: $headerBgColor;
+                font-weight: bold;
+                position: relative;
+                &.ngx-dm-table-column-title {
                     text-overflow: ellipsis;
                     overflow: hidden;
-                    &:last-child {
-                        border-right-color: transparent !important;
-                    }
+                    width: 100%;
                 }
-                &:hover > td {
-                    border-color: $hoveredBorderColor;
-                    background-color: $hoveredBgColor !important;
+                &:last-child {
+                    border-right-color: transparent;
                 }
-                &.ngx-dm-table-selected {
+                & > div.ngx-dm-table-resizer {
+                    display: inline-block;
+                    position: absolute;
+                    right: -($headerResizerWidth / 2);
+                    top: 0;
+                    bottom: 0;
+                    width: $headerResizerWidth;
+                    z-index: 1;
+                    cursor: ew-resize;
+                    background-color: transparent;
+                    transition: background-color .3s, max-height .3s;
+                    height: 100%;
+                    max-height: 100px;
                     &:hover {
-                        background-color: $hoveredBgColor !important;
+                        background-color: $headerResizerColor;
                     }
-                    & > td {
-                        border-color: $selectedBorderColor;
-                        background-color: $selectedBgColor !important;
+                    &:active {
+                        max-height: 3000px;
+                        height: 3000px;
+                    }
+                    &.ngx-dm-table-resizer-dragging {
+                        max-height: 3000px;
+                        height: 3000px;
+                        background-color: $headerResizerColor;
                     }
                 }
             }
         }
-        &.ngx-dm-table-stripes > tbody > tr:nth-child(even) > td {
-            background-color: $bodyBgColor2;
+    }
+    & > tbody {
+        & > tr {
+            & > td {
+                cursor: pointer;
+                white-space: nowrap;
+                text-align: left;
+                border-width: 1px 1px 1px 0;
+                border-color: transparent;
+                border-right-color: $tableBorderColor !important;
+                border-style: solid;
+                padding: 7px 10px;
+                background-color: $bodyBgColor;
+                font-weight: normal;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                &:last-child {
+                    border-right-color: transparent !important;
+                }
+            }
+            &:hover > td {
+                border-color: $hoveredBorderColor;
+                background-color: $hoveredBgColor !important;
+            }
+            &.ngx-dm-table-selected {
+                &:hover {
+                    background-color: $hoveredBgColor !important;
+                }
+                & > td {
+                    border-color: $selectedBorderColor;
+                    background-color: $selectedBgColor !important;
+                }
+            }
         }
     }
+    &.ngx-dm-table-stripes > tbody > tr:nth-child(even) > td {
+        background-color: $bodyBgColor2;
+    }
+
+    & > tfoot {
+        & > tr {
+            & > td {
+                white-space: nowrap;
+                text-align: left;
+                border-width: 2px 1px 0 0;
+                border-color: $tableBorderColor;
+                border-style: solid;
+                padding: 5px 10px;
+                background-color: $bodyBgColor;
+                font-weight: normal;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                &:last-child {
+                    border-right-color: transparent !important;
+                }
+            }
+        }
+    }
+
 }

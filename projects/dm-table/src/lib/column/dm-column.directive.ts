@@ -11,7 +11,7 @@ export class DmColumnDirective implements OnInit {
     @Input() @InputBoolean() pinnable: boolean = false;
     @Input() @InputBoolean() sortable: boolean = false;
     @Input() @InputBoolean() draggable: boolean = false;
-    @Input() @InputBoolean() resizeable: boolean = false;
+    @Input() @InputBoolean() resizeable: boolean = true;
     @Input() @InputBoolean() maximize: boolean = false;
     @Input() @InputNumber() width: number;
     @Input() @InputNumber() minWidth: number;
