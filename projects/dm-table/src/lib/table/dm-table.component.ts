@@ -5,8 +5,10 @@ import {
     ContentChildren, QueryList, ElementRef, ChangeDetectorRef
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
-import { _D, getScrollBarSize, emptyCount } from '../utils';
+import { _D, getScrollBarSize, emptyCount, Point } from '../utils';
 import { InputBoolean } from '../utils';
+
+const MIN_COLUMN_WIDTH = 30;
 
 @Component({
     selector: 'dm-table',
@@ -38,6 +40,9 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     colWidths: number[] = [];
     scrollBarWidth: number = 0;
     scrollBarHeight: number = 0;
+    resizeColumnIndex: number = -1;
+    resizeColumnStartPoint: Point;
+    resizeColumnWidth: number = 0;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
@@ -113,6 +118,89 @@ export class DmTableComponent implements OnInit, AfterViewInit {
             return this._elemRef.nativeElement.clientWidth;
         }
         return 0;
+    }
+
+    resizeColumnStart(index: number, event: MouseEvent): void {
+        _D('[DmTableComponent] resizeColumnStart:', index, event);
+        this.resizeColumnIndex = index;
+        this.resizeColumnWidth = this.colWidths[index];
+        event.stopPropagation();
+        event.preventDefault();
+        if (event.pageX) {
+            this.resizeColumnStartPoint = new Point(event.pageX, event.pageY);
+        }
+        else if (event.clientX) {
+            this.resizeColumnStartPoint = new Point(event.clientX, event.clientY);
+        }
+        if (this.resizeColumnStartPoint) {
+            document.body.onmousemove = (e: MouseEvent) => {
+                // tslint:disable-next-line: deprecation
+                e = e || window.event as MouseEvent;
+                e.stopPropagation();
+                e.preventDefault();
+                let endX = 0;
+                let endY = 0;
+                if (e.pageX) {
+                    endX = e.pageX;
+                    endY = e.pageY;
+                }
+                else if (e.clientX) {
+                    endX = e.clientX;
+                    endY = e.clientX;
+                }
+                this.resizeColumnMove(endX - this.resizeColumnStartPoint.x);
+            };
+
+            document.body.onmouseup = (e: MouseEvent) => {
+                document.body.onmousemove = document.body.onmouseup = null;
+                // tslint:disable-next-line: deprecation
+                e = e || window.event as MouseEvent;
+                e.stopPropagation();
+                e.preventDefault();
+                let endX = 0;
+                let endY = 0;
+                if (e.pageX) {
+                    endX = e.pageX;
+                    endY = e.pageY;
+                }
+                else if (e.clientX) {
+                    endX = e.clientX;
+                    endY = e.clientX;
+                }
+                this.resizeColumnEnd(endX - this.resizeColumnStartPoint.x);
+            };
+        }
+        this._cdr.markForCheck();
+    }
+
+    resizeColumnMove(delta: number): void {
+        this.resizeColumnUpdateWidth(delta);
+        this._cdr.markForCheck();
+    }
+
+    resizeColumnEnd(delta: number): void {
+        _D('[DmTableComponent] resizeColumnEnd:', delta);
+        this.resizeColumnUpdateWidth(delta);
+        this.colWidths[this.resizeColumnIndex] = this.resizeColumnWidth;
+        this.resizeColumnStartPoint = undefined;
+        this.resizeColumnIndex = -1;
+        this._cdr.markForCheck();
+    }
+
+    resizeColumnUpdateWidth(delta: number) {
+        const ct = this.columnTemplates.toArray()[this.resizeColumnIndex];
+        const w = this.colWidths[this.resizeColumnIndex];
+        let nw = w + delta;
+        if (ct.minWidth && ct.minWidth > nw) {
+            nw = ct.minWidth;
+        }
+        else if (nw < MIN_COLUMN_WIDTH) {
+            nw = MIN_COLUMN_WIDTH;
+        }
+        else if (ct.maxWidth && ct.maxWidth < nw) {
+            nw = ct.maxWidth;
+        }
+        this.resizeColumnWidth = nw;
     }
 
 }

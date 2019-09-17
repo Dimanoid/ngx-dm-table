@@ -13,6 +13,7 @@ export class DmColumnDirective implements OnInit {
     @Input() @InputBoolean() draggable: boolean = false;
     @Input() @InputBoolean() resizeable: boolean = true;
     @Input() @InputBoolean() maximize: boolean = false;
+    @Input() whitespace: string = 'normal';
     @Input() @InputNumber() width: number;
     @Input() @InputNumber() minWidth: number;
     @Input() @InputNumber() maxWidth: number;

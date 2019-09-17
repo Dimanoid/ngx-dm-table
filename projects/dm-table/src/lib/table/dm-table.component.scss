@@ -53,7 +53,7 @@ table.ngx-dm-table {
                 background-color: $headerBgColor;
                 font-weight: bold;
                 position: relative;
-                &.ngx-dm-table-column-title {
+                & > .ngx-dm-table-column-title {
                     text-overflow: ellipsis;
                     overflow: hidden;
                     width: 100%;
@@ -94,7 +94,6 @@ table.ngx-dm-table {
         & > tr {
             & > td {
                 cursor: pointer;
-                white-space: nowrap;
                 text-align: left;
                 border-width: 1px 1px 1px 0;
                 border-color: transparent;
