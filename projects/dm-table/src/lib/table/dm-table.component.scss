@@ -54,7 +54,7 @@ table.ngx-dm-table {
                 font-weight: bold;
                 position: relative;
                 & > .ngx-dm-table-column-title {
-                    text-overflow: ellipsis;
+                    text-overflow: clip;
                     overflow: hidden;
                     width: 100%;
                 }

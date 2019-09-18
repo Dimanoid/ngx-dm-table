@@ -2,6 +2,7 @@ import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/co
 import { InputBoolean, InputNumber } from '../utils';
 
 const MIN_COLUMN_WIDTH = 30;
+const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
 
 @Directive({
     selector: 'dm-column, [dm-column]',
@@ -27,6 +28,9 @@ export class DmColumnDirective implements OnInit {
     }
     @Input() @InputNumber() maxWidth: number;
     @Input() frozen: 'left' | 'right' | 'no' = 'no';
+    @Input() headerClass: string;
+    @Input() cellClass: string;
+    @Input() footerClass: string;
 
     @ContentChild('header', { static: true }) headerTpl: TemplateRef<any>;
     @ContentChild('cell', { static: true }) cellTpl: TemplateRef<any>;
@@ -35,6 +39,9 @@ export class DmColumnDirective implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        if (this.sortable && this.minWidth < MIN_COLUMN_SORT_WIDTH) {
+            this._minWidth = MIN_COLUMN_SORT_WIDTH;
+        }
     }
 
 }

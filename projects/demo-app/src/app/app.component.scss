@@ -12,8 +12,37 @@
 
 dm-table {
     table.ngx-dm-table {
-        & > thead > tr > th {
-            color: #0070af;
+        & > thead > tr {
+            & > th {
+                color: #0070af;
+                &.th-icon {
+                    padding: 2px;
+                    text-overflow: clip;
+                    text-align: center;
+                    color: #080;
+                    font-size: 18px;
+                }
+            }
+        }
+        & > tbody > tr {
+            & > td.td-icon {
+                padding: 2px;
+                text-overflow: clip;
+                text-align: center;
+                & > i {
+                    color: #df7706;
+                    font-size: 18px;
+                    transition: all 0.3s;
+                    display: block;
+                    width: 25px;
+                    height: 21px;
+                }
+            }
+            &:hover > td.td-icon > i {
+                color: #080;
+                font-size: 25px;
+                transform: rotate(360deg);
+            }
         }
     }
 }

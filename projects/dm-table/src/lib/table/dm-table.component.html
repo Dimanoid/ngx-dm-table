@@ -6,7 +6,7 @@
         </colgroup>
         <thead>
             <tr>
-                <th *ngFor="let ct of columnTemplates; let i = index">
+                <th *ngFor="let ct of columnTemplates; let i = index" [ngClass]="ct.headerClass">
                     <div class="ngx-dm-table-column-title">
                         {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small>
                         <!-- <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
@@ -30,7 +30,9 @@
             </colgroup>
             <tbody *ngIf="rows">
                 <tr *ngFor="let r of rows; let ri = index">
-                    <td *ngFor="let ct of columnTemplates; let i = index" [style.white-space]="ct.whitespace">
+                    <td *ngFor="let ct of columnTemplates; let i = index"
+                        [ngClass]="ct.cellClass"
+                        [style.white-space]="ct.whitespace">
                         <ng-container *ngIf="ct.cellTpl"
                             [ngTemplateOutlet]="ct.cellTpl"
                             [ngTemplateOutletContext]="{ row: r, ct: ct, $implicit: r[i], ci: i, ri: ri }">
@@ -49,7 +51,7 @@
         </colgroup>
         <tfoot>
             <tr>
-                <td *ngFor="let ct of columnTemplates">
+                <td *ngFor="let ct of columnTemplates" [ngClass]="ct.footerClass">
                     <ng-container *ngIf="ct.footerTpl" [ngTemplateOutlet]="ct.footerTpl"></ng-container>
                     <ng-template [ngIf]="!ct.footerTpl">&nbsp;</ng-template>
                 </td>

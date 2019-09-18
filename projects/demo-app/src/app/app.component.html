@@ -12,9 +12,9 @@
             </div>
 
             <div class="layout flex relative">
-                <div class="layout fit scroll-y">
+                <div class="layout fit scroll">
                     <dm-table #example1 [rows]="data" [stripes]="stripes">
-                        <dm-column title="ID" minWidth="70" maxWidth="150" frozen="left"></dm-column>
+                        <dm-column title="ID" minWidth="70" maxWidth="150" frozen="left" sortable="true"></dm-column>
                         <dm-column width="200" minWidth="100" maxWidth="250" frozen="left" resizeable="false">
                             <ng-template #header>
                                 <div class="tal">
@@ -28,10 +28,14 @@
                                 Footer
                             </ng-template>
                         </dm-column>
-                        <dm-column title="Mid string w spaces" minWidth="70"></dm-column>
-                        <dm-column title="Mid string w/o spaces" minWidth="70"></dm-column>
-                        <dm-column title="Long string w spaces"></dm-column>
-                        <dm-column title="Long string w/o spaces"></dm-column>
+                        <dm-column title="Mid string w spaces" minWidth="70" width="200"></dm-column>
+                        <dm-column title="Mid string w/o spaces" minWidth="70" width="200"></dm-column>
+                        <dm-column width="30" resizeable="false" headerClass="th-icon" cellClass="td-icon">
+                            <ng-template #header><i class="dmtd-yang-ying"></i></ng-template>
+                            <ng-template #cell let-icon><i [ngClass]="icon"></i></ng-template>
+                        </dm-column>
+                        <dm-column title="Long string w spaces" width="400" sortable="true"></dm-column>
+                        <dm-column title="Long string w/o spaces" sortable="true"></dm-column>
                         <dm-column title="Extremely long string w spaces, whitespace=nowrap" whitespace="nowrap"></dm-column>
                     </dm-table>
                 </div>

@@ -2,11 +2,13 @@ import {
     Component, OnInit, AfterViewInit,
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
-    ContentChildren, QueryList, ElementRef, ChangeDetectorRef
+    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { _D, getScrollBarSize, emptyCount, Point } from '../utils';
 import { InputBoolean } from '../utils';
+
+import ResizeObserver from 'resize-observer-polyfill';
 
 @Component({
     selector: 'dm-table',
@@ -45,7 +47,7 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     resizeColumnIndex: number = -1;
     resizeColumnStartPoint: Point;
 
-    constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef) {
+    constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
         const hw = this.getHostWidth();
         if (hw) {
@@ -59,14 +61,40 @@ export class DmTableComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.tableWidth = this.getHostWidth() - this.scrollBarWidth;
-        _D('[DmTableComponent] ngAfterViewInit, tableWidth:', this.tableWidth);
+        _D('[DmTableComponent] ngAfterViewInit, tableWidth:', this.tableWidth, 'scrollBarWidth:', this.scrollBarWidth);
         if (this._columnTemplatesQL) {
             this.updateColumns(this.columnTemplates);
+        }
+        if (this._elemRef && this._elemRef.nativeElement) {
+            _D('[DmTableComponent] ngAfterViewInit, _elemRef.nativeElement:', this._elemRef.nativeElement);
+            const ro = new ResizeObserver(entries => {
+                if (entries[0]) {
+                    [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
+                    const nw = entries[0].contentRect.width - this.scrollBarWidth;
+                    if (nw != this.tableWidth) {
+                        const rd = nw - this.tableWidth;
+                        this.tableWidth = nw;
+                        console.log('[DmTableComponent] ngAfterViewInit.ResizeObserver, newWidth:', nw, 'delta:', rd);
+                        this.colWidthsTmp = this.colWidths.slice();
+                        if (rd < 0) {
+                            this.shrinkTmpColumns(-rd);
+                        }
+                        else {
+                            this.colWidthsTmp[this.flexColumnIndex] += rd;
+                        }
+                        this.colWidths = this.colWidthsTmp;
+                        this.colWidthsTmp = undefined;
+                        console.log('[DmTableComponent] ngAfterViewInit.ResizeObserver, colWidths:', this.colWidths.slice());
+                        this._ngZone.run(() => this._cdr.markForCheck());
+                    }
+                }
+            });
+            ro.observe(this._elemRef.nativeElement);
         }
     }
 
     updateColumns(cds: DmColumnDirective[]): void {
-        _D('[DmTableComponent] updateColumns, cds:', cds);
+        // _D('[DmTableComponent] updateColumns, cds:', cds);
 
         this.hasFooter = false;
         let flexi = cds.length - 1;
@@ -112,7 +140,7 @@ export class DmTableComponent implements OnInit, AfterViewInit {
             else if (tcw > this.tableWidth) {
 
             }
-            _D('[DmTableComponent] updateColumns, aftermath cws:', cws);
+            // _D('[DmTableComponent] updateColumns, aftermath cws:', cws);
             this.colWidths = cws;
             setTimeout(() => this._cdr.markForCheck());
         }
@@ -129,6 +157,7 @@ export class DmTableComponent implements OnInit, AfterViewInit {
         _D('[DmTableComponent] resizeColumnStart:', index, event);
         this.resizeColumnIndex = index;
         this.colWidthsTmp = this.colWidths.slice();
+        _D('[DmTableComponent] resizeColumnStart, colWidths:', this.colWidths.slice());
         event.stopPropagation();
         event.preventDefault();
         if (event.pageX) {
@@ -184,7 +213,6 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     }
 
     resizeColumnEnd(delta: number): void {
-        _D('[DmTableComponent] resizeColumnEnd:', delta);
         this.resizeColumnUpdateWidth(delta);
         this.colWidths = this.colWidthsTmp;
         this.colWidthsTmp = undefined;
@@ -206,41 +234,43 @@ export class DmTableComponent implements OnInit, AfterViewInit {
         this.colWidthsTmp[this.resizeColumnIndex] = nw;
         const rd = this.colWidthsTmp.reduce((a, b) => a + b, 0) - this.tableWidth;
         if (rd > 0) {
-            this.shinkTmpColumns(rd);
+            this.shrinkTmpColumns(rd);
         }
         else if (rd < 0) {
             this.colWidthsTmp[this.flexColumnIndex] -= rd;
-            _D('[DmTableComponent] resizeColumnUpdateWidth colWidthsTmp:', this.colWidthsTmp[this.flexColumnIndex], 'rd:', rd);
+            // _D('[DmTableComponent] resizeColumnUpdateWidth colWidthsTmp:', this.colWidthsTmp[this.flexColumnIndex], 'rd:', rd);
         }
     }
 
-    shinkTmpColumns(delta: number): void {
+    shrinkTmpColumns(delta: number): void {
         const flexCT = this.columnTemplates[this.flexColumnIndex];
         let d = delta;
         const fw = this.colWidthsTmp[this.flexColumnIndex];
         _D('[DmTableComponent] shinkTmpColumns delta:', delta, 'fw:', fw, 'flexCT.minWidth:', flexCT.minWidth);
         if (fw - d > flexCT.minWidth) {
             this.colWidthsTmp[this.flexColumnIndex] -= d;
-            _D('[DmTableComponent] shinkTmpColumns colWidthsTmp:', this.colWidthsTmp[this.flexColumnIndex]);
+            _D('[DmTableComponent] shinkTmpColumns full shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex]);
             return;
         }
         else if (fw > flexCT.minWidth) {
             d -= fw - flexCT.minWidth;
             this.colWidthsTmp[this.flexColumnIndex] = flexCT.minWidth;
-            _D('[DmTableComponent] shinkTmpColumns colWidthsTmp:', this.colWidthsTmp[this.flexColumnIndex], 'd:', d);
+            _D('[DmTableComponent] shinkTmpColumns partial shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex], 'd:', d);
         }
+        _D('[DmTableComponent] shinkTmpColumns shrinking non-flex columns');
         let i = this.columnTemplates.length;
         while (i--) {
             if (i != this.flexColumnIndex) {
                 const ct = this.columnTemplates[i];
-                const cw = this.colWidthsTmp[this.flexColumnIndex];
+                const cw = this.colWidthsTmp[i];
                 if (cw - d > ct.minWidth) {
-                    this.colWidthsTmp[this.flexColumnIndex] -= d;
+                    this.colWidthsTmp[i] -= d;
+                    // _D('[DmTableComponent] shinkTmpColumns shrink column#',);
                     return;
                 }
                 else if (cw > ct.minWidth) {
                     d -= cw - ct.minWidth;
-                    this.colWidthsTmp[this.flexColumnIndex] = ct.minWidth;
+                    this.colWidthsTmp[i] = ct.minWidth;
                 }
             }
         }
