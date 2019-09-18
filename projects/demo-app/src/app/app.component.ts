@@ -23,9 +23,17 @@ export class AppComponent implements OnInit {
 
     stripes: boolean = true;
     data: any[][] = [];
+    lines: string = '100';
+    linesList: string[] = ['10', '100', '1000', '10000', '100000'];
+    linesGenerating: boolean = true;
 
     ngOnInit() {
-        for (let i = 1; i <= 100; i++) {
+        this.generateData();
+    }
+
+    generateData() {
+        this.data = [];
+        for (let i = 1; i <= +this.lines; i++) {
             const icon = Math.trunc(Math.random() * ICONS.length);
             this.data.push(
                 [
@@ -44,6 +52,7 @@ export class AppComponent implements OnInit {
                 ]
             );
         }
+        this.linesGenerating = false;
     }
 
 }

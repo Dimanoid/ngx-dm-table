@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
@@ -8,7 +9,8 @@ import en from '@angular/common/locales/en';
 registerLocaleData(en);
 import {
     NZ_I18N, en_US,
-    NzSwitchModule
+    NzSwitchModule,
+    NzSelectModule
 } from 'ng-zorro-antd';
 
 import { DmTableModule } from '@dimanoid/ngx-dm-table';
@@ -20,9 +22,9 @@ import { AppComponent } from './app.component';
         AppComponent
     ],
     imports: [
-        BrowserModule, CommonModule,
+        BrowserModule, BrowserAnimationsModule, CommonModule,
         FormsModule, ReactiveFormsModule,
-        NzSwitchModule,
+        NzSwitchModule, NzSelectModule,
         DmTableModule
     ],
     providers: [

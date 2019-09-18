@@ -6,6 +6,15 @@
             <div class="dmtd-panel-left layout vertical">
                 <b class="mb1 fs-l">Table options:</b>
                 <div class="layout center">
+                    <span class="mr05">Number of lines:</span>
+                    <nz-select style="width: 120px;"
+                        [(ngModel)]="lines"
+                        [nzLoading]="linesGenerating"
+                        (ngModelChange)="linesGenerating = true; generateData();">
+                        <nz-option *ngFor="let ln of linesList" [nzValue]="ln" [nzLabel]="ln"></nz-option>
+                    </nz-select>
+                </div>
+                <div class="layout center">
                     <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
                     <span class="ml05">Zebra stripped</span>
                 </div>

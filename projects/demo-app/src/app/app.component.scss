@@ -6,6 +6,9 @@
             padding: 10px;
             background-color: #f8f8f8;
             margin-right: 10px;
+            & > div {
+                margin-bottom: 10px;
+            }
         }
     }
 }
