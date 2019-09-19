@@ -22,7 +22,7 @@
     </table>
 </div>
 <div class="ngx-dm-table-body-wrapper">
-    <cdk-virtual-scroll-viewport itemSize="30" class="ngx-dm-table-body-wrapper-inner">
+    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dm-table-body-wrapper-inner">
         <table class="ngx-dm-table ngx-dm-table-body"
             [class.ngx-dm-table-stripes]="stripes">
             <colgroup>

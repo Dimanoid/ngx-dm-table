@@ -20,10 +20,10 @@
     ],
     "paths": {
       "@dimanoid/ngx-dm-table": [
-        "dist/dm-table"
+        "dist/lib"
       ],
       "@dimanoid/ngx-dm-table/*": [
-        "dist/dm-table/*"
+        "dist/lib/*"
       ]
     }
   },

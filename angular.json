@@ -127,33 +127,33 @@
                 }
             }
         },
-        "dm-table": {
+        "lib": {
             "projectType": "library",
-            "root": "projects/dm-table",
-            "sourceRoot": "projects/dm-table/src",
+            "root": "projects/lib",
+            "sourceRoot": "projects/lib/src",
             "prefix": "",
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-ng-packagr:build",
                     "options": {
-                        "tsConfig": "projects/dm-table/tsconfig.lib.json",
-                        "project": "projects/dm-table/ng-package.json"
+                        "tsConfig": "projects/lib/tsconfig.lib.json",
+                        "project": "projects/lib/ng-package.json"
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "main": "projects/dm-table/src/test.ts",
-                        "tsConfig": "projects/dm-table/tsconfig.spec.json",
-                        "karmaConfig": "projects/dm-table/karma.conf.js"
+                        "main": "projects/lib/src/test.ts",
+                        "tsConfig": "projects/lib/tsconfig.spec.json",
+                        "karmaConfig": "projects/lib/karma.conf.js"
                     }
                 },
                 "lint": {
                     "builder": "@angular-devkit/build-angular:tslint",
                     "options": {
                         "tsConfig": [
-                            "projects/dm-table/tsconfig.lib.json",
-                            "projects/dm-table/tsconfig.spec.json"
+                            "projects/lib/tsconfig.lib.json",
+                            "projects/lib/tsconfig.spec.json"
                         ],
                         "exclude": [
                             "**/node_modules/**"

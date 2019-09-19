@@ -8,8 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "publish": "npm publish dist/dm-table --access public",
-    "build:ghp": "ng build dm-table && ng build --aot --prod --base-href /dm-table/ demo-app"
+    "publish": "npm publish dist/lib --access public",
+    "build:ghp": "ng build lib && ng build --aot --prod --base-href /dm-table/ demo-app"
   },
   "private": true,
   "dependencies": {

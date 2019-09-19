@@ -5,10 +5,12 @@ import {
     ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
-import { _D, getScrollBarSize, emptyCount, Point } from '../utils';
+import { _D, getScrollBarSize, emptyCount, Point, InputNumber } from '../utils';
 import { InputBoolean } from '../utils';
 
 import ResizeObserver from 'resize-observer-polyfill';
+
+const MIN_ITEM_SIZE = 30;
 
 @Component({
     selector: 'dm-table',
@@ -35,7 +37,18 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     }
     columnTemplates: DmColumnDirective[] = [];
 
-    @Input() @InputBoolean() stripes: boolean = false;
+    @Input() @InputBoolean() stripes: boolean = true;
+
+    private _itemSize: number = MIN_ITEM_SIZE;
+    @Input() @InputNumber()
+    set itemSize(v: number) {
+        this._itemSize = v && v > MIN_ITEM_SIZE ? +v : MIN_ITEM_SIZE;
+    }
+    get itemSize(): number {
+        return this._itemSize;
+    }
+
+    @Input() @InputBoolean() moveableColumns: boolean = true;
 
     hasFooter: boolean = false;
     flexColumnIndex: number = -1;

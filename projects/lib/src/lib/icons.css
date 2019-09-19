@@ -2,11 +2,11 @@
 
 @font-face {
     font-family: "dm-table";
-    src:url("fonts/dm-table.eot");
-    src:url("fonts/dm-table.eot?#iefix") format("embedded-opentype"),
-        url("fonts/dm-table.woff") format("woff"),
-        url("fonts/dm-table.ttf") format("truetype"),
-        url("fonts/dm-table.svg#dm-table") format("svg");
+    src:url("fonts/dm-table-iconfonts.eot");
+    src:url("fonts/dm-table-iconfonts.eot?#iefix") format("embedded-opentype"),
+        url("fonts/dm-table-iconfonts.woff") format("woff"),
+        url("fonts/dm-table-iconfonts.ttf") format("truetype"),
+        url("fonts/dm-table-iconfonts.svg#dm-table") format("svg");
     font-weight: normal;
     font-style: normal;
 }
