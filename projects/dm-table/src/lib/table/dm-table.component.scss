@@ -95,7 +95,7 @@ table.ngx-dm-table {
             & > td {
                 cursor: pointer;
                 text-align: left;
-                border-width: 1px 1px 1px 0;
+                border-width: 0 1px 0 0;
                 border-color: transparent;
                 border-right-color: $tableBorderColor !important;
                 border-style: solid;
