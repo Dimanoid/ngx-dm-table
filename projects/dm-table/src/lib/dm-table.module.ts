@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { ScrollingModule } from '@angular/cdk/scrolling';
+
 import { DmTableComponent } from './table/dm-table.component';
 import { DmColumnDirective } from './column/dm-column.directive';
 
@@ -8,7 +11,10 @@ import { DmColumnDirective } from './column/dm-column.directive';
         DmTableComponent,
         DmColumnDirective
     ],
-    imports: [CommonModule],
+    imports: [
+        CommonModule,
+        ScrollingModule
+    ],
     exports: [
         DmTableComponent,
         DmColumnDirective

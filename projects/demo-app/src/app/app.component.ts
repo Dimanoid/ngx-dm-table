@@ -35,6 +35,7 @@ export class AppComponent implements OnInit {
         this.data = [];
         for (let i = 1; i <= +this.lines; i++) {
             const icon = Math.trunc(Math.random() * ICONS.length);
+            const n = Math.trunc(Math.random() * 100);
             this.data.push(
                 [
                     `${i}_Id`,
@@ -44,11 +45,7 @@ export class AppComponent implements OnInit {
                     'dmtd-' + ICONS[icon],
                     `${i}_Long long long long long long long long long long long long long long long long long long string with spaces`,
                     `${i}_Long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_string_without_spaces`,
-                    `${i}_Extremely long long long long long long long long long long long long long long long long long long long long`
-                        + ` long long long long long long long long long long long long long long long long long long long long long long`
-                        + ` long long long long long long long long long long long long long long long long long long long long long long`
-                        + ` long long long long long long long long long long long long long long long long long long long long long long`
-                        + ` string with spaces`,
+                    `${i}_Random length string:` + ' text'.repeat(n) + ' with spaces',
                 ]
             );
         }
