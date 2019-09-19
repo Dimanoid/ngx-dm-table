@@ -39,12 +39,15 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.ngx-dm-table-icon-sort-amount-asc:before {
-      content: "\61";
-}
-.ngx-dm-table-icon-sort-amount-desc:before {
-      content: "\62";
-}
 .ngx-dm-table-icon-pin:before {
-    content: "\63";
+  content: "\61";
+}
+.ngx-dm-table-icon-drag-handle:before {
+  content: "\62";
+}
+.ngx-dm-table-icon-sort-asc:before {
+  content: "\63";
+}
+.ngx-dm-table-icon-sort-desc:before {
+  content: "\64";
 }

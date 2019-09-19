@@ -7,6 +7,7 @@
         <thead>
             <tr>
                 <th *ngFor="let ct of columnTemplates; let i = index" [ngClass]="ct.headerClass">
+                    <div class="ngx-dm-table-column-draghandle"><i class="ngx-dm-table-icon-drag-handle"></i></div>
                     <div class="ngx-dm-table-column-title">
                         <!-- {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small> -->
                         <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>

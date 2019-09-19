@@ -53,6 +53,11 @@ table.ngx-dm-table {
                 background-color: $headerBgColor;
                 font-weight: bold;
                 position: relative;
+                & > .ngx-dm-table-column-draghandle {
+                    position: absolute;
+                    left: 2px;
+                    color: $headerDraghandleColor;
+                }
                 & > .ngx-dm-table-column-title {
                     text-overflow: clip;
                     overflow: hidden;
