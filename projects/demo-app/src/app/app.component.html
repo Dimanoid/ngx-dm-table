@@ -24,21 +24,27 @@
                 <div class="layout fit scroll">
                     <dm-table #example1 [rows]="data" [stripes]="stripes">
                         <dm-column title="ID" minWidth="70" maxWidth="150" sortable="true"></dm-column>
-                        <dm-column width="200" minWidth="100" maxWidth="250" resizeable="false">
+                        <dm-column width="200" minWidth="100" maxWidth="250" resizeable="false" headerClass="th-name" cellClass="td-name">
                             <ng-template #header>
                                 <div class="tal">
                                     <i style="color: red">
                                         <i class="dmtd-crown-king-1 mr025 top1"></i>
-                                        <u>Template as a header, no resize</u>
+                                        <u>Custom tpl, no resize</u>
                                     </i>
+                                </div>
+                            </ng-template>
+                            <ng-template #cell let-item>
+                                <div class="layout center">
+                                    <i [ngClass]="item.icon"></i>
+                                    <span class="ml05">{{ item.name }}</span>
                                 </div>
                             </ng-template>
                             <!-- <ng-template #footer>
                                 Footer
                             </ng-template> -->
                         </dm-column>
-                        <dm-column title="Mid string w spaces" minWidth="70" width="200"></dm-column>
-                        <dm-column title="Mid string w/o spaces" minWidth="70" width="200"></dm-column>
+                        <dm-column title="String w spaces" minWidth="70" width="200"></dm-column>
+                        <dm-column title="String w/o spaces" minWidth="70" width="200"></dm-column>
                         <dm-column width="30" resizeable="false" headerClass="th-icon" cellClass="td-icon">
                             <ng-template #header><i class="dmtd-yang-ying"></i></ng-template>
                             <ng-template #cell let-icon><i [ngClass]="icon"></i></ng-template>

@@ -25,6 +25,9 @@ dm-table {
                     color: #080;
                     font-size: 18px;
                 }
+                &.th-name {
+                    border-right: 2px solid #0070af !important;
+                }
             }
         }
         & > tbody > tr {
@@ -45,6 +48,10 @@ dm-table {
                 color: #080;
                 font-size: 25px;
                 transform: rotate(360deg);
+            }
+            & > td.td-name {
+                border-right: 2px solid #0070af !important;
+                color: #0070af;
             }
         }
     }

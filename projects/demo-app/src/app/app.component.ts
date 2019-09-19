@@ -13,6 +13,19 @@ const ICONS = [
     'umbrella'
 ];
 
+const NAMES = [
+    'Yuri Gagarin',
+    'Robinson Crusoe',
+    'Lisa Cuddy',
+    'Jennifer Lopez',
+    'Charlie Chaplin',
+    'Louis XIV',
+    'Isaac Newton',
+    '‎Gregory House',
+    'Gautama Buddha',
+    'Mary Poppins'
+];
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -39,7 +52,7 @@ export class AppComponent implements OnInit {
             this.data.push(
                 [
                     `${i}_Id`,
-                    `${i}_String`,
+                    { icon: 'dmtd-' + ICONS[icon], name: NAMES[icon] },
                     `${i}_Not very long string with spaces`,
                     `${i}_Not_very_long_string_without_spaces`,
                     'dmtd-' + ICONS[icon],
