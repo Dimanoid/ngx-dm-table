@@ -15,8 +15,8 @@
 
 dm-table {
     table.ngx-dm-table {
-        & > thead > tr {
-            & > th {
+        & > thead > tr.ngx-dm-table-header-row {
+            & > th.ngx-dm-table-header-cell {
                 color: #0070af;
                 &.th-icon {
                     padding: 2px;

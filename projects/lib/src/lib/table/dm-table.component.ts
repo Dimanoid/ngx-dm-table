@@ -2,13 +2,14 @@ import {
     Component, OnInit, AfterViewInit,
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
-    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone
+    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { _D, getScrollBarSize, emptyCount, Point, InputNumber } from '../utils';
 import { InputBoolean } from '../utils';
 
 import ResizeObserver from 'resize-observer-polyfill';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 const MIN_ITEM_SIZE = 30;
 
@@ -30,12 +31,15 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     set columnTemplatesQL(val: QueryList<DmColumnDirective>) {
         this._columnTemplatesQL = val;
         this.columnTemplates = val ? val.toArray() : [];
+        this._columnTemplatesOriginal = this.columnTemplates.slice();
+        this.updateColumnsOrder();
         this.updateColumns(this.columnTemplates);
     }
     get columnTemplatesQL(): QueryList<DmColumnDirective> {
         return this._columnTemplatesQL;
     }
     columnTemplates: DmColumnDirective[] = [];
+    private _columnTemplatesOriginal: DmColumnDirective[] = [];
 
     @Input() @InputBoolean() stripes: boolean = true;
 
@@ -49,6 +53,9 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     }
 
     @Input() @InputBoolean() moveableColumns: boolean = true;
+
+    @Input() columnsOrder: number[];
+    @Output() columnsOrderChange: EventEmitter<number[]> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnIndex: number = -1;
@@ -107,7 +114,7 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     }
 
     updateColumns(cds: DmColumnDirective[]): void {
-        // _D('[DmTableComponent] updateColumns, cds:', cds);
+        _D('[DmTableComponent] updateColumns, cds:', cds);
 
         this.hasFooter = false;
         let flexi = cds.length - 1;
@@ -286,6 +293,43 @@ export class DmTableComponent implements OnInit, AfterViewInit {
                     this.colWidthsTmp[i] = ct.minWidth;
                 }
             }
+        }
+    }
+
+    updateColumnsOrder() {
+        let changed = false;
+        if (!this.columnsOrder) {
+            this.columnsOrder = [];
+            changed = true;
+        }
+        if (this.columnsOrder.length > this.columnTemplates.length) {
+            this.columnsOrder.splice(this.columnTemplates.length - 1);
+            changed = true;
+        }
+        else if (this.columnsOrder.length < this.columnTemplates.length) {
+            for (let i = 0; i < this.columnTemplates.length; i++) {
+                if (this.columnsOrder.indexOf(i) == -1) {
+                    this.columnsOrder.push(i);
+                }
+            }
+            changed = true;
+        }
+        this.columnTemplates = [];
+        for (const i of this.columnsOrder) {
+            this.columnTemplates.push(this._columnTemplatesOriginal[i]);
+        }
+        if (changed) {
+            this.columnsOrderChange.emit(this.columnsOrder);
+        }
+    }
+
+    columnHeaderDrop(event: CdkDragDrop<any>) {
+        if (event.previousIndex != event.currentIndex) {
+            moveItemInArray(this.columnsOrder, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.columnTemplates, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.colWidths, event.previousIndex, event.currentIndex);
+            this.columnsOrderChange.emit(this.columnsOrder);
+            this._cdr.markForCheck();
         }
     }
 

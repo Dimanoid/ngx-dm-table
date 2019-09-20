@@ -22,7 +22,7 @@
 
             <div class="layout flex relative">
                 <div class="layout fit scroll">
-                    <dm-table #example1 [rows]="data" [stripes]="stripes">
+                    <dm-table #example1 [rows]="data" [stripes]="stripes" [columnsOrder]="[0, 4, 1]">
                         <dm-column title="ID" minWidth="70" maxWidth="150" sortable="true"></dm-column>
                         <dm-column width="200" minWidth="100" maxWidth="250" resizeable="false" headerClass="th-name" cellClass="td-name">
                             <ng-template #header>

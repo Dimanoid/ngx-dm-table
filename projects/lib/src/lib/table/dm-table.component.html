@@ -5,15 +5,20 @@
                 [style.width.px]="resizeColumnIndex > -1 ? colWidthsTmp[i] : cw">
         </colgroup>
         <thead>
-            <tr>
-                <th *ngFor="let ct of columnTemplates; let i = index" [ngClass]="ct.headerClass">
+            <tr class="ngx-dm-table-header-row"
+                cdkDropList cdkDropListOrientation="horizontal"
+                (cdkDropListDropped)="columnHeaderDrop($event)">
+                <th *ngFor="let ct of columnTemplates; let i = index; let l = last"
+                    class="ngx-dm-table-header-cell"
+                    [ngClass]="ct.headerClass"
+                    cdkDrag cdkDragBoundary=".ngx-dm-table-header-row">
                     <div class="ngx-dm-table-column-title">
                         <!-- {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small> -->
                         <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
                         <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
                     </div>
-                    <div class="ngx-dm-table-column-draghandle"><i class="ngx-dm-table-icon-drag-handle"></i></div>
-                    <div *ngIf="ct.resizeable" class="ngx-dm-table-resizer"
+                    <div class="ngx-dm-table-column-draghandle" cdkDragHandle><i class="ngx-dm-table-icon-drag-handle"></i></div>
+                    <div *ngIf="ct.resizeable && !l" class="ngx-dm-table-resizer"
                         [class.ngx-dm-table-resizer-dragging]="resizeColumnIndex == i"
                         (mousedown)="resizeColumnStart(i, $event)">
                     </div>
@@ -36,9 +41,9 @@
                         [style.white-space]="ct.whitespace">
                         <ng-container *ngIf="ct.cellTpl"
                             [ngTemplateOutlet]="ct.cellTpl"
-                            [ngTemplateOutletContext]="{ row: r, ct: ct, $implicit: r[i], ci: i, ri: ri }">
+                            [ngTemplateOutletContext]="{ row: r, ct: ct, $implicit: r[columnsOrder[i]], ci: i, ri: ri }">
                         </ng-container>
-                        <ng-template [ngIf]="!ct.cellTpl">{{ r[i] }}</ng-template>
+                        <ng-template [ngIf]="!ct.cellTpl">{{ r[columnsOrder[i]] }}</ng-template>
                     </td>
                 </tr>
             </tbody>
