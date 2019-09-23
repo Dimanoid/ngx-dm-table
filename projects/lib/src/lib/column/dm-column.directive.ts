@@ -31,6 +31,7 @@ export class DmColumnDirective implements OnInit {
     @Input() headerClass: string;
     @Input() cellClass: string;
     @Input() footerClass: string;
+    @Input() sort: 'string' | 'number' | 'boolean' | ((a: any, b: any) => number);
 
     @ContentChild('header', { static: true }) headerTpl: TemplateRef<any>;
     @ContentChild('cell', { static: true }) cellTpl: TemplateRef<any>;

@@ -51,18 +51,22 @@ export class AppComponent implements OnInit {
             const n = Math.trunc(Math.random() * 100);
             this.data.push(
                 [
-                    `${i}_Id`,
+                    i,
                     { icon: 'dmtd-' + ICONS[icon], name: NAMES[icon] },
                     `${i}_Not very long string with spaces`,
                     `${i}_Not_very_long_string_without_spaces`,
                     'dmtd-' + ICONS[icon],
-                    `${i}_Long long long long long long long long long long long long long long long long long long string with spaces`,
-                    `${i}_Long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_long_string_without_spaces`,
-                    `${i}_Random length string:` + ' text'.repeat(n) + ' with spaces',
+                    `${i} sort as string`,
+                    i % 2 > 0,
+                    `Random length string:` + ' text'.repeat(n) + ' with spaces',
                 ]
             );
         }
         this.linesGenerating = false;
+    }
+
+    customSort(a: any, b: any): number {
+        return (a[1].name as string).localeCompare(b[1].name);
     }
 
 }

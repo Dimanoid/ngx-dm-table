@@ -9,7 +9,7 @@
                 (cdkDropListDropped)="columnHeaderDrop($event)">
                 <th *ngFor="let ct of columnTemplates; let i = index; let l = last"
                     class="ngx-dmt-header-cell"
-                    [ngClass]="ct.headerClass"
+                    [ngClass]="ct.headerClass + (sortedColId == ct.colId ? (' ngx-dmt-sorted  ngx-dmt-sorted-' + sortedOrder) : '')"
                     cdkDrag cdkDragBoundary=".ngx-dmt-header-row">
                     <div class="ngx-dmt-column-title">
                         <!-- {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small> -->
@@ -17,7 +17,7 @@
                         <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
                     </div>
                     <div class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
-                    <div *ngIf="ct.sortable" class="ngx-dmt-column-sort-container"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
+                    <div *ngIf="ct.sortable" class="ngx-dmt-column-sort-container" (click)="toggleSort(i)"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
                     <div *ngIf="ct.resizeable && !l" class="ngx-dmt-resizer"
                         [class.ngx-dmt-resizer-dragging]="resizeColumnIndex == i"
                         (mousedown)="resizeColumnStart(i, $event)">

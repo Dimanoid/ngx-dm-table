@@ -3,3 +3,4 @@ export * from './dom-ui';
 export * from './logs';
 export * from './arrays';
 export * from './point';
+export * from './sort-functions';

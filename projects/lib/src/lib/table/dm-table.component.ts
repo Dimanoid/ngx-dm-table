@@ -2,10 +2,10 @@ import {
     Component, OnInit, AfterViewInit,
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
-    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter
+    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter, OnChanges, SimpleChanges
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
-import { _D, getScrollBarSize, emptyCount, Point, InputNumber } from '../utils';
+import { _D, getScrollBarSize, emptyCount, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy } from '../utils';
 import { InputBoolean } from '../utils';
 
 import ResizeObserver from 'resize-observer-polyfill';
@@ -15,7 +15,7 @@ const MIN_ITEM_SIZE = 30;
 
 export interface DmTableSort {
     index: number;
-    order: 1 | 0 | -1;
+    order: number;
 }
 
 @Component({
@@ -26,7 +26,7 @@ export interface DmTableSort {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class DmTableComponent implements OnInit, AfterViewInit {
+export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
     @Input() rows: any[];
@@ -79,6 +79,8 @@ export class DmTableComponent implements OnInit, AfterViewInit {
     scrollBarHeight: number = 0;
     resizeColumnIndex: number = -1;
     resizeColumnStartPoint: Point;
+    sortedColId: string;
+    sortedOrder: string;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
@@ -107,7 +109,7 @@ export class DmTableComponent implements OnInit, AfterViewInit {
                     if (nw != this.tableWidth) {
                         const rd = nw - this.tableWidth;
                         this.tableWidth = nw;
-                        console.log('[DmTableComponent] ngAfterViewInit.ResizeObserver, newWidth:', nw, 'delta:', rd);
+                        _D('[DmTableComponent] ngAfterViewInit.ResizeObserver, newWidth:', nw, 'delta:', rd);
                         this.colWidthsTmp = this.colWidths.slice();
                         if (rd < 0) {
                             this.shrinkTmpColumns(-rd);
@@ -117,12 +119,19 @@ export class DmTableComponent implements OnInit, AfterViewInit {
                         }
                         this.colWidths = this.colWidthsTmp;
                         this.colWidthsTmp = undefined;
-                        console.log('[DmTableComponent] ngAfterViewInit.ResizeObserver, colWidths:', this.colWidths.slice());
+                        _D('[DmTableComponent] ngAfterViewInit.ResizeObserver, colWidths:', this.colWidths.slice());
                         this._ngZone.run(() => this._cdr.markForCheck());
                     }
                 }
             });
             ro.observe(this._elemRef.nativeElement);
+        }
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        _D('[DmTableComponent] ngOnChanges, changes:', changes);
+        if (changes['rows'] || changes['sort']) {
+            this.sortRows();
         }
     }
 
@@ -279,18 +288,18 @@ export class DmTableComponent implements OnInit, AfterViewInit {
         const flexCT = this.columnTemplates[this.flexColumnIndex];
         let d = delta;
         const fw = this.colWidthsTmp[this.flexColumnIndex];
-        _D('[DmTableComponent] shinkTmpColumns delta:', delta, 'fw:', fw, 'flexCT.minWidth:', flexCT.minWidth);
+        // _D('[DmTableComponent] shinkTmpColumns delta:', delta, 'fw:', fw, 'flexCT.minWidth:', flexCT.minWidth);
         if (fw - d > flexCT.minWidth) {
             this.colWidthsTmp[this.flexColumnIndex] -= d;
-            _D('[DmTableComponent] shinkTmpColumns full shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex]);
+            // _D('[DmTableComponent] shinkTmpColumns full shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex]);
             return;
         }
         else if (fw > flexCT.minWidth) {
             d -= fw - flexCT.minWidth;
             this.colWidthsTmp[this.flexColumnIndex] = flexCT.minWidth;
-            _D('[DmTableComponent] shinkTmpColumns partial shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex], 'd:', d);
+            // _D('[DmTableComponent] shinkTmpColumns partial shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex], 'd:', d);
         }
-        _D('[DmTableComponent] shinkTmpColumns shrinking non-flex columns');
+        // _D('[DmTableComponent] shinkTmpColumns shrinking non-flex columns');
         let i = this.columnTemplates.length;
         while (i--) {
             if (i != this.flexColumnIndex) {
@@ -309,7 +318,7 @@ export class DmTableComponent implements OnInit, AfterViewInit {
         }
     }
 
-    updateColumnsOrder() {
+    updateColumnsOrder(): void {
         let changed = false;
         if (!this.columnsOrder) {
             this.columnsOrder = [];
@@ -334,9 +343,10 @@ export class DmTableComponent implements OnInit, AfterViewInit {
         if (changed) {
             this.columnsOrderChange.emit(this.columnsOrder);
         }
+        this.sortRows();
     }
 
-    columnHeaderDrop(event: CdkDragDrop<any>) {
+    columnHeaderDrop(event: CdkDragDrop<any>): void {
         if (event.previousIndex != event.currentIndex) {
             moveItemInArray(this.columnsOrder, event.previousIndex, event.currentIndex);
             moveItemInArray(this.columnTemplates, event.previousIndex, event.currentIndex);
@@ -344,6 +354,43 @@ export class DmTableComponent implements OnInit, AfterViewInit {
             this.columnsOrderChange.emit(this.columnsOrder);
             this._cdr.markForCheck();
         }
+    }
+
+    sortRows(): void {
+        if (!this.rows || !this.sort || !this.columnTemplates) {
+            return;
+        }
+        const ct = this.columnTemplates[this.sort.index];
+        if (!ct) {
+            return;
+        }
+        this.sortedColId = ct.colId;
+        this.sortedOrder = this.sort.order > 0 ? 'asc' : 'desc';
+        let sort = ct.sort;
+        if (typeof sort != 'function') {
+            if (sort == 'number') {
+                sort = SortNumbersBy(ct.colId);
+            }
+            else if (sort == 'boolean') {
+                sort = SortBooleansBy(ct.colId);
+            }
+            else {
+                sort = SortStringsBy(ct.colId);
+            }
+        }
+        const rows = this.rows.sort(sort);
+        if (this.sort.order < 0) {
+            rows.reverse();
+        }
+        this.rows = rows.slice();
+    }
+
+    toggleSort(ind: number) {
+        _D('[DmTableComponent] toggleSort, ind:', ind, 'columnsOrder[ind]:', this.columnsOrder[ind]);
+        this.sort = { index: this.columnsOrder[ind], order: this.sort.index == this.columnsOrder[ind] ? -this.sort.order : 1 };
+        this.sortChange.emit(this.sort);
+        this.sortRows();
+        this._cdr.markForCheck();
     }
 
 }

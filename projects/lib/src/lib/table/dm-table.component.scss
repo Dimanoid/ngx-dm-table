@@ -111,11 +111,25 @@ table.ngx-dmt {
                             color: $headerSortHoverColor;
                         }
                     }
-                    &.ngx-dmt-sorted-asc > .ngx-dmt-column-sort-container > .ngx-dmt-column-sort-toggle:before {
-                        content: "e";
+                    &.ngx-dmt-sorted-asc > .ngx-dmt-column-sort-container {
+                        & > .ngx-dmt-column-sort-toggle:before {
+                            content: "e";
+                        }
+                        &:hover {
+                            & > .ngx-dmt-column-sort-toggle:before {
+                                content: "f";
+                            }
+                        }
                     }
-                    &.ngx-dmt-sorted-desc > .ngx-dmt-column-sort-container > .ngx-dmt-column-sort-toggle:before {
-                        content: "f";
+                    &.ngx-dmt-sorted-desc > .ngx-dmt-column-sort-container {
+                        & > .ngx-dmt-column-sort-toggle:before {
+                            content: "f";
+                        }
+                        &:hover {
+                            & > .ngx-dmt-column-sort-toggle:before {
+                                content: "e";
+                            }
+                        }
                     }
                 }
                 & > .ngx-dmt-column-title {
