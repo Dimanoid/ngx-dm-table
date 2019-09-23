@@ -13,6 +13,11 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 const MIN_ITEM_SIZE = 30;
 
+export interface DmTableSort {
+    index: number;
+    order: 1 | 0 | -1;
+}
+
 @Component({
     selector: 'dm-table',
     exportAs: 'dmTable',
@@ -24,13 +29,18 @@ const MIN_ITEM_SIZE = 30;
 export class DmTableComponent implements OnInit, AfterViewInit {
     @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
-    @Input() rows: any[][];
+    @Input() rows: any[];
 
     private _columnTemplatesQL: QueryList<DmColumnDirective>;
     @ContentChildren(DmColumnDirective)
     set columnTemplatesQL(val: QueryList<DmColumnDirective>) {
         this._columnTemplatesQL = val;
         this.columnTemplates = val ? val.toArray() : [];
+        for (let i = 0; i < this.columnTemplates.length; i++) {
+            if (!this.columnTemplates[i].colId) {
+                this.columnTemplates[i].colId = '' + i;
+            }
+        }
         this._columnTemplatesOriginal = this.columnTemplates.slice();
         this.updateColumnsOrder();
         this.updateColumns(this.columnTemplates);
@@ -56,6 +66,9 @@ export class DmTableComponent implements OnInit, AfterViewInit {
 
     @Input() columnsOrder: number[];
     @Output() columnsOrderChange: EventEmitter<number[]> = new EventEmitter();
+
+    @Input() sort: DmTableSort;
+    @Output() sortChange: EventEmitter<DmTableSort> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnIndex: number = -1;

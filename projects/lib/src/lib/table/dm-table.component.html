@@ -41,9 +41,9 @@
                         [style.white-space]="ct.whitespace">
                         <ng-container *ngIf="ct.cellTpl"
                             [ngTemplateOutlet]="ct.cellTpl"
-                            [ngTemplateOutletContext]="{ row: r, ct: ct, $implicit: r[columnsOrder[i]], ci: i, ri: ri }">
+                            [ngTemplateOutletContext]="{ row: r, ct: ct, $implicit: r[ct.colId], ci: i, ri: ri }">
                         </ng-container>
-                        <ng-template [ngIf]="!ct.cellTpl">{{ r[columnsOrder[i]] }}</ng-template>
+                        <ng-template [ngIf]="!ct.cellTpl">{{ r[ct.colId] }}</ng-template>
                     </td>
                 </tr>
             </tbody>
