@@ -14,10 +14,10 @@
 }
 
 dm-table {
-    table.ngx-dm-table {
-        & > thead > tr.ngx-dm-table-header-row {
-            & > th.ngx-dm-table-header-cell {
-                color: #0070af;
+    table.ngx-dmt {
+        & > thead > tr.ngx-dmt-header-row {
+            & > th.ngx-dmt-header-cell {
+                // color: #0070af;
                 &.th-icon {
                     padding: 2px;
                     text-overflow: clip;

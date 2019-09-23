@@ -22,7 +22,7 @@ const MIN_ITEM_SIZE = 30;
     encapsulation: ViewEncapsulation.None
 })
 export class DmTableComponent implements OnInit, AfterViewInit {
-    @HostBinding('class.ngx-dm-table-container') _hostCss = true;
+    @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
     @Input() rows: any[][];
 

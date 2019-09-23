@@ -1,25 +1,25 @@
-<div class="ngx-dm-table-header-wrapper" [style.padding-right.px]="scrollBarWidth">
-    <table class="ngx-dm-table ngx-dm-table-header">
+<div class="ngx-dmt-header-wrapper" [style.padding-right.px]="scrollBarWidth">
+    <table class="ngx-dmt ngx-dmt-header">
         <colgroup>
-            <col *ngFor="let cw of colWidths; let i = index"
-                [style.width.px]="resizeColumnIndex > -1 ? colWidthsTmp[i] : cw">
+            <col *ngFor="let cw of colWidths; let i = index" [style.width.px]="resizeColumnIndex > -1 ? colWidthsTmp[i] : cw">
         </colgroup>
         <thead>
-            <tr class="ngx-dm-table-header-row"
+            <tr class="ngx-dmt-header-row"
                 cdkDropList cdkDropListOrientation="horizontal"
                 (cdkDropListDropped)="columnHeaderDrop($event)">
                 <th *ngFor="let ct of columnTemplates; let i = index; let l = last"
-                    class="ngx-dm-table-header-cell"
+                    class="ngx-dmt-header-cell"
                     [ngClass]="ct.headerClass"
-                    cdkDrag cdkDragBoundary=".ngx-dm-table-header-row">
-                    <div class="ngx-dm-table-column-title">
+                    cdkDrag cdkDragBoundary=".ngx-dmt-header-row">
+                    <div class="ngx-dmt-column-title">
                         <!-- {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small> -->
                         <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
                         <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>
                     </div>
-                    <div class="ngx-dm-table-column-draghandle" cdkDragHandle><i class="ngx-dm-table-icon-drag-handle"></i></div>
-                    <div *ngIf="ct.resizeable && !l" class="ngx-dm-table-resizer"
-                        [class.ngx-dm-table-resizer-dragging]="resizeColumnIndex == i"
+                    <div class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
+                    <div *ngIf="ct.sortable" class="ngx-dmt-column-sort-container"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
+                    <div *ngIf="ct.resizeable && !l" class="ngx-dmt-resizer"
+                        [class.ngx-dmt-resizer-dragging]="resizeColumnIndex == i"
                         (mousedown)="resizeColumnStart(i, $event)">
                     </div>
                 </th>
@@ -27,10 +27,10 @@
         </thead>
     </table>
 </div>
-<div class="ngx-dm-table-body-wrapper">
-    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dm-table-body-wrapper-inner">
-        <table class="ngx-dm-table ngx-dm-table-body"
-            [class.ngx-dm-table-stripes]="stripes">
+<div class="ngx-dmt-body-wrapper">
+    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner">
+        <table class="ngx-dmt ngx-dmt-body"
+            [class.ngx-dmt-stripes]="stripes">
             <colgroup>
                 <col *ngFor="let cw of colWidths" [style.width.px]="cw">
             </colgroup>
@@ -50,8 +50,8 @@
         </table>
     </cdk-virtual-scroll-viewport>
 </div>
-<div *ngIf="hasFooter" class="ngx-dm-table-footer-wrapper" [style.padding-right.px]="scrollBarWidth">
-    <table class="ngx-dm-table ngx-dm-table-header">
+<div *ngIf="hasFooter" class="ngx-dmt-footer-wrapper" [style.padding-right.px]="scrollBarWidth">
+    <table class="ngx-dmt ngx-dmt-header">
         <colgroup>
             <col *ngFor="let cw of colWidths" [style.width.px]="cw">
         </colgroup>
@@ -66,7 +66,7 @@
     </table>
 </div>
 <!-- 
-<div class="ngx-dm-table-footer-wrapper mt05 mb05" [style.padding-right.px]="scrollBarWidth">
+<div class="ngx-dmt-footer-wrapper mt05 mb05" [style.padding-right.px]="scrollBarWidth">
     resizeColumnIndex: {{ resizeColumnIndex }},
     resizeColumnStartPoint: {{ resizeColumnStartPoint | json }},
     resizeColumnWidth: {{ resizeColumnWidth }}
