@@ -9,7 +9,10 @@
                 (cdkDropListDropped)="columnHeaderDrop($event)">
                 <th *ngFor="let ct of columnTemplates; let i = index; let l = last"
                     class="ngx-dmt-header-cell"
-                    [ngClass]="ct.headerClass + (sortedColId == ct.colId ? (' ngx-dmt-sorted  ngx-dmt-sorted-' + sortedOrder) : '')"
+                    [ngClass]="ct.headerClass"
+                    [class.ngx-dmt-sorted]="sort && sort.colId == ct.colId"
+                    [class.ngx-dmt-sorted-asc]="sort && sort.order > 0"
+                    [class.ngx-dmt-sorted-desc]="sort && sort.order < 0"
                     cdkDrag cdkDragBoundary=".ngx-dmt-header-row">
                     <div class="ngx-dmt-column-title">
                         <!-- {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small> -->
@@ -29,8 +32,7 @@
 </div>
 <div class="ngx-dmt-body-wrapper">
     <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner">
-        <table class="ngx-dmt ngx-dmt-body"
-            [class.ngx-dmt-stripes]="stripes">
+        <table class="ngx-dmt ngx-dmt-body">
             <colgroup>
                 <col *ngFor="let cw of colWidths" [style.width.px]="cw">
             </colgroup>

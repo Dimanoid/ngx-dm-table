@@ -14,7 +14,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 const MIN_ITEM_SIZE = 30;
 
 export interface DmTableSort {
-    index: number;
+    colId: string;
     order: number;
 }
 
@@ -51,8 +51,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     columnTemplates: DmColumnDirective[] = [];
     private _columnTemplatesOriginal: DmColumnDirective[] = [];
 
-    @Input() @InputBoolean() stripes: boolean = true;
-
     private _itemSize: number = MIN_ITEM_SIZE;
     @Input() @InputNumber()
     set itemSize(v: number) {
@@ -79,8 +77,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     scrollBarHeight: number = 0;
     resizeColumnIndex: number = -1;
     resizeColumnStartPoint: Point;
-    sortedColId: string;
-    sortedOrder: string;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
@@ -360,13 +356,12 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         if (!this.rows || !this.sort || !this.columnTemplates) {
             return;
         }
-        const ct = this.columnTemplates[this.sort.index];
+        const ct = this.columnTemplates.find(item => item.colId == this.sort.colId);
         if (!ct) {
             return;
         }
-        this.sortedColId = ct.colId;
-        this.sortedOrder = this.sort.order > 0 ? 'asc' : 'desc';
         let sort = ct.sort;
+        _D('[DmTableComponent] sortRows, ct:', ct);
         if (typeof sort != 'function') {
             if (sort == 'number') {
                 sort = SortNumbersBy(ct.colId);
@@ -387,7 +382,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     toggleSort(ind: number) {
         _D('[DmTableComponent] toggleSort, ind:', ind, 'columnsOrder[ind]:', this.columnsOrder[ind]);
-        this.sort = { index: this.columnsOrder[ind], order: this.sort.index == this.columnsOrder[ind] ? -this.sort.order : 1 };
+        this.sort = {
+            colId: this.columnTemplates[ind].colId,
+            order: this.sort && this.sort.colId == this.columnTemplates[ind].colId ? -this.sort.order : 1
+        };
         this.sortChange.emit(this.sort);
         this.sortRows();
         this._cdr.markForCheck();

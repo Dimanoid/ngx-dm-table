@@ -96,8 +96,13 @@ table.ngx-dmt {
                     box-shadow: 0 0 3px 2px $headerBgColor;
                     display: none;
                     background-color: $headerBgColor;
-                    & > .ngx-dmt-column-sort-toggle:before {
-                        content: "e";
+                    & > .ngx-dmt-column-sort-toggle {
+                        transition: transform .3s;
+                        display: block;
+                        line-height: .8;
+                        &:before {
+                            content: "e";
+                        }
                     }
                     &:hover {
                         color: $headerSortHoverColor;
@@ -116,8 +121,8 @@ table.ngx-dmt {
                             content: "e";
                         }
                         &:hover {
-                            & > .ngx-dmt-column-sort-toggle:before {
-                                content: "f";
+                            & > .ngx-dmt-column-sort-toggle {
+                                transform: rotate(180deg);
                             }
                         }
                     }
@@ -126,8 +131,8 @@ table.ngx-dmt {
                             content: "f";
                         }
                         &:hover {
-                            & > .ngx-dmt-column-sort-toggle:before {
-                                content: "e";
+                            & > .ngx-dmt-column-sort-toggle {
+                                transform: rotate(180deg);
                             }
                         }
                     }
@@ -218,9 +223,6 @@ table.ngx-dmt {
             }
         }
     }
-    &.ngx-dmt-stripes > tbody > tr:nth-child(even) > td {
-        background-color: $bodyBgColor2;
-    }
 
     & > tfoot {
         & > tr {
@@ -247,5 +249,11 @@ table.ngx-dmt {
 th.ngx-dmt-header-cell.cdk-drag-preview {
     & > .ngx-dmt-column-draghandle {
         display: none;
+    }
+}
+
+dm-table.ngx-dmt-stripes > .ngx-dmt-body-wrapper {
+    table > tbody > tr:nth-child(even) > td {
+        background-color: $bodyBgColor2;
     }
 }

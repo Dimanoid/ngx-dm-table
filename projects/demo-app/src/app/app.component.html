@@ -22,8 +22,8 @@
 
             <div class="layout flex relative">
                 <div class="layout fit scroll">
-                    <dm-table #example1 [rows]="data" [stripes]="stripes" [sort]="{ index: 0, order: -1 }">
-                        <dm-column title="ID" minWidth="70" maxWidth="150" sortable="true" sort="number"></dm-column>
+                    <dm-table #example1 [rows]="data" [class.ngx-dmt-stripes]="stripes">
+                        <dm-column title="Numbers" width="100" minWidth="70" maxWidth="150" sortable="true" sort="number"></dm-column>
                         <dm-column width="250" minWidth="100" maxWidth="250" resizeable="false" headerClass="th-name" cellClass="td-name" sortable="true" [sort]="customSort">
                             <ng-template #header>
                                 <div class="tal">
@@ -50,7 +50,7 @@
                             <ng-template #cell let-icon><i [ngClass]="icon"></i></ng-template>
                         </dm-column>
                         <dm-column title="Sort as strings" width="400" sortable="true"></dm-column>
-                        <dm-column title="Sort as boolean" width="100" sortable="true" sort="boolean"></dm-column>
+                        <dm-column title="Boolean" width="100" sortable="true" sort="boolean"></dm-column>
                         <dm-column title="Random length string w spaces" sortable="true"></dm-column>
                     </dm-table>
                 </div>

@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
             const n = Math.trunc(Math.random() * 100);
             this.data.push(
                 [
-                    i,
+                    Math.trunc(Math.random() * i) + i,
                     { icon: 'dmtd-' + ICONS[icon], name: NAMES[icon] },
                     `${i}_Not very long string with spaces`,
                     `${i}_Not_very_long_string_without_spaces`,
