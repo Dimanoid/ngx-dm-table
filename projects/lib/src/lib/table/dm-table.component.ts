@@ -77,6 +77,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     scrollBarHeight: number = 0;
     resizeColumnIndex: number = -1;
     resizeColumnStartPoint: Point;
+    columnsOrderReverse: number[];
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
@@ -271,29 +272,33 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this.colWidthsTmp[this.resizeColumnIndex] = nw;
         const rd = this.colWidthsTmp.reduce((a, b) => a + b, 0) - this.tableWidth;
+        // _D('[DmTableComponent] resizeColumnUpdateWidth rd:', rd);
         if (rd > 0) {
             this.shrinkTmpColumns(rd);
         }
         else if (rd < 0) {
-            this.colWidthsTmp[this.flexColumnIndex] -= rd;
-            // _D('[DmTableComponent] resizeColumnUpdateWidth colWidthsTmp:', this.colWidthsTmp[this.flexColumnIndex], 'rd:', rd);
+            this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] -= rd;
+            // _D('[DmTableComponent] resizeColumnUpdateWidth colWidthsTmp:',
+            //     this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]]);
         }
     }
 
     shrinkTmpColumns(delta: number): void {
-        const flexCT = this.columnTemplates[this.flexColumnIndex];
+        const flexCT = this.columnTemplates[this.columnsOrderReverse[this.flexColumnIndex]];
         let d = delta;
-        const fw = this.colWidthsTmp[this.flexColumnIndex];
+        const fw = this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]];
         // _D('[DmTableComponent] shinkTmpColumns delta:', delta, 'fw:', fw, 'flexCT.minWidth:', flexCT.minWidth);
         if (fw - d > flexCT.minWidth) {
-            this.colWidthsTmp[this.flexColumnIndex] -= d;
-            // _D('[DmTableComponent] shinkTmpColumns full shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex]);
+            this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] -= d;
+            // _D('[DmTableComponent] shinkTmpColumns full shrink flexColumnWidth:',
+            //     this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]]);
             return;
         }
         else if (fw > flexCT.minWidth) {
             d -= fw - flexCT.minWidth;
-            this.colWidthsTmp[this.flexColumnIndex] = flexCT.minWidth;
-            // _D('[DmTableComponent] shinkTmpColumns partial shrink flexColumnWidth:', this.colWidthsTmp[this.flexColumnIndex], 'd:', d);
+            this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] = flexCT.minWidth;
+            // _D('[DmTableComponent] shinkTmpColumns partial shrink flexColumnWidth:',
+            //     this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]], 'd:', d);
         }
         // _D('[DmTableComponent] shinkTmpColumns shrinking non-flex columns');
         let i = this.columnTemplates.length;
@@ -333,8 +338,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             changed = true;
         }
         this.columnTemplates = [];
-        for (const i of this.columnsOrder) {
-            this.columnTemplates.push(this._columnTemplatesOriginal[i]);
+        this.columnsOrderReverse = [];
+        for (let i = 0; i < this.columnsOrder.length; i++) {
+            this.columnTemplates.push(this._columnTemplatesOriginal[this.columnsOrder[i]]);
+            this.columnsOrderReverse[this.columnsOrder[i]] = i;
         }
         if (changed) {
             this.columnsOrderChange.emit(this.columnsOrder);
@@ -347,6 +354,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             moveItemInArray(this.columnsOrder, event.previousIndex, event.currentIndex);
             moveItemInArray(this.columnTemplates, event.previousIndex, event.currentIndex);
             moveItemInArray(this.colWidths, event.previousIndex, event.currentIndex);
+            this.columnsOrderReverse = [];
+            for (let i = 0; i < this.columnsOrder.length; i++) {
+                this.columnsOrderReverse[this.columnsOrder[i]] = i;
+            }
             this.columnsOrderChange.emit(this.columnsOrder);
             this._cdr.markForCheck();
         }
@@ -386,6 +397,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             colId: this.columnTemplates[ind].colId,
             order: this.sort && this.sort.colId == this.columnTemplates[ind].colId ? -this.sort.order : 1
         };
+        _D('[DmTableComponent] toggleSort, sort:', this.sort);
         this.sortChange.emit(this.sort);
         this.sortRows();
         this._cdr.markForCheck();

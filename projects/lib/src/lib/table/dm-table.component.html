@@ -10,11 +10,13 @@
                 <th *ngFor="let ct of columnTemplates; let i = index; let l = last"
                     class="ngx-dmt-header-cell"
                     [ngClass]="ct.headerClass"
+                    [class.ngx-dmt-sortable]="ct.sortable"
+                    [class.ngx-dmt-resizeable]="ct.resizeable && !l"
                     [class.ngx-dmt-sorted]="sort && sort.colId == ct.colId"
                     [class.ngx-dmt-sorted-asc]="sort && sort.order > 0"
                     [class.ngx-dmt-sorted-desc]="sort && sort.order < 0"
-                    cdkDrag cdkDragBoundary=".ngx-dmt-header-row">
-                    <div class="ngx-dmt-column-title">
+                    cdkDrag cdkDragLockAxis="x">
+                    <div class="ngx-dmt-column-title" (click)="ct.sortable ? toggleSort(i) : null">
                         <!-- {{ resizeColumnIndex > -1 ? colWidthsTmp[i] : colWidths[i] }} <small class="fw-n">({{ ct.minWidth }} - {{ ct.maxWidth ? ct.maxWidth : '∞' }})</small> -->
                         <ng-container *ngIf="ct.headerTpl" [ngTemplateOutlet]="ct.headerTpl"></ng-container>
                         <ng-template [ngIf]="!ct.headerTpl">{{ ct.title }}</ng-template>

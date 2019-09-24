@@ -92,7 +92,7 @@ table.ngx-dmt {
                     font-size: 12px;
                     cursor: pointer;
                     top: 50%;
-                    margin-top: -5px;
+                    margin-top: -6px;
                     box-shadow: 0 0 3px 2px $headerBgColor;
                     display: none;
                     background-color: $headerBgColor;
@@ -104,36 +104,26 @@ table.ngx-dmt {
                             content: "e";
                         }
                     }
-                    &:hover {
-                        color: $headerSortHoverColor;
-                    }
                 }
                 &.ngx-dmt-sorted {
                     & > .ngx-dmt-column-sort-container {
                         display: block;
                         color: $headerSortActiveColor;
-                        &:hover {
-                            color: $headerSortHoverColor;
+                        & > .ngx-dmt-column-sort-toggle {
+                            transform: rotate(0deg);
+                            &:before {
+                                content: "e";
+                            }
                         }
                     }
                     &.ngx-dmt-sorted-asc > .ngx-dmt-column-sort-container {
-                        & > .ngx-dmt-column-sort-toggle:before {
-                            content: "e";
-                        }
-                        &:hover {
-                            & > .ngx-dmt-column-sort-toggle {
-                                transform: rotate(180deg);
-                            }
+                        & > .ngx-dmt-column-sort-toggle {
+                            transform: rotate(0deg);
                         }
                     }
                     &.ngx-dmt-sorted-desc > .ngx-dmt-column-sort-container {
-                        & > .ngx-dmt-column-sort-toggle:before {
-                            content: "f";
-                        }
-                        &:hover {
-                            & > .ngx-dmt-column-sort-toggle {
-                                transform: rotate(180deg);
-                            }
+                        & > .ngx-dmt-column-sort-toggle {
+                            transform: rotate(180deg);
                         }
                     }
                 }
@@ -141,6 +131,11 @@ table.ngx-dmt {
                     text-overflow: clip;
                     overflow: hidden;
                     width: 100%;
+                }
+                &.ngx-dmt-sortable {
+                    & > .ngx-dmt-column-title {
+                        cursor: pointer;
+                    }
                 }
                 &:last-child {
                     border-right-color: transparent;
@@ -177,6 +172,7 @@ table.ngx-dmt {
                     }
                     & > .ngx-dmt-column-sort-container {
                         display: block;
+                        color: $headerSortHoverColor;
                     }
                 }
             }

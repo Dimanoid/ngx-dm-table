@@ -48,7 +48,8 @@ export class AppComponent implements OnInit {
         this.data = [];
         for (let i = 1; i <= +this.lines; i++) {
             const icon = Math.trunc(Math.random() * ICONS.length);
-            const n = Math.trunc(Math.random() * 100);
+            const n = Math.floor(Math.random() * 62);
+            const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(n);
             this.data.push(
                 [
                     Math.trunc(Math.random() * i) + i,
@@ -58,7 +59,7 @@ export class AppComponent implements OnInit {
                     'dmtd-' + ICONS[icon],
                     `${i} sort as string`,
                     i % 2 > 0,
-                    `Random length string:` + ' text'.repeat(n) + ' with spaces',
+                    char + ` - Random length string:` + ' text'.repeat(n) + ' with spaces',
                 ]
             );
         }
