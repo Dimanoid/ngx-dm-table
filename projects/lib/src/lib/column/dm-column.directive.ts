@@ -1,24 +1,25 @@
 import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
-import { InputBoolean, InputNumber } from '../utils';
+import { InputBoolean, InputNumber, _D } from '../utils';
+import { DmTableService, DMT_CONFIG_FIELDS } from '../dm-table.service';
 
 const MIN_COLUMN_WIDTH = 30;
 const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
 
 @Directive({
-    selector: 'dm-column, [dm-column]',
+    selector: 'dm-column',
     exportAs: 'dmColumn'
 })
 export class DmColumnDirective implements OnInit {
 
     @Input() colId: string;
     @Input() title: string;
-    @Input() @InputBoolean() pinnable: boolean = false;
-    @Input() @InputBoolean() sortable: boolean = false;
-    @Input() @InputBoolean() resizeable: boolean = true;
-    @Input() @InputBoolean() flexible: boolean = false;
-    @Input() whitespace: string = 'normal';
+    @Input() @InputBoolean() pinnable: boolean;
+    @Input() @InputBoolean() sortable: boolean;
+    @Input() @InputBoolean() resizeable: boolean;
+    @Input() @InputBoolean() flexible: boolean;
+    @Input() whitespace: string;
     @Input() @InputNumber() width: number;
-    private _minWidth: number = MIN_COLUMN_WIDTH;
+    private _minWidth: number;
     @Input() @InputNumber()
     set minWidth(v: number) {
         this._minWidth = v && v > MIN_COLUMN_WIDTH ? +v : MIN_COLUMN_WIDTH;
@@ -37,9 +38,15 @@ export class DmColumnDirective implements OnInit {
     @ContentChild('cell', { static: true }) cellTpl: TemplateRef<any>;
     @ContentChild('footer', { static: true }) footerTpl: TemplateRef<any>;
 
-    constructor() { }
+    constructor(private _dts: DmTableService) { }
 
     ngOnInit() {
+        const cfg = this._dts.getColumnConfig();
+        for (const field of DMT_CONFIG_FIELDS) {
+            if (this[field] === undefined && cfg[field] !== undefined) {
+                this[field] = cfg[field];
+            }
+        }
         if (this.sortable && this.minWidth < MIN_COLUMN_SORT_WIDTH) {
             this._minWidth = MIN_COLUMN_SORT_WIDTH;
         }
