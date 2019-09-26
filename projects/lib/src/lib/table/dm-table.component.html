@@ -1,4 +1,4 @@
-<div class="ngx-dmt-header-wrapper" [style.padding-right.px]="scrollBarWidth">
+<div class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
     <table class="ngx-dmt ngx-dmt-header">
         <colgroup>
             <col *ngFor="let cw of colWidths; let i = index" [style.width.px]="resizeColumnIndex > -1 ? colWidthsTmp[i] : cw">
@@ -33,7 +33,7 @@
     </table>
 </div>
 <div class="ngx-dmt-body-wrapper">
-    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner">
+    <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
         <table class="ngx-dmt ngx-dmt-body">
             <colgroup>
                 <col *ngFor="let cw of colWidths" [style.width.px]="cw">
@@ -54,7 +54,7 @@
         </table>
     </cdk-virtual-scroll-viewport>
 </div>
-<div *ngIf="hasFooter" class="ngx-dmt-footer-wrapper" [style.padding-right.px]="scrollBarWidth">
+<div *ngIf="hasFooter" class="ngx-dmt-footer-wrapper" [style.margin-right.px]="scrollBarWidth">
     <table class="ngx-dmt ngx-dmt-header">
         <colgroup>
             <col *ngFor="let cw of colWidths" [style.width.px]="cw">

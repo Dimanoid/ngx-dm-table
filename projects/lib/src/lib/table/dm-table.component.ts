@@ -2,7 +2,7 @@ import {
     Component, OnInit, AfterViewInit,
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
-    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter, OnChanges, SimpleChanges
+    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { _D, getScrollBarSize, emptyCount, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy } from '../utils';
@@ -10,7 +10,7 @@ import { InputBoolean } from '../utils';
 
 import ResizeObserver from 'resize-observer-polyfill';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DmTableColumnConfig, DmTableService } from '../dm-table.service';
+import { DmTableService } from '../dm-table.service';
 
 const MIN_ITEM_SIZE = 30;
 
@@ -30,7 +30,7 @@ export interface DmTableSort {
 export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
-    @Input() rows: any[];
+    @ViewChild('headerWrapper', { static: true }) headerWrapper: ElementRef;
 
     private _columnTemplatesQL: QueryList<DmColumnDirective>;
     @ContentChildren(DmColumnDirective)
@@ -52,6 +52,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
     columnTemplates: DmColumnDirective[] = [];
     private _columnTemplatesOriginal: DmColumnDirective[] = [];
+
+    @Input() rows: any[];
 
     private _itemSize: number = MIN_ITEM_SIZE;
     @Input() @InputNumber()
@@ -82,6 +84,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     resizeColumnIndex: number = -1;
     resizeColumnStartPoint: Point;
     columnsOrderReverse: number[];
+    horScroll: number = 0;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone, private _dts: DmTableService) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
@@ -110,12 +113,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                         const rd = nw - this.tableWidth;
                         this.tableWidth = nw;
                         this.colWidthsTmp = this.colWidths.slice();
-                        _D('[DmTableComponent] ResizeObserver, rd:', rd);
                         if (rd < 0) {
                             this.shrinkTmpColumns(-rd);
                         }
                         else {
-                            // cws[this.flexColumnIndex] += this.tableWidth - cws.reduce((a, b) => a + b, 0);
                             this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] += this.tableWidth
                                 - this.colWidthsTmp.reduce((a, b) => a + b, 0);
                         }
@@ -130,7 +131,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        _D('[DmTableComponent] ngOnChanges, changes:', changes);
+        // _D('[DmTableComponent] ngOnChanges, changes:', changes);
         if (changes['rows'] || changes['sort']) {
             this.sortRows();
         }
@@ -375,7 +376,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             return;
         }
         let sort = ct.sort;
-        _D('[DmTableComponent] sortRows, ct:', ct);
+        // _D('[DmTableComponent] sortRows, ct:', ct);
         if (typeof sort != 'function') {
             if (sort == 'number') {
                 sort = SortNumbersBy(ct.colId);
@@ -395,15 +396,22 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     toggleSort(ind: number) {
-        _D('[DmTableComponent] toggleSort, ind:', ind, 'columnsOrder[ind]:', this.columnsOrder[ind]);
+        // _D('[DmTableComponent] toggleSort, ind:', ind, 'columnsOrder[ind]:', this.columnsOrder[ind]);
         this.sort = {
             colId: this.columnTemplates[ind].colId,
             order: this.sort && this.sort.colId == this.columnTemplates[ind].colId ? -this.sort.order : 1
         };
-        _D('[DmTableComponent] toggleSort, sort:', this.sort);
+        // _D('[DmTableComponent] toggleSort, sort:', this.sort);
         this.sortChange.emit(this.sort);
         this.sortRows();
         this._cdr.markForCheck();
+    }
+
+    scroll(e: Event) {
+        const sl = (e.target as Element).scrollLeft;
+        if (this.headerWrapper && this.headerWrapper.nativeElement) {
+            this.headerWrapper.nativeElement.scrollLeft = sl;
+        }
     }
 
 }
