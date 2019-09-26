@@ -272,47 +272,37 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             nw = ct.maxWidth;
         }
         this.colWidthsTmp[this.resizeColumnIndex] = nw;
+        const fi = this.columnsOrderReverse[this.flexColumnIndex];
         const rd = this.colWidthsTmp.reduce((a, b) => a + b, 0) - this.tableWidth;
-        // _D('[DmTableComponent] resizeColumnUpdateWidth rd:', rd);
         if (rd > 0) {
-            this.shrinkTmpColumns(rd);
+            this.shrinkTmpColumns(rd, fi != this.resizeColumnIndex);
         }
         else if (rd < 0) {
-            this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] -= rd;
-            // _D('[DmTableComponent] resizeColumnUpdateWidth colWidthsTmp:',
-                // this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]]);
+            const ci = fi == this.resizeColumnIndex ? this.colWidthsTmp.length - 1 : fi;
+            this.colWidthsTmp[ci] -= rd;
         }
     }
 
-    shrinkTmpColumns(delta: number): void {
-        const flexCT = this.columnTemplates[this.columnsOrderReverse[this.flexColumnIndex]];
-        // _D('[DmTableComponent] shinkTmpColumns flexColumnIndex:', this.flexColumnIndex,
-        //     'columnsOrderReverse[flexColumnIndex]:', this.columnsOrderReverse[this.flexColumnIndex],
-        //     'flexCT:', flexCT);
+    shrinkTmpColumns(delta: number, withFlex = true): void {
         let d = delta;
-        const fw = this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]];
-        // _D('[DmTableComponent] shinkTmpColumns delta:', delta, 'fw:', fw, 'flexCT.minWidth:', flexCT.minWidth);
+        const fi = withFlex ? this.columnsOrderReverse[this.flexColumnIndex] : this.columnTemplates.length - 1;
+        const flexCT = this.columnTemplates[fi];
+        const fw = this.colWidthsTmp[fi];
         if (fw - d > flexCT.minWidth) {
-            this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] -= d;
-            // _D('[DmTableComponent] shinkTmpColumns full shrink flexColumnWidth:',
-            //     this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]]);
+            this.colWidthsTmp[fi] -= d;
             return;
         }
         else if (fw > flexCT.minWidth) {
             d -= fw - flexCT.minWidth;
-            this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]] = flexCT.minWidth;
-            // _D('[DmTableComponent] shinkTmpColumns partial shrink flexColumnWidth:',
-            //     this.colWidthsTmp[this.columnsOrderReverse[this.flexColumnIndex]], 'd:', d);
+            this.colWidthsTmp[fi] = flexCT.minWidth;
         }
-        // _D('[DmTableComponent] shinkTmpColumns shrinking non-flex columns');
         let i = this.columnTemplates.length;
         while (i--) {
-            if (i != this.flexColumnIndex) {
+            if (i != (withFlex ? this.flexColumnIndex : this.columnTemplates.length - 1)) {
                 const ct = this.columnTemplates[i];
                 const cw = this.colWidthsTmp[i];
                 if (cw - d > ct.minWidth) {
                     this.colWidthsTmp[i] -= d;
-                    // _D('[DmTableComponent] shinkTmpColumns shrink column#',);
                     return;
                 }
                 else if (cw > ct.minWidth) {
