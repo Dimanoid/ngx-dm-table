@@ -47,6 +47,9 @@ export class DmColumnDirective implements OnInit {
                 this[field] = cfg[field];
             }
         }
+        if (!this._minWidth || this._minWidth < MIN_COLUMN_WIDTH) {
+            this._minWidth = MIN_COLUMN_WIDTH;
+        }
         if (this.sortable && this.minWidth < MIN_COLUMN_SORT_WIDTH) {
             this._minWidth = MIN_COLUMN_SORT_WIDTH;
         }

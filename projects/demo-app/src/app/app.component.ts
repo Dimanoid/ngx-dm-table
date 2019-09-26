@@ -52,7 +52,7 @@ export class AppComponent implements OnInit {
             const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(n);
             this.data.push(
                 [
-                    Math.trunc(Math.random() * i) + i,
+                    i,
                     { icon: 'dmtd-' + ICONS[icon], name: NAMES[icon] },
                     `${i}_Not very long string with spaces`,
                     `${i}_Not_very_long_string_without_spaces`,
