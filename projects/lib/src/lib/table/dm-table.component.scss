@@ -151,20 +151,14 @@ table.ngx-dmt {
                     z-index: 1;
                     cursor: ew-resize;
                     background-color: transparent;
-                    transition: background-color .3s, max-height .3s;
+                    transition: background-color .3s;
                     height: 100%;
-                    max-height: 100px;
                     &:hover {
                         background-color: $headerResizerColor;
                     }
-                    &:active {
-                        max-height: 3000px;
-                        height: 3000px;
-                    }
+                    &:active,
                     &.ngx-dmt-resizer-dragging {
-                        max-height: 3000px;
-                        height: 3000px;
-                        background-color: $headerResizerColor;
+                        background-color: $headerResizerColorActive;
                     }
                 }
                 &:hover {
