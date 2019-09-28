@@ -25,7 +25,7 @@
                     <div *ngIf="ct.sortable" class="ngx-dmt-column-sort-container" (click)="toggleSort(i)"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
                     <div *ngIf="ct.resizeable && !l" class="ngx-dmt-resizer"
                         [class.ngx-dmt-resizer-dragging]="resizeColumnIndex == i"
-                        (mousedown)="resizeColumnStart(i, $event)">
+                        (mousedown)="resizeColumnStart(i, resizer, $event)" #resizer>
                     </div>
                 </th>
             </tr>
@@ -33,6 +33,7 @@
     </table>
 </div>
 <div class="ngx-dmt-body-wrapper">
+    <div *ngIf="resizerDiv && resizeColumnIndex > -1" class="ngx-dmt-resizer" [style.left.px]="resizerX"></div>
     <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
         <table class="ngx-dmt ngx-dmt-body">
             <colgroup>

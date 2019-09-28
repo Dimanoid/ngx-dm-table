@@ -17,7 +17,16 @@
 }
 
 .ngx-dmt-body-wrapper {
-    & >.ngx-dmt-body-wrapper-inner {
+    & > .ngx-dmt-resizer {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: $headerResizerWidth;
+        z-index: 1;
+        background-color: $headerResizerColor;
+    }
+    & > .ngx-dmt-body-wrapper-inner {
         position: absolute;
         top: 0;
         right: 0;

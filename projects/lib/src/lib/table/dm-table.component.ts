@@ -77,20 +77,24 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     hasFooter: boolean = false;
     flexColumnIndex: number = -1;
     tableWidth: number = 0;
+    tableLeft: number = 0;
     colWidths: number[] = [];
     colWidthsTmp: number[] = [];
     scrollBarWidth: number = 0;
     scrollBarHeight: number = 0;
     resizeColumnIndex: number = -1;
+    resizerDiv: HTMLDivElement;
+    resizerX: number = -1000;
     resizeColumnStartPoint: Point;
     columnsOrderReverse: number[];
     horScroll: number = 0;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone, private _dts: DmTableService) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
-        const hw = this.getHostWidth();
-        if (hw) {
-            this.tableWidth = hw - this.scrollBarWidth;
+        const xw = this.getHostDims();
+        if (xw) {
+            this.tableWidth = xw[1] - this.scrollBarWidth;
+            this.tableLeft = xw[0];
         }
     }
 
@@ -99,7 +103,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngAfterViewInit() {
-        this.tableWidth = this.getHostWidth() - this.scrollBarWidth;
+        const xw = this.getHostDims();
+        this.tableWidth = xw[1] - this.scrollBarWidth;
+        this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             this.updateColumns(this.columnTemplates);
             setTimeout(() => this._cdr.markForCheck());
@@ -186,15 +192,19 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
-    getHostWidth(): number {
+    getHostDims(): [number, number] {
         if (this._elemRef && this._elemRef.nativeElement) {
-            return this._elemRef.nativeElement.clientWidth;
+            return [
+                this._elemRef.nativeElement.getBoundingClientRect().left,
+                this._elemRef.nativeElement.clientWidth
+            ];
         }
-        return 0;
+        return null;
     }
 
-    resizeColumnStart(index: number, event: MouseEvent): void {
-        // _D('[DmTableComponent] resizeColumnStart:', index, event);
+    resizeColumnStart(index: number, resizer: HTMLDivElement, event: MouseEvent): void {
+        // _D('[DmTableComponent] resizeColumnStart:', index, resizer, event);
+        this.resizerDiv = resizer;
         this.resizeColumnIndex = index;
         this.colWidthsTmp = this.colWidths.slice();
         // _D('[DmTableComponent] resizeColumnStart, colWidths:', this.colWidths.slice());
@@ -244,10 +254,12 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 this.resizeColumnEnd(endX - this.resizeColumnStartPoint.x);
             };
         }
+        this.resizerX = this.resizerDiv.getBoundingClientRect().left - this.tableLeft;
         this._cdr.markForCheck();
     }
 
     resizeColumnMove(delta: number): void {
+        this.resizerX = this.resizerDiv.getBoundingClientRect().left - this.tableLeft;
         this.resizeColumnUpdateWidth(delta);
         this._cdr.markForCheck();
     }
@@ -258,6 +270,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.colWidthsTmp = undefined;
         this.resizeColumnStartPoint = undefined;
         this.resizeColumnIndex = -1;
+        this.resizerDiv = null;
+        this.resizerX = -1000;
         this._cdr.markForCheck();
     }
 
