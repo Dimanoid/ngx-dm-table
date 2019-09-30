@@ -29,6 +29,7 @@ export class DmColumnDirective implements OnInit {
     }
     @Input() @InputNumber() maxWidth: number;
     @Input() frozen: 'left' | 'right' | 'no' = 'no';
+    @Input() headerTooltip: string;
     @Input() headerClass: string;
     @Input() cellClass: string;
     @Input() footerClass: string;
