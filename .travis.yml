@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "9"
+dist: trusty
+sudo: required
+branches:
+  only:
+  - master
+before_script:
+  - npm install -g @angular/cli
+  - npm install
+script:
+  - ng lint
+  - ng test
+  - ng build lib
+  - ng build --aot --prod --base-href /dm-table/ demo-app
