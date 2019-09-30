@@ -23,13 +23,26 @@
             <div class="layout flex relative">
                 <div class="layout fit scroll">
                     <dm-table #example1 [rows]="data" [class.ngx-dmt-stripes]="stripes" [defaultColumnConfig]="{ minWidth: 200 }">
-                        <dm-column title="Numbers" width="100" minWidth="50" maxWidth="150" sortable="true" sort="number"></dm-column>
-                        <dm-column width="160" minWidth="160" headerClass="th-name" cellClass="td-name" sortable="true" [sort]="customSort">
+                        <dm-column title="Numbers"
+                            width="100"
+                            minWidth="50"
+                            maxWidth="150"
+                            sortable="true"
+                            sort="number"
+                            headerTooltip="minWidth=50, maxWidth=150, sortable as numbers, resizeable">
+                        </dm-column>
+                        <dm-column
+                            width="160"
+                            minWidth="160"
+                            headerClass="th-name"
+                            cellClass="td-name"
+                            sortable="true"
+                            [sort]="customSort">
                             <ng-template #header>
-                                <div class="tal">
+                                <div class="tal" nz-tooltip nzTooltipTitle="custom header and cell template, custom header tooltip, minWidth=160, custom sort function">
                                     <i style="color: red">
                                         <i class="dmtd-crown-king-1 mr025 top1"></i>
-                                        <u>Custom tpl, custom sort</u>
+                                        <u>Great people</u>
                                     </i>
                                 </div>
                             </ng-template>
@@ -43,15 +56,43 @@
                                 Footer
                             </ng-template> -->
                         </dm-column>
-                        <dm-column title="String w spaces" minWidth="70" width="200"></dm-column>
-                        <dm-column title="String w/o spaces" minWidth="70" width="200"></dm-column>
-                        <dm-column width="30" minWidth="30" maxWidth="30" resizeable="false" headerClass="th-icon" cellClass="td-icon">
+                        <dm-column title="String w spaces"
+                            minWidth="70"
+                            width="200"
+                            headerTooltip="minWidth=70, sortable, resizeable">
+                        </dm-column>
+                        <dm-column title="String w/o spaces"
+                            minWidth="70"
+                            width="200"
+                            headerTooltip="minWidth=70, sortable, resizeable">
+                        </dm-column>
+                        <dm-column
+                            width="30"
+                            minWidth="30"
+                            maxWidth="30"
+                            resizeable="false"
+                            headerClass="th-icon"
+                            cellClass="td-icon"
+                            headerTooltip="custom header and cell template and css classes, fixed width, not sortable">
                             <ng-template #header><i class="dmtd-yang-ying"></i></ng-template>
                             <ng-template #cell let-icon><i [ngClass]="icon"></i></ng-template>
                         </dm-column>
-                        <dm-column title="Sort as strings" width="400" sortable="true"></dm-column>
-                        <dm-column title="Boolean" width="100" sortable="true" sort="boolean"></dm-column>
-                        <dm-column title="Random length string w spaces" sortable="true"></dm-column>
+                        <dm-column title="Number and string"
+                            width="400"
+                            sortable="true"
+                            headerTooltip="default minWidth(set on table level), sortable as strings, resizeable">
+                        </dm-column>
+                        <dm-column title="Boolean"
+                            width="100"
+                            sortable="true"
+                            sort="boolean"
+                            headerTooltip="default minWidth(set on table level), sortable as booleans, resizeable">
+                        </dm-column>
+                        <dm-column title="Random length string w spaces"
+                            flexible="true"
+                            sortable="true"
+                            headerTooltip="default minWidth, sortable, flexible(primary target for resizing when you resize other columns)">
+                        </dm-column>
                     </dm-table>
                 </div>
             </div>

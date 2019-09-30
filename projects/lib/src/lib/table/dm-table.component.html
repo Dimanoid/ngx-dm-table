@@ -9,6 +9,7 @@
                 (cdkDropListDropped)="columnHeaderDrop($event)">
                 <th *ngFor="let ct of columnTemplates; let i = index; let l = last"
                     class="ngx-dmt-header-cell"
+                    [title]="ct.headerTooltip ? ct.headerTooltip : ''"
                     [ngClass]="ct.headerClass"
                     [class.ngx-dmt-sortable]="ct.sortable"
                     [class.ngx-dmt-resizeable]="ct.resizeable && !l"
