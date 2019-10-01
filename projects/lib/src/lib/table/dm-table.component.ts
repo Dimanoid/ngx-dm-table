@@ -110,7 +110,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.updateColumns(this.columnTemplates);
             setTimeout(() => this._cdr.markForCheck());
         }
-        if (this._elemRef && this._elemRef.nativeElement) {
+        if (this._elemRef && this._elemRef.nativeElement && ResizeObserver) {
             const ro = new ResizeObserver(entries => {
                 if (entries[0]) {
                     [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();

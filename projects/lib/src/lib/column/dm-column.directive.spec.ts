@@ -22,7 +22,6 @@ describe('DmColumnDirective', () => {
                 headerTooltip="tooltip">
             </dm-column>
         `);
-        console.log('spectator');
     });
 
     it('should be created', () => {
