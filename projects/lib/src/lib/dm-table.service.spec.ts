@@ -1,12 +1,14 @@
-import { TestBed } from '@angular/core/testing';
+import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
 
 import { DmTableService } from './dm-table.service';
 
 describe('DmTableService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
+    let spectator: SpectatorService<DmTableService>;
+    const createService = createServiceFactory(DmTableService);
+
+    beforeEach(() => spectator = createService());
 
     it('should be created', () => {
-        const service: DmTableService = TestBed.get(DmTableService);
-        expect(service).toBeTruthy();
+        expect(spectator.service).toBeTruthy();
     });
 });

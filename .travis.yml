@@ -14,7 +14,7 @@ before_script:
 
 script:
   - ng lint
-  - ng test --watch=false --browsers=ChromeHeadless lib
+  - npm test
   - ng build lib
   - ng build --aot --prod --base-href /dm-table/ demo-app
 

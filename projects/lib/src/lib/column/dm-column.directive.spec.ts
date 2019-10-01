@@ -1,43 +1,32 @@
-import { async, TestBed, ComponentFixture } from '@angular/core/testing';
-import { Component, DebugElement } from '@angular/core';
+import { SpectatorDirective, createDirectiveFactory } from '@ngneat/spectator';
+
+import { DmTableService } from '../dm-table.service';
 
 import { DmColumnDirective } from './dm-column.directive';
 
-@Component({
-    template: `
-    <dm-column title="Title"
-        width="100"
-        minWidth="50"
-        maxWidth="150"
-        sortable="true"
-        sort="number"
-        headerTooltip="tooltip">
-    </dm-column>
-    `
-})
-class TestDmColumnComponent {
-}
-
-
-describe('Directive: DmColumn', () => {
-
-    let component: TestDmColumnComponent;
-    let fixture: ComponentFixture<TestDmColumnComponent>;
-
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [TestDmColumnComponent, DmColumnDirective]
-        });
-    }));
+describe('DmColumnDirective', () => {
+    let spectator: SpectatorDirective<DmColumnDirective>;
+    const createDirective = createDirectiveFactory({
+        directive: DmColumnDirective,
+        providers: [DmTableService]
+    });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TestDmColumnComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+        spectator = createDirective(`
+            <dm-column title="Title"
+                width="100"
+                minWidth="50"
+                maxWidth="150"
+                sortable="true"
+                sort="number"
+                headerTooltip="tooltip">
+            </dm-column>
+        `);
+        console.log('spectator');
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
+    it('should be created', () => {
+        const instance = spectator.directive;
+        expect(instance).toBeDefined();
     });
-
 });

@@ -1,28 +1,22 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
+import { DmTableService } from '../dm-table.service';
 import { DmTableComponent } from './dm-table.component';
 
 describe('DmTableComponent', () => {
-    let component: DmTableComponent;
-    let fixture: ComponentFixture<DmTableComponent>;
-
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [DmTableComponent],
-            imports: [DragDropModule, ScrollingModule],
-        }).compileComponents();
-    }));
-
-    beforeEach(() => {
-        fixture = TestBed.createComponent(DmTableComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+    let spectator: Spectator<DmTableComponent>;
+    const createComponent = createComponentFactory({
+        component: DmTableComponent,
+        imports: [DragDropModule, ScrollingModule],
+        providers: [DmTableService]
     });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
+    beforeEach(() => spectator = createComponent());
+
+    it('should be created', () => {
+        expect(spectator.component).toBeTruthy();
     });
 });
