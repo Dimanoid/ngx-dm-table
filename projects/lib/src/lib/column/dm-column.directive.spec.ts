@@ -16,12 +16,22 @@ describe('DmColumnDirective', () => {
         expect(spectator.directive).toBeDefined();
     });
 
-    it('should set not sortable minWidth to MIN_COLUMN_WIDTH', () => {
+    it('should generate random colId if empty', () => {
+        spectator = createDirective('<dm-column></dm-column>');
+        expect(spectator.directive.colId).toBeTruthy();
+    });
+
+    it('should set minWidth=undefined to MIN_COLUMN_WIDTH', () => {
+        spectator = createDirective('<dm-column></dm-column>');
+        expect(spectator.directive.minWidth).toEqual(MIN_COLUMN_WIDTH);
+    });
+
+    it('should set minWidth=10 to MIN_COLUMN_WIDTH', () => {
         spectator = createDirective('<dm-column minWidth="10"></dm-column>');
         expect(spectator.directive.minWidth).toEqual(MIN_COLUMN_WIDTH);
     });
 
-    it('should set sortable minWidth to MIN_COLUMN_SORT_WIDTH', () => {
+    it('should set sortable minWidth=10 to MIN_COLUMN_SORT_WIDTH', () => {
         spectator = createDirective('<dm-column minWidth="10" sortable="true"></dm-column>');
         expect(spectator.directive.minWidth).toEqual(MIN_COLUMN_SORT_WIDTH);
     });

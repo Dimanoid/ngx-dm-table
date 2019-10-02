@@ -1,7 +1,9 @@
 export function sumValues(obj: { [id: string]: number }) {
-    return Object.values(obj).reduce((a, b) => a + b);
+    const values = Object.values(obj);
+    return values && values.length > 0 ? values.reduce((a, b) => a + b) : 0;
 }
 
 export function emptyValues(obj: { [id: string]: any }) {
-    return Object.values(obj).reduce((a, b) => a + (b ? 1 : 0));
+    const values = Object.values(obj);
+    return values && values.length > 0 ? values.reduce((a, b) => a + (b ? 1 : 0)) : 0;
 }
