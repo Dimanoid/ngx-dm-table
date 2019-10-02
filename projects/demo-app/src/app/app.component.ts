@@ -70,4 +70,8 @@ export class AppComponent implements OnInit {
         return (a[1].name as string).localeCompare(b[1].name);
     }
 
+    log(...args) {
+        console.log(...args);
+    }
+
 }

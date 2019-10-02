@@ -2,7 +2,7 @@ import { SpectatorDirective, createDirectiveFactory } from '@ngneat/spectator';
 
 import { DmTableService } from '../dm-table.service';
 
-import { DmColumnDirective } from './dm-column.directive';
+import { DmColumnDirective, MIN_COLUMN_WIDTH } from './dm-column.directive';
 
 describe('DmColumnDirective', () => {
     let spectator: SpectatorDirective<DmColumnDirective>;
@@ -14,8 +14,7 @@ describe('DmColumnDirective', () => {
     beforeEach(() => {
         spectator = createDirective(`
             <dm-column title="Title"
-                width="100"
-                minWidth="50"
+                minWidth="10"
                 maxWidth="150"
                 sortable="true"
                 sort="number"
@@ -25,7 +24,11 @@ describe('DmColumnDirective', () => {
     });
 
     it('should be created', () => {
-        const instance = spectator.directive;
-        expect(instance).toBeDefined();
+        expect(spectator.directive).toBeDefined();
     });
+
+    it('should set minWidth to MIN_COLUMN_WIDTH', () => {
+        expect(spectator.directive.minWidth).toEqual(MIN_COLUMN_WIDTH);
+    });
+
 });

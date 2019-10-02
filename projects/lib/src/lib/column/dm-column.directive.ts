@@ -1,9 +1,9 @@
 import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
-import { InputBoolean, InputNumber, _D } from '../utils';
+import { InputBoolean, InputNumber, _D, getUUID } from '../utils';
 import { DmTableService, DMT_CONFIG_FIELDS } from '../dm-table.service';
 
-const MIN_COLUMN_WIDTH = 30;
-const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
+export const MIN_COLUMN_WIDTH = 30;
+export const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
 
 @Directive({
     selector: 'dm-column',
@@ -11,14 +11,13 @@ const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
 })
 export class DmColumnDirective implements OnInit {
 
-    @Input() colId: string;
+    @Input() colId: string = getUUID();
     @Input() title: string;
     @Input() @InputBoolean() pinnable: boolean;
     @Input() @InputBoolean() sortable: boolean;
     @Input() @InputBoolean() resizeable: boolean;
     @Input() @InputBoolean() flexible: boolean;
     @Input() whitespace: string;
-    @Input() @InputNumber() width: number;
     private _minWidth: number;
     @Input() @InputNumber()
     set minWidth(v: number) {
