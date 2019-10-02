@@ -11,7 +11,7 @@ branches:
 
 before_script:
   - npm install -g @angular/cli
-  - npm install -g codecov
+  - npm install -g coveralls
 
 script:
   - ng lint
@@ -20,7 +20,7 @@ script:
   - ng build --aot --prod --base-href /dm-table/ demo-app
 
 after_success:
-  - codecov
+  - npm run coverall
 
 deploy:
   provider: pages

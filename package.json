@@ -6,6 +6,7 @@
     "test": "jest projects/lib",
     "test:watch": "jest projects/lib --watch --notify",
     "cover": "jest projects/lib --coverage",
+    "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "ng lint",
     "publish": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public"
   },
