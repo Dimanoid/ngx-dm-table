@@ -1,6 +1,16 @@
 @import '../variables';
 @import '../icons';
 
+.ngx-dmt-nocolumns {
+    padding: 10px;
+    margin: 0 auto;
+    & > span {
+        &:before {
+            content: "The are no columns defined"
+        }
+    }
+}
+
 .ngx-dmt-container,
 .ngx-dmt-header-wrapper,
 .ngx-dmt-footer-wrapper,

@@ -39,8 +39,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.columnTemplates = val ? val.toArray() : [];
         this._columnTemplatesOriginal = this.columnTemplates.slice();
         this.updateColumnsOrder();
-        this.updateColumns(this.columnTemplates);
-        setTimeout(() => this._cdr.markForCheck());
+        setTimeout(() => {
+            this.updateColumns(this.columnTemplates);
+            this._cdr.markForCheck();
+        });
     }
     get columnTemplatesQL(): QueryList<DmColumnDirective> {
         return this._columnTemplatesQL;
@@ -93,6 +95,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     resizeColumnStartPoint: Point;
     colsIndex: { [id: string]: number } = {};
     horScroll: number = 0;
+    noColumns: boolean = false;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone, private _dts: DmTableService) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
@@ -152,9 +155,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     updateColumns(cds: DmColumnDirective[]): void {
-        _W('updateColumns');
         this.ctMap = {};
         this.hasFooter = false;
+        if (cds.length < 1) {
+            this.noColumns = true;
+            return;
+        }
+        this.noColumns = false;
         let flexi = cds.length - 1;
         for (let i = 0; i < cds.length; i++) {
             const cd = cds[i];
