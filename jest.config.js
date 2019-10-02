@@ -21,16 +21,12 @@ module.exports = {
         '**/+(*.)+(spec|test).+(ts|js)?(x)'
     ],
     testEnvironment: 'jest-environment-jsdom-thirteen',
-    moduleNameMapper: {
-        // '@core/(.*)': '<rootDir>/src/app/core/$1',
-        // '@shared/(.*)': '<rootDir>/src/app/shared/$1'
-    },
     transformIgnorePatterns: ['node_modules/(?!@ngrx)'],
     collectCoverageFrom: [
-        'src/app/**/*.ts',
-        '!src/app/**/*.module.ts',
-        '!src/app/**/*.array.ts',
-        '!src/app/fragmentTypes.ts'
+        'projects/lib/**/*.ts',
+        '!projects/lib/**/*.module.ts',
+        '!projects/lib/**/*.array.ts',
+        '!projects/lib/fragmentTypes.ts'
     ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
     testPathIgnorePatterns: [
