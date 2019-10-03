@@ -11,7 +11,8 @@
         "lint": "ng lint",
         "publish:manually": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public",
         "up": "git diff-index --quiet HEAD -- && cd projects/lib && npm version patch && git add package.json && git commit -m 'version bump' package.json && cd ../.. && npm version patch",
-        "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && git add package.json && git commit -m 'version bump' package.json && cd ../.. && npm version minor"
+        "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && git add package.json && git commit -m 'version bump' package.json && cd ../.. && npm version minor",
+        "release": "git diff-index --quiet HEAD -- && git co release && git merge master && git push && git co master"
     },
     "private": true,
     "dependencies": {
