@@ -9,7 +9,7 @@ export class DmTableColumnConfig {
     sortable: boolean = false;
     resizeable: boolean = true;
     whitespace: string = 'normal';
-    minWidth: number = undefined;
+    minWidth: number;
     headerClass: string;
     cellClass: string;
     footerClass: string;

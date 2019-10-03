@@ -36,4 +36,9 @@ describe('DmColumnDirective', () => {
         expect(spectator.directive.minWidth).toEqual(MIN_COLUMN_SORT_WIDTH);
     });
 
+    it('should set minWidth=100 to 100', () => {
+        spectator = createDirective('<dm-column minWidth="100"></dm-column>');
+        expect(spectator.directive.minWidth).toEqual(100);
+    });
+
 });
