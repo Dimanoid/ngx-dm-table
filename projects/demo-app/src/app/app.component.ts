@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
     stripes: boolean = true;
     data: any[][] = [];
     lines: string = '100';
-    linesList: string[] = ['10', '100', '1000', '10000', '100000'];
+    linesList: string[] = ['0', '10', '100', '1000', '10000', '100000'];
     linesGenerating: boolean = true;
 
     ngOnInit() {

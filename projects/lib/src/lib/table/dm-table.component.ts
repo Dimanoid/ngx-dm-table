@@ -30,7 +30,7 @@ export interface DmTableSort {
 export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
-    @ViewChild('headerWrapper', { static: true }) headerWrapper: ElementRef;
+    @ViewChild('headerWrapper', { static: false }) headerWrapper: ElementRef;
 
     private _columnTemplatesQL: QueryList<DmColumnDirective>;
     @ContentChildren(DmColumnDirective)
@@ -49,7 +49,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
     columnTemplates: DmColumnDirective[] = [];
     private _columnTemplatesOriginal: DmColumnDirective[] = [];
-    ctMap: { [colId: string]: DmColumnDirective } = {};
+    ctMap: { [colId: string]: DmColumnDirective };
 
     @Input() rows: any[];
 

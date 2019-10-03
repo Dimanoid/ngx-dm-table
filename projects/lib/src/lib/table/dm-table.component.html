@@ -2,7 +2,7 @@
     <div class="ngx-dmt-nocolumns"><span></span></div>
 </ng-template>
 <ng-template [ngIf]="!noColumns">
-    <div class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
+    <div *ngIf="ctMap" class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
         <table class="ngx-dmt ngx-dmt-header">
             <colgroup>
                 <col *ngFor="let cid of colsOrder" [style.width.px]="resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid]">
@@ -37,7 +37,7 @@
             </thead>
         </table>
     </div>
-    <div class="ngx-dmt-body-wrapper">
+    <div *ngIf="ctMap" class="ngx-dmt-body-wrapper">
         <div *ngIf="resizerDiv && resizeColumnId" class="ngx-dmt-resizer" [style.left.px]="resizerX"></div>
         <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
             <table class="ngx-dmt ngx-dmt-body">
@@ -60,7 +60,7 @@
             </table>
         </cdk-virtual-scroll-viewport>
     </div>
-    <div *ngIf="hasFooter" class="ngx-dmt-footer-wrapper" [style.margin-right.px]="scrollBarWidth">
+    <div *ngIf="ctMap && hasFooter" class="ngx-dmt-footer-wrapper" [style.margin-right.px]="scrollBarWidth">
         <table class="ngx-dmt ngx-dmt-header">
             <colgroup>
                 <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
