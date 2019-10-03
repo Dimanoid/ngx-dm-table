@@ -1,4 +1,4 @@
-import { SpectatorDirective, createDirectiveFactory } from '@ngneat/spectator';
+import { SpectatorDirective, createDirectiveFactory } from '@ngneat/spectator/jest';
 
 import { DmTableService } from '../dm-table.service';
 
