@@ -18,6 +18,18 @@
                     <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
                     <span class="ml05">Zebra stripped</span>
                 </div>
+                <div class="layout vertical mt1">
+                    <b class="mb05">Columns order:</b>
+                    <span class="dmtd-data">{{ colsData['colsOrder'] | json }}</span>
+                </div>
+                <div class="layout vertical mt1">
+                    <b class="mb05">Columns widths:</b>
+                    <span class="dmtd-data">{{ colsData['colsWidth'] | json }}</span>
+                </div>
+                <div class="layout vertical mt1">
+                    <b class="mb05">Current sort:</b>
+                    <span class="dmtd-data">{{ colsData['sort'] | json }}</span>
+                </div>
             </div>
 
             <div class="layout flex relative">
@@ -27,9 +39,9 @@
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
                         [colsWidth]="{ '0': 100, '1': 160, '2': 200, '3': 200, '5': 400, '6': 100 }"
-                        (colsOrderChange)="log('colsOrderChange:', $event)"
-                        (colsWidthChange)="log('colsWidthChange:', $event)"
-                        (sortChange)="log('sortChange:', $event)">
+                        (colsOrderChange)="log('colsOrder', $event)"
+                        (colsWidthChange)="log('colsWidth', $event)"
+                        (sortChange)="log('sort', $event)">
                         <dm-column colId="0"
                             title="Numbers"
                             width="100"

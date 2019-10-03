@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
     lines: string = '100';
     linesList: string[] = ['0', '10', '100', '1000', '10000', '100000'];
     linesGenerating: boolean = true;
+    colsData: { [id: string]: any } = {};
 
     ngOnInit() {
         this.generateData();
@@ -71,6 +72,7 @@ export class AppComponent implements OnInit {
     }
 
     log(...args) {
+        this.colsData[args[0]] = args[1];
         console.log(...args);
     }
 
