@@ -3,12 +3,15 @@
   "version": "0.0.1",
   "scripts": {
     "build": "ng build lib",
+    "build:demo": "ng build --aot --prod --base-href /dm-table/ demo-app",
     "test": "jest projects/lib",
     "test:watch": "jest projects/lib --watch --notify",
     "cover": "jest projects/lib --coverage",
     "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
     "lint": "ng lint",
-    "publish": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public"
+    "publish": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public",
+    "up": "cd projects/lib && npm version patch && cd ../..",
+    "up:m": "cd projects/lib && npm version minor && cd ../.."
   },
   "private": true,
   "dependencies": {

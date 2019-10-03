@@ -14,10 +14,10 @@ before_script:
   - npm install -g coveralls
 
 script:
-  - ng lint
-  - npm test
-  - ng build lib
-  - ng build --aot --prod --base-href /dm-table/ demo-app
+  - npm run lint
+  - npm run test
+  - npm run build
+  - npm run build:demo
 
 after_success:
   - npm run coverall
@@ -29,3 +29,14 @@ deploy:
   local_dir: dist/demo-app
   on:
     branch: master
+    tags: true
+
+deploy:
+  provider: npm
+  skip_cleanup: true
+  email: $NPM_EMAIL
+  api_key: $NPM_TOKEN
+  local_dir: dist/lib
+  on:
+    branch: master
+    tags: true
