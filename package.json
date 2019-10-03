@@ -14,7 +14,6 @@
         "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && git add package.json && git commit -m 'version bump' package.json && cd ../.. && npm version minor",
         "release": "git diff-index --quiet HEAD -- && git co release && git merge master && git push && git co master"
     },
-    "private": true,
     "dependencies": {
         "@angular/animations": "~8.2.8",
         "@angular/cdk": "^8.2.2",
