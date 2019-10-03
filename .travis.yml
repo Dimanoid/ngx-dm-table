@@ -28,8 +28,7 @@ deploy:
   github_token: $GITHUB_TOKEN
   local_dir: dist/demo-app
   on:
-    branch: master
-    tags: true
+    branch: release
 
 deploy:
   provider: npm
@@ -38,5 +37,4 @@ deploy:
   api_key: $NPM_TOKEN
   local_dir: dist/lib
   on:
-    branch: master
-    tags: true
+    branch: release
