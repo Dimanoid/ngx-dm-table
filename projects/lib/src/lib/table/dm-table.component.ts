@@ -5,7 +5,7 @@ import {
     ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
-import { _D, getScrollBarSize, emptyCount, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues, _W } from '../utils';
+import { _D, getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues, _W } from '../utils';
 import { InputBoolean, sumValues } from '../utils';
 
 import ResizeObserver from 'resize-observer-polyfill';
@@ -292,6 +292,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     resizeColumnEnd(delta: number): void {
         this.resizeColumnUpdateWidth(delta);
         this.colsWidth = this.colsWidthTmp;
+        this.colsWidthChange.emit(this.colsWidth);
         this.colsWidthTmp = undefined;
         this.resizeColumnStartPoint = undefined;
         this.resizeColumnId = undefined;
