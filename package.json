@@ -9,9 +9,9 @@
         "cover": "jest projects/lib --coverage",
         "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
         "lint": "ng lint",
-        "publish": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public",
-        "up": "npm version patch && cd projects/lib && npm version patch",
-        "up:m": "npm version minor && cd projects/lib && npm version minor"
+        "publish:manually": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public",
+        "up": "git diff-index --quiet HEAD -- && cd projects/lib && npm version patch && cd ../.. && npm version patch",
+        "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && cd ../.. && npm version minor"
     },
     "private": true,
     "dependencies": {
