@@ -25,8 +25,7 @@ module.exports = {
     collectCoverageFrom: [
         'projects/lib/**/*.ts',
         '!projects/lib/**/*.module.ts',
-        '!projects/lib/**/*.array.ts',
-        '!projects/lib/fragmentTypes.ts'
+        '!projects/lib/src/*.ts'
     ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
     testPathIgnorePatterns: [
