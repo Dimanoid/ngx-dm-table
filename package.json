@@ -12,7 +12,7 @@
         "publish:manually": "cd projects/lib && npm version patch && cd ../.. && ng build lib && npm publish dist/lib --access public",
         "up": "git diff-index --quiet HEAD -- && cd projects/lib && npm version patch && git add package.json && git commit -m \"version bump\" package.json && cd ../.. && npm version patch",
         "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && git add package.json && git commit -m \"version bump\" package.json && cd ../.. && npm version minor",
-        "release": "git diff-index --quiet HEAD -- && git commit release && git merge master && git push && git commit master"
+        "release": "git diff-index --quiet HEAD -- && git checkout release && git merge master && git push && git checkout master"
     },
     "dependencies": {
         "@angular/animations": "~8.2.8",
