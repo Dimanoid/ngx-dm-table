@@ -1,6 +1,6 @@
 {
     "name": "@dimanoid/ngx-dm-table",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "peerDependencies": {
         "@angular/common": "^8.2.3",
         "@angular/core": "^8.2.3",
