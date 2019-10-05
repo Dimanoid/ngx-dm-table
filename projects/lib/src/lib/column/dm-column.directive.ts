@@ -1,5 +1,5 @@
-import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
-import { InputBoolean, InputNumber, _D, getUUID } from '../utils';
+import { Directive, OnInit, Input, ContentChild, TemplateRef, ElementRef } from '@angular/core';
+import { InputBoolean, InputNumber, _D } from '../utils';
 import { DmTableService, DMT_CONFIG_FIELDS } from '../dm-table.service';
 
 export const MIN_COLUMN_WIDTH = 30;
@@ -10,8 +10,7 @@ export const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
     exportAs: 'dmColumn'
 })
 export class DmColumnDirective implements OnInit {
-
-    @Input() colId: string = getUUID();
+    @Input() colId: string;
     @Input() title: string;
     @Input() @InputBoolean() pinnable: boolean;
     @Input() @InputBoolean() sortable: boolean;
@@ -38,7 +37,7 @@ export class DmColumnDirective implements OnInit {
     @ContentChild('cell', { static: true }) cellTpl: TemplateRef<any>;
     @ContentChild('footer', { static: true }) footerTpl: TemplateRef<any>;
 
-    constructor(private _dts: DmTableService) { }
+    constructor(private _dts: DmTableService, private _elemRef: ElementRef) {}
 
     ngOnInit() {
         const cfg = this._dts.getColumnConfig();

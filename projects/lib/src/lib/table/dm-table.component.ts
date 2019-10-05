@@ -37,6 +37,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     set columnTemplatesQL(val: QueryList<DmColumnDirective>) {
         this._columnTemplatesQL = val;
         this.columnTemplates = val ? val.toArray() : [];
+        for (let i = 0; i < this.columnTemplates.length; i++) {
+            if (!this.columnTemplates[i].colId) {
+                this.columnTemplates[i].colId = '' + i;
+            }
+        }
         this._columnTemplatesOriginal = this.columnTemplates.slice();
         this.updateColumnsOrder();
         setTimeout(() => {
