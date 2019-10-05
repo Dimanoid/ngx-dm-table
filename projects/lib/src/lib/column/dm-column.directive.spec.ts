@@ -16,11 +16,6 @@ describe('DmColumnDirective', () => {
         expect(spectator.directive).toBeDefined();
     });
 
-    it('should generate random colId if empty', () => {
-        spectator = createDirective('<dm-column></dm-column>');
-        expect(spectator.directive.colId).toBeTruthy();
-    });
-
     it('should set minWidth=undefined to MIN_COLUMN_WIDTH', () => {
         spectator = createDirective('<dm-column></dm-column>');
         expect(spectator.directive.minWidth).toEqual(MIN_COLUMN_WIDTH);
