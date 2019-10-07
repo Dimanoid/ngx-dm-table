@@ -50,23 +50,23 @@ Property | Description | Type | Default value
 
 ### DmColumnDirective `<dm-column></dm-column>`
 
-Property | Description | Type | Default value
----------|-------------|------|--------------
-**`[colId]`** | Unique ID of the column | `string` | 
-**`[title]`** | Column header title string, will be displayed if no `#header` template is defined | `string` | 
-**`[pinnable]`** | *Not yet implemented* | `boolean` | 
-**`[sortable]`** | Whether the table can be sorted by this column or not | `boolean` | 
-**`[resizeable]`** | Whether this column can be resized or not | `boolean` | 
-**`[flexible]`** | Should be set for the column that will "accumulate" all the size change first, if not set the last column will be marked as flexible, if more then one column set as flexible last one will be used | `boolean` | 
-**`[whitespace]`** | This will be set as a value of the CSS property `whitespace` for every cell in this column | `string` | 
-**`[minWidth]`** | Minimum width of the column in pixels, column will not be shrinked less then this value | `number` | 
-**`[maxWidth]`** | Maximum width of the column in pixels, column will not be expanded more then this value | `number` | 
-**`[frozen]`** | *Not yet implemented* | `'left' | 'right' | 'no'` | **no**
-**`[headerTooltip]`** | This will be set as a `title` of column's header tag  | `string` | 
-**`[headerClass]`** | CSS classes will be added to column's header `<th>` tag | `string` | 
-**`[cellClass]`** | CSS classes will be added to column's cell `<td>` tag | `string` | 
-**`[footerClass]`** | CSS classes will be added to column's footer `<td>` tag | `string` | 
-**`[sort]`** | Type of data for internal sort or custom sort function | `'string' | 'number' | 'boolean' | ((a: any, b: any) => number)` | 
+Property | Description | Type
+---------|-------------|-----
+**`[colId]`** | Unique ID of the column | `string`
+**`[title]`** | Column header title string, will be displayed if no `#header` template is defined | `string`
+**`[pinnable]`** | *Not yet implemented* | `boolean`
+**`[sortable]`** | Whether the table can be sorted by this column or not | `boolean`
+**`[resizeable]`** | Whether this column can be resized or not | `boolean`
+**`[flexible]`** | Should be set for the column that will "accumulate" all the size change first, if not set the last column will be marked as flexible, if more then one column set as flexible last one will be used | `boolean`
+**`[whitespace]`** | This will be set as a value of the CSS property `whitespace` for every cell in this column | `string`
+**`[minWidth]`** | Minimum width of the column in pixels, column will not be shrinked less then this value | `number`
+**`[maxWidth]`** | Maximum width of the column in pixels, column will not be expanded more then this value | `number`
+**`[frozen]`** | *Not yet implemented* | `'left' \| 'right' \| 'no'`
+**`[headerTooltip]`** | This will be set as a `title` of column's header tag  | `string`
+**`[headerClass]`** | CSS classes will be added to column's header `<th>` tag | `string`
+**`[cellClass]`** | CSS classes will be added to column's cell `<td>` tag | `string`
+**`[footerClass]`** | CSS classes will be added to column's footer `<td>` tag | `string`
+**`[sort]`** | Type of data for internal sort or custom sort function | `'string' \| 'number' \| 'boolean' \| ((a: any, b: any) => number)`
 
 <br>
 
