@@ -104,9 +104,16 @@ export class DmTableColumnConfig {
 
 ```html
 <dm-table class="ngx-dmt-stripes"
-    [rows]="[[1, 'one', { key: 'value1' }], [2, 'two', { key: 'value2' }], [3, 'three', { key: 'value3' }]]"
+    [rows]="[
+        [1, 'one', { key: 'value1' }],
+        [2, 'two', { key: 'value2' }],
+        [3, 'three', { key: 'value3' }]
+    ]"
     [defaultColumnConfig]="{ minWidth: 200 }">
-    <dm-column title="ID" width="50" minWidth="50" maxWidth="150" sortable="true" sort="number"></dm-column>
+    <dm-column title="ID"
+        width="50" minWidth="50" maxWidth="150"
+        sortable="true" sort="number">
+    </dm-column>
     <dm-column title="Text" sortable="true" sort="string"></dm-column>
     <dm-column>
         <ng-template #header>
