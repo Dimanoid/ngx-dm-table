@@ -10,13 +10,6 @@ branches:
   - master
   - release
 
-before_script:
-  - npm install -g @angular/cli
-  - npm install -g coveralls
-
-after_success:
-  - npm run coverall
-
 jobs:
   include:
     - stage: test and build
@@ -24,6 +17,12 @@ jobs:
         - npm run lint
         - npm run test
         - npm run build
+      before_script:
+        - npm install -g @angular/cli
+        - npm install -g coveralls
+      after_success:
+        - npm run coverall
+
     - stage: npm release
       script: echo "Deploying to npm ..."
       deploy:
@@ -34,6 +33,7 @@ jobs:
         before_deploy: cd dist/lib
         on:
           branch: release
+
     - stage: demo-app release
       deploy:
         provider: pages
