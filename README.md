@@ -131,3 +131,8 @@ export class DmTableColumnConfig {
     </dm-column>
 </dm-table>
 ```
+
+#### Result
+<p>
+    <img width="100%" height="100%" src="https://raw.githubusercontent.com/dimanoid/dm-table/master/assets/readme1.png">
+</p>
