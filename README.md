@@ -29,6 +29,7 @@ export class AppModule { }
 
 
 ## API
+<br>
 
 ### DmTableComponent `<dm-table></dm-table>`
 
@@ -45,6 +46,30 @@ Property | Description | Type | Default value
 **`(sortChange)`** | Callback executed when `[sort]` is changed | `EventEmitter<DmTableSort>` | 
 **`[defaultColumnConfig]`** | Default config for columns, can be overriden in column's definition | [`DmTableColumnConfig`](#dmtablecolumnconfig) | 
 
+<br><br>
+
+### DmColumnDirective `<dm-column></dm-column>`
+
+Property | Description | Type | Default value
+---------|-------------|------|--------------
+**`[colId]`** | Unique ID of the column | `string` | 
+**`[title]`** | Column header title string, will be displayed if no `#header` template is defined | `string` | 
+**`[pinnable]`** | *Not yet implemented* | `boolean` | 
+**`[sortable]`** | Whether the table can be sorted by this column or not | `boolean` | 
+**`[resizeable]`** | Whether this column can be resized or not | `boolean` | 
+**`[flexible]`** | Should be set for the column that will "accumulate" all the size change first, if not set the last column will be marked as flexible, if more then one column set as flexible last one will be used | `boolean` | 
+**`[whitespace]`** | This will be set as a value of the CSS property `whitespace` for every cell in this column | `string` | 
+**`[minWidth]`** | Minimum width of the column in pixels, column will not be shrinked less then this value | `number` | 
+**`[maxWidth]`** | Maximum width of the column in pixels, column will not be expanded more then this value | `number` | 
+**`[frozen]`** | *Not yet implemented* | `'left' | 'right' | 'no'` | **no**
+**`[headerTooltip]`** | This will be set as a `title` of column's header tag  | `string` | 
+**`[headerClass]`** | CSS classes will be added to column's header `<th>` tag | `string` | 
+**`[cellClass]`** | CSS classes will be added to column's cell `<td>` tag | `string` | 
+**`[footerClass]`** | CSS classes will be added to column's footer `<td>` tag | `string` | 
+**`[sort]`** | Type of data for internal sort or custom sort function | `'string' | 'number' | 'boolean' | ((a: any, b: any) => number)` | 
+
+<br>
+
 ### DmTableSort
 
 ```ts
@@ -53,6 +78,7 @@ export interface DmTableSort {
     order: number;
 }
 ```
+<br>
 
 ### DmTableColumnConfig
 
@@ -70,4 +96,31 @@ export class DmTableColumnConfig {
 
     constructor(json?: any) { }
 }
+```
+
+<br>
+
+### Example
+
+```html
+<dm-table class="ngx-dmt-stripes"
+    [rows]="[[1, 'one', { key: 'value1' }], [2, 'two', { key: 'value2' }], [3, 'three', { key: 'value3' }]]"
+    [defaultColumnConfig]="{ minWidth: 200 }">
+    <dm-column title="ID" width="50" minWidth="50" maxWidth="150" sortable="true" sort="number"></dm-column>
+    <dm-column title="Text" sortable="true" sort="string"></dm-column>
+    <dm-column>
+        <ng-template #header>
+            <div>
+                <i style="color: red">
+                    <u>Key value</u>
+                </i>
+            </div>
+        </ng-template>
+        <ng-template #cell let-item>
+            <div>
+                key: <b>{{ item['key'] }}</b>
+            </div>
+        </ng-template>
+    </dm-column>
+</dm-table>
 ```
