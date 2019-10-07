@@ -15,13 +15,13 @@ export class DmTableColumnConfig {
     footerClass: string;
     sort: 'string' | 'number' | 'boolean' | ((a: any, b: any) => number);
 
-    constructor(c?: any) {
-        if (!c || typeof c !== 'object') {
+    constructor(json?: any) {
+        if (!json || typeof json !== 'object') {
             return;
         }
         for (const fn of DMT_CONFIG_FIELDS) {
-            if (c[fn] !== undefined) {
-                this[fn] = c[fn];
+            if (json[fn] !== undefined) {
+                this[fn] = json[fn];
             }
         }
     }
