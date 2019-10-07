@@ -19,12 +19,11 @@ after_success:
 
 jobs:
   include:
-    - stage: lint
-      script: npm run lint
-    - stage: test
-      script: npm run test
-    - stage: build
-      script: npm run build
+    - stage: test and build
+      script:
+        - npm run lint
+        - npm run test
+        -  npm run build
     - stage: npm release
       script: echo "Deploying to npm ..."
       deploy:
