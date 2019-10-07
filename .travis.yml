@@ -14,26 +14,32 @@ before_script:
   - npm install -g @angular/cli
   - npm install -g coveralls
 
-script:
-  - npm run lint
-  - npm run test
-  - npm run build
-  - npm run build:demo
-
 after_success:
   - npm run coverall
 
-deploy:
-  - provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    local_dir: dist/demo-app
-    on:
-      branch: release
-  - provider: npm
-    skip_cleanup: true
-    email: $NPM_EMAIL
-    api_key: $NPM_TOKEN
-    local_dir: dist/lib
-    on:
-      branch: release
+jobs:
+  include:
+    - stage: lint
+      script: npm run lint
+    - stage: test
+      script: npm run test
+    - stage: build
+      script: npm run build
+    - stage: npm release
+      script: echo "Deploying to npm ..."
+      deploy:
+        provider: npm
+        skip_cleanup: true
+        email: $NPM_EMAIL
+        api_key: $NPM_TOKEN
+        before_deploy: cd dist/lib
+        on:
+          branch: release
+    - stage: demo-app release
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        local_dir: dist/demo-app
+        on:
+          branch: release
