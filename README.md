@@ -134,5 +134,5 @@ export class DmTableColumnConfig {
 
 #### Result
 <p>
-    <img width="100%" height="100%" src="https://raw.githubusercontent.com/dimanoid/dm-table/master/assets/readme1.png">
+    <img src="https://raw.githubusercontent.com/dimanoid/dm-table/master/assets/readme1.png">
 </p>
