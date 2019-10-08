@@ -42,6 +42,7 @@
         "codelyzer": "^5.1.2",
         "jest": "^24.9.0",
         "jest-preset-angular": "^7.1.1",
+        "resize-observer-polyfill": "^1.5.1",
         "ng-packagr": "^5.5.1",
         "protractor": "~5.4.2",
         "ts-node": "~8.4.1",
