@@ -11,25 +11,25 @@ branches:
   - release
 
 stages:
-  # - test
+  - test
   - name: npm
     if: branch = release
-  # - name: demo
-  #   if: branch = release
+  - name: demo
+    if: branch = release
 
 jobs:
   include:
-    # - stage: test
-    #   before_script:
-    #     - npm install -g @angular/cli
-    #     - npm install -g coveralls
-    #   script:
-    #     - npm run lint
-    #     - npm run test
-    #     - npm run build
-    #     - npm run build:demo
-    #   after_success:
-    #     - npm run coverall
+    - stage: test
+      before_script:
+        - npm install -g @angular/cli
+        - npm install -g coveralls
+      script:
+        - npm run lint
+        - npm run test
+        - npm run build
+        - npm run build:demo
+      after_success:
+        - npm run coverall
 
     - stage: npm
       before_script:
@@ -47,15 +47,15 @@ jobs:
         on:
           branch: release
 
-    # - stage: demo
-    #   before_script:
-    #     - npm install -g @angular/cli
-    #   script:
-    #     - npm run build:demo
-    #   deploy:
-    #     provider: pages
-    #     skip_cleanup: true
-    #     github_token: $GITHUB_TOKEN
-    #     local_dir: dist/demo-app
-    #     on:
-    #       branch: release
+    - stage: demo
+      before_script:
+        - npm install -g @angular/cli
+      script:
+        - npm run build:demo
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        local_dir: dist/demo-app
+        on:
+          branch: release
