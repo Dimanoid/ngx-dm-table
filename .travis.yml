@@ -10,9 +10,16 @@ branches:
   - master
   - release
 
+stages:
+  - test
+  - name: npm
+    if: branch = release
+  - name: demo
+    if: branch = release
+
 jobs:
   include:
-    - stage: test and build
+    - stage: test
       before_script:
         - npm install -g @angular/cli
         - npm install -g coveralls
@@ -20,10 +27,11 @@ jobs:
         - npm run lint
         - npm run test
         - npm run build
+        - npm run build:demo
       after_success:
         - npm run coverall
 
-    - stage: deploy npm package
+    - stage: npm
       before_script:
         - npm install -g @angular/cli
       script:
@@ -34,10 +42,10 @@ jobs:
         email: $NPM_EMAIL
         api_key: $NPM_TOKEN
         before_deploy: cd dist/lib
-      on:
-        branch: release
+        on:
+          branch: release
 
-    - stage: deploy gh-pages demo-app
+    - stage: demo
       before_script:
         - npm install -g @angular/cli
       script:
@@ -47,5 +55,5 @@ jobs:
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: dist/demo-app
-      on:
-        branch: release
+        on:
+          branch: release
