@@ -86,6 +86,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @Output() sortChange: EventEmitter<DmTableSort> = new EventEmitter();
 
     @Input() defaultColumnConfig: any;
+    @Input() tableClass: string;
+
+    @Input() colsVisibility: { [id: string]: boolean } = {};
+    @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnId: string;
@@ -166,6 +170,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.noColumns = true;
             return;
         }
+        let visChanged = false;
         this.noColumns = false;
         let flexi = cds.length - 1;
         for (let i = 0; i < cds.length; i++) {
@@ -177,11 +182,17 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 flexi = i;
             }
             this.ctMap[cd.colId] = cd;
+            if (!(cd.colId in this.colsVisibility)) {
+                this.colsVisibility[cd.colId] = true;
+                visChanged = true;
+            }
         }
         this.flexColumnId = cds[flexi].colId;
+        if (visChanged) {
+            this.colsVisibilityChange.emit(this.colsVisibility);
+        }
 
         let cwChanged = false;
-
         if (this.tableWidth > 0) {
             let tcw = 0;
             for (const cd of cds) {

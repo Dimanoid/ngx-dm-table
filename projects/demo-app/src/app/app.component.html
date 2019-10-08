@@ -27,6 +27,10 @@
                     <span class="dmtd-data">{{ colsData['colsWidth'] | json }}</span>
                 </div>
                 <div class="layout vertical mt1">
+                    <b class="mb05">Columns visibility:</b>
+                    <span class="dmtd-data">{{ colsData['colsVisibility'] | json }}</span>
+                </div>
+                <div class="layout vertical mt1">
                     <b class="mb05">Current sort:</b>
                     <span class="dmtd-data">{{ colsData['sort'] | json }}</span>
                 </div>
@@ -35,12 +39,14 @@
             <div class="layout flex relative">
                 <div class="layout fit scroll">
                     <dm-table #example1
+                        [colsVisibility]="{ '0': true, '1': true, '2': true, '3': true, '4': true, '5': true, '6': true, '7': true }"
                         [rows]="data"
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
                         [colsWidth]="{ '0': 100, '1': 160, '2': 200, '3': 200, '5': 400, '6': 100 }"
                         (colsOrderChange)="log('colsOrder', $event)"
                         (colsWidthChange)="log('colsWidth', $event)"
+                        (colsVisibilityChange)="log('colsVisibility', $event)"
                         (sortChange)="log('sort', $event)">
                         <dm-column
                             title="Numbers"
