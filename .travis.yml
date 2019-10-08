@@ -13,32 +13,39 @@ branches:
 jobs:
   include:
     - stage: test and build
+      before_script:
+        - npm install -g @angular/cli
+        - npm install -g coveralls
       script:
         - npm run lint
         - npm run test
         - npm run build
-      before_script:
-        - npm install -g @angular/cli
-        - npm install -g coveralls
       after_success:
         - npm run coverall
 
-    - stage: npm release
-      script: echo "Deploying to npm ..."
+    - stage: deploy npm package
+      before_script:
+        - npm install -g @angular/cli
+      script:
+        - npm run build
       deploy:
         provider: npm
         skip_cleanup: true
         email: $NPM_EMAIL
         api_key: $NPM_TOKEN
         before_deploy: cd dist/lib
-        on:
-          branch: release
+      on:
+        branch: release
 
-    - stage: demo-app release
+    - stage: deploy gh-pages demo-app
+      before_script:
+        - npm install -g @angular/cli
+      script:
+        - npm run build:demo
       deploy:
         provider: pages
         skip_cleanup: true
         github_token: $GITHUB_TOKEN
         local_dir: dist/demo-app
-        on:
-          branch: release
+      on:
+        branch: release
