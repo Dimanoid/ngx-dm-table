@@ -51,6 +51,7 @@ jobs:
       before_script:
         - npm install -g @angular/cli
       script:
+        - npm run build
         - npm run build:demo
       deploy:
         provider: pages
