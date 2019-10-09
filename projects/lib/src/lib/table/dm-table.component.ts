@@ -45,7 +45,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this._columnTemplatesOriginal = this.columnTemplates.slice();
         this.updateColumnsOrder();
         setTimeout(() => {
-            this.updateColumns(this.columnTemplates);
+            this.updateColumns();
             this._cdr.markForCheck();
         });
     }
@@ -69,7 +69,16 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() @InputBoolean() moveableColumns: boolean = true;
 
-    @Input() colsOrder: string[];
+    private _colsOrderOriginal: string[];
+    private _colsOrder: string[];
+    @Input()
+    set colsOrder(v: string[]) {
+        this._colsOrderOriginal = v;
+        this.updateColumnsOrder();
+    }
+    get colsOrder(): string[] {
+        return this._colsOrder;
+    }
     @Output() colsOrderChange: EventEmitter<string[]> = new EventEmitter();
 
     private _colsWidth: { [id: string]: number } = {};
@@ -88,7 +97,14 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() defaultColumnConfig: any;
     @Input() tableClass: string;
 
-    @Input() colsVisibility: { [id: string]: boolean } = {};
+    private _colsVisibility: { [id: string]: boolean } = {};
+    @Input()
+    set colsVisibility(v: { [id: string]: boolean }) {
+        this._colsVisibility = v ? v : {};
+    }
+    get colsVisibility(): { [id: string]: boolean } {
+        return this._colsVisibility;
+    }
     @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
 
     hasFooter: boolean = false;
@@ -125,7 +141,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             setTimeout(() => {
-                this.updateColumns(this.columnTemplates);
+                this.updateColumns();
                 this._cdr.markForCheck();
             });
         }
@@ -143,7 +159,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                         }
                         else {
                             this.colsWidthTmp[this.colsIndex[this.flexColumnId]] += this.tableWidth
-                                - sumValues(this.colsWidthTmp);
+                                - sumValues(this.colsWidthTmp, this.colsVisibility);
                         }
                         this.colsWidth = this.colsWidthTmp;
                         this.colsWidthChange.emit(this.colsWidth);
@@ -161,33 +177,43 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         if (changes['rows'] || changes['sort']) {
             this.sortRows();
         }
+        if (changes['colsVisibility']) {
+            this.updateColumnsOrder();
+            this.updateColumns();
+        }
     }
 
-    updateColumns(cds: DmColumnDirective[]): void {
+    updateColumns(): void {
         this.ctMap = {};
         this.hasFooter = false;
-        if (cds.length < 1) {
+        if (this.columnTemplates.length < 1) {
             this.noColumns = true;
             return;
         }
         let visChanged = false;
         this.noColumns = false;
-        let flexi = cds.length - 1;
-        for (let i = 0; i < cds.length; i++) {
-            const cd = cds[i];
-            if (cd.footerTpl) {
-                this.hasFooter = true;
-            }
-            if (cd.flexible) {
-                flexi = i;
-            }
+        this.flexColumnId = null;
+        for (const cd of this.columnTemplates) {
             this.ctMap[cd.colId] = cd;
             if (!(cd.colId in this.colsVisibility)) {
                 this.colsVisibility[cd.colId] = true;
                 visChanged = true;
             }
+            if (this.colsVisibility[cd.colId]) {
+                if (cd.footerTpl) {
+                    this.hasFooter = true;
+                }
+                if (cd.flexible) {
+                    this.flexColumnId = cd.colId;
+                }
+            }
         }
-        this.flexColumnId = cds[flexi].colId;
+        if (this.flexColumnId == null) {
+            for (let i = this.colsOrder.length - 1; i > 0; i--) {
+                this.flexColumnId = this.colsOrder[i];
+                break;
+            }
+        }
         if (visChanged) {
             this.colsVisibilityChange.emit(this.colsVisibility);
         }
@@ -195,7 +221,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         let cwChanged = false;
         if (this.tableWidth > 0) {
             let tcw = 0;
-            for (const cd of cds) {
+            for (const cid of this.colsOrder) {
+                const cd = this.ctMap[cid];
                 let w = this.colsWidth[cd.colId] || 0;
                 if (cd.minWidth && w < cd.minWidth) {
                     w = cd.minWidth;
@@ -210,7 +237,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 tcw += w;
             }
             if (tcw < this.tableWidth) {
-                const ec = emptyValues(this.colsWidth);
+                const ec = emptyValues(this.colsWidth, this.colsVisibility);
                 if (ec > 0) {
                     const w = Math.trunc((this.tableWidth - tcw) / ec);
                     const extraW = this.tableWidth - tcw - w * ec;
@@ -221,7 +248,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                     }
                     this.colsWidth[this.flexColumnId] += extraW;
                 }
-                this.colsWidth[this.flexColumnId] += this.tableWidth - sumValues(this.colsWidth);
+                this.colsWidth[this.flexColumnId] += this.tableWidth - sumValues(this.colsWidth, this.colsVisibility);
             }
             else if (tcw > this.tableWidth) {
 
@@ -244,11 +271,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     resizeColumnStart(colId: string, resizer: HTMLDivElement, event: MouseEvent): void {
-        // _D('[DmTableComponent] resizeColumnStart:', index, resizer, event);
         this.resizerDiv = resizer;
         this.resizeColumnId = colId;
         this.colsWidthTmp = Object.assign({}, this.colsWidth);
-        // _D('[DmTableComponent] resizeColumnStart, colWidths:', this.colWidths.slice());
+        _D('[DmTableComponent] resizeColumnStart, colWidths:', this.colsWidth);
         event.stopPropagation();
         event.preventDefault();
         if (event.pageX) {
@@ -328,7 +354,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             nw = ct.maxWidth;
         }
         this.colsWidthTmp[this.resizeColumnId] = nw;
-        const rd = sumValues(this.colsWidthTmp) - this.tableWidth;
+        const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
+        const rd = sv - this.tableWidth;
+        // _D('resizeColumnUpdateWidth, resizeColumnId:', this.resizeColumnId, 'sv:', sv, 'tableWidth:', this.tableWidth,
+        //     'rd:', rd, 'colsWidthTmp:', this.colsWidthTmp);
         if (rd > 0) {
             this.shrinkTmpColumns(rd, this.flexColumnId != this.resizeColumnId);
         }
@@ -341,24 +370,25 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     shrinkTmpColumns(delta: number, withFlex = true): void {
         let d = delta;
         const fid = withFlex ? this.flexColumnId : this.colsOrder[this.colsOrder.length - 1];
-        const flexCT = this.ctMap[fid];
+        const fct = this.ctMap[fid];
         const fw = this.colsWidthTmp[fid];
-        if (fw - d > flexCT.minWidth) {
+        if (fw - d >= fct.minWidth) {
             this.colsWidthTmp[fid] -= d;
             return;
         }
-        else if (fw > flexCT.minWidth) {
-            d -= fw - flexCT.minWidth;
-            this.colsWidthTmp[fid] = flexCT.minWidth;
+        else if (fw > fct.minWidth) {
+            d -= fw - fct.minWidth;
+            this.colsWidthTmp[fid] = fct.minWidth;
         }
         let i = this.colsOrder.length;
+        // _D('shrinkTmpColumns, d:', d, 'fid:', fid, 'fw:', fw, 'fct.minWidth:', fct.minWidth);
         while (i--) {
             const id = this.colsOrder[i];
             if (id != fid) {
                 const ct = this.ctMap[id];
                 const cw = this.colsWidthTmp[id];
-                if (cw - d > ct.minWidth) {
-                    this.colsWidthTmp[i] -= d;
+                if (cw - d >= ct.minWidth) {
+                    this.colsWidthTmp[id] -= d;
                     return;
                 }
                 else if (cw > ct.minWidth) {
@@ -371,33 +401,44 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     updateColumnsOrder(): void {
         let changed = false;
-        if (!this.colsOrder) {
-            this.colsOrder = [];
+        if (!this.columnTemplates || !this.colsVisibility) {
+            return;
+        }
+        if (!this._colsOrderOriginal) {
+            this._colsOrderOriginal = [];
             changed = true;
         }
-        if (this.colsOrder.length > this.columnTemplates.length) {
-            this.colsOrder.splice(this.columnTemplates.length - 1);
+        if (this._colsOrderOriginal.length > this.columnTemplates.length) {
+            this._colsOrderOriginal.splice(this.columnTemplates.length - 1);
             changed = true;
         }
-        else if (this.colsOrder.length < this.columnTemplates.length) {
+        else if (this._colsOrderOriginal.length < this.columnTemplates.length) {
             for (const ct of this.columnTemplates) {
-                if (this.colsOrder.indexOf(ct.colId) == -1) {
-                    this.colsOrder.push(ct.colId);
-                    if (this.colsOrder.length == this.columnTemplates.length) {
+                if (this._colsOrderOriginal.indexOf(ct.colId) == -1) {
+                    this._colsOrderOriginal.push(ct.colId);
+                    if (this._colsOrderOriginal.length == this.columnTemplates.length) {
                         break;
                     }
                 }
             }
             changed = true;
         }
+
+        this._colsOrder = this._colsOrderOriginal.slice();
+        let i = this._colsOrder.length;
+        while (i--) {
+            if (!this.colsVisibility[this._colsOrder[i]]) {
+                this._colsOrder.splice(i, 1);
+            }
+        }
+
         this.colsIndex = {};
-        for (let i = 0; i < this.colsOrder.length; i++) {
-            this.colsIndex[this.colsOrder[i]] = i;
+        for (let j = 0; j < this._colsOrder.length; j++) {
+            this.colsIndex[this._colsOrder[j]] = j;
         }
         if (changed) {
-            this.colsOrderChange.emit(this.colsOrder);
+            setTimeout(() => this.colsOrderChange.emit(this._colsOrderOriginal));
         }
-        this.sortRows();
     }
 
     columnHeaderDrop(event: CdkDragDrop<any>): void {
@@ -407,7 +448,14 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             for (let i = 0; i < this.colsOrder.length; i++) {
                 this.colsIndex[this.colsOrder[i]] = i;
             }
-            this.colsOrderChange.emit(this.colsOrder);
+            const co: string[] = this.colsOrder.slice();
+            for (const id of this._colsOrderOriginal) {
+                if (co.indexOf(id) == -1) {
+                    co.push(id);
+                }
+            }
+            this._colsOrderOriginal = co;
+            this.colsOrderChange.emit(this._colsOrderOriginal);
             this._cdr.markForCheck();
         }
     }

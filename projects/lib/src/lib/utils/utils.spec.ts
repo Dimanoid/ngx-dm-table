@@ -20,19 +20,19 @@ describe('utils/arrays/emptyCount', () => {
 
 describe('utils/objects/sumValues', () => {
     it('should return 0 for empty object', () => {
-        expect(sumValues({})).toEqual(0);
+        expect(sumValues({}, {})).toEqual(0);
     });
-    it('should return 6 for { a: 1, b: 2, c: 3 }', () => {
-        expect(sumValues({ a: 1, b: 2, c: 3 })).toEqual(6);
+    it('should return 5 for { a: 1, b: 2, c: 3 }, { a: false, b: true, c: true }', () => {
+        expect(sumValues({ a: 1, b: 2, c: 3 }, { a: false, b: true, c: true })).toEqual(5);
     });
 });
 
 describe('utils/objects/emptyValues', () => {
     it('should return 0 for empty object', () => {
-        expect(emptyValues({})).toEqual(0);
+        expect(emptyValues({}, {})).toEqual(0);
     });
-    it('should return 2 for { a: 1, b: 0, c: 3, d: 0 }', () => {
-        expect(emptyValues({ a: 1, b: 0, c: 3, d: 0 })).toEqual(2);
+    it('should return 1 for { a: 1, b: 0, c: 3, d: 0 }, { a: true, b: false, d: true }', () => {
+        expect(emptyValues({ a: 1, b: 0, c: 3, d: 0 }, { a: true, b: false, d: true })).toEqual(1);
     });
 });
 
