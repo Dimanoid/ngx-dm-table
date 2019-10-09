@@ -11,7 +11,8 @@ import {
     NZ_I18N, en_US,
     NzSwitchModule,
     NzSelectModule,
-    NzToolTipModule
+    NzToolTipModule,
+    NzCheckboxModule
 } from 'ng-zorro-antd';
 
 import { DmTableModule } from '@dimanoid/ngx-dm-table';
@@ -25,7 +26,7 @@ import { AppComponent } from './app.component';
     imports: [
         BrowserModule, BrowserAnimationsModule, CommonModule,
         FormsModule, ReactiveFormsModule,
-        NzSwitchModule, NzSelectModule, NzToolTipModule,
+        NzSwitchModule, NzSelectModule, NzToolTipModule, NzCheckboxModule,
         DmTableModule
     ],
     providers: [

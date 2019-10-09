@@ -19,35 +19,31 @@
                     <span class="ml05">Zebra stripped</span>
                 </div>
                 <div class="layout vertical mt1">
-                    <b class="mb05">Columns order:</b>
-                    <span class="dmtd-data">{{ colsData['colsOrder'] | json }}</span>
-                </div>
-                <div class="layout vertical mt1">
-                    <b class="mb05">Columns widths:</b>
-                    <span class="dmtd-data">{{ colsData['colsWidth'] | json }}</span>
-                </div>
-                <div class="layout vertical mt1">
-                    <b class="mb05">Columns visibility:</b>
-                    <span class="dmtd-data">{{ colsData['colsVisibility'] | json }}</span>
-                </div>
-                <div class="layout vertical mt1">
                     <b class="mb05">Current sort:</b>
-                    <span class="dmtd-data">{{ colsData['sort'] | json }}</span>
+                    <span class="dmtd-data">{{ sort | json }}</span>
+                </div>
+                <div class="layout vertical mt1">
+                    <b class="mb05">Columns:</b>
+                    <div *ngFor="let id of colsOrder" class="layout center">
+                        <label nz-checkbox class="mb05"
+                            [(ngModel)]="colsVisibility[id]"
+                            (ngModelChange)="colsVisibility = Object.assign({}, colsVisibility)">
+                            id: <b>{{ id }}</b>, width: <b>{{ colsWidth[id] }}</b>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div class="layout flex relative">
                 <div class="layout fit scroll">
                     <dm-table #example1
-                        [colsVisibility]="{ '0': true, '1': true, '2': true, '3': true, '4': true, '5': true, '6': true, '7': true }"
                         [rows]="data"
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
-                        [colsWidth]="{ '0': 100, '1': 160, '2': 200, '3': 200, '5': 400, '6': 100 }"
-                        (colsOrderChange)="log('colsOrder', $event)"
-                        (colsWidthChange)="log('colsWidth', $event)"
-                        (colsVisibilityChange)="log('colsVisibility', $event)"
-                        (sortChange)="log('sort', $event)">
+                        [(colsVisibility)]="colsVisibility"
+                        [(colsWidth)]="colsWidth"
+                        [(colsOrder)]="colsOrder"
+                        [(sort)]="sort">
                         <dm-column
                             title="Numbers"
                             width="100"
@@ -77,9 +73,6 @@
                                     <span class="ml05">{{ item.name }}</span>
                                 </div>
                             </ng-template>
-                            <!-- <ng-template #footer>
-                                Footer
-                            </ng-template> -->
                         </dm-column>
                         <dm-column
                             title="String w spaces"

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { DmTableSort } from '@dimanoid/ngx-dm-table';
 
 const ICONS = [
     'rocket',
@@ -40,6 +41,12 @@ export class AppComponent implements OnInit {
     linesList: string[] = ['0', '10', '100', '1000', '10000', '100000'];
     linesGenerating: boolean = true;
     colsData: { [id: string]: any } = {};
+    colsVisibility: { [id: string]: boolean } = { 0: true, 1: true, 2: false, 3: false, 4: true, 5: true, 6: false, 7: true };
+    colsWidth: { [id: string]: number } = { 0: 100, 1: 160, 2: 200, 3: 200, 5: 400, 6: 100 };
+    colsOrder: string[];
+    sort: DmTableSort;
+
+    Object = Object;
 
     ngOnInit() {
         this.generateData();
