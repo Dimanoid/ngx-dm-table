@@ -120,7 +120,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     resizeColumnStartPoint: Point;
     colsIndex: { [id: string]: number } = {};
     horScroll: number = 0;
-    noColumns: boolean = false;
+    noColumns: boolean;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone, private _dts: DmTableService) {
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();

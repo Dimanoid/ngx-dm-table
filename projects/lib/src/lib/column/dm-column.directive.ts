@@ -14,7 +14,7 @@ export class DmColumnDirective implements OnInit {
     @Input() title: string;
     @Input() @InputBoolean() pinnable: boolean;
     @Input() @InputBoolean() sortable: boolean;
-    @Input() @InputBoolean() resizeable: boolean;
+    @Input() @InputBoolean() resizable: boolean;
     @Input() @InputBoolean() flexible: boolean;
     @Input() whitespace: string;
     private _minWidth: number;
