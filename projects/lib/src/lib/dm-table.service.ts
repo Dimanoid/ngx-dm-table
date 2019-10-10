@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
 export const DMT_CONFIG_FIELDS = [
-    'pinnable', 'sortable', 'resizeable', 'whitespace', 'minWidth', 'maxWidth', 'headerClass', 'cellClass', 'footerClass', 'sort'
+    'pinnable', 'sortable', 'resizable', 'whitespace', 'minWidth', 'maxWidth', 'headerClass', 'cellClass', 'footerClass', 'sort'
 ];
 
 export class DmTableColumnConfig {
     pinnable: boolean = false;
     sortable: boolean = false;
-    resizeable: boolean = true;
+    resizable: boolean = true;
     whitespace: string = 'normal';
     minWidth: number;
     headerClass: string;

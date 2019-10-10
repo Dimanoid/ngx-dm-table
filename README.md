@@ -62,7 +62,7 @@ Property | Description | Type
 **`[title]`** | Column header title string, will be displayed if no `#header` template is defined | `string`
 **`[pinnable]`** | *Not yet implemented* | `boolean`
 **`[sortable]`** | Whether the table can be sorted by this column or not | `boolean`
-**`[resizeable]`** | Whether this column can be resized or not | `boolean`
+**`[resizable]`** | Whether this column can be resized or not | `boolean`
 **`[flexible]`** | Should be set for the column that will "accumulate" all the size change first, if not set the last column will be marked as flexible, if more then one column set as flexible last one will be used | `boolean`
 **`[whitespace]`** | This will be set as a value of the CSS property `whitespace` for every cell in this column | `string`
 **`[minWidth]`** | Minimum width of the column in pixels, column will not be shrinked less then this value | `number`
@@ -92,7 +92,7 @@ export interface DmTableSort {
 export class DmTableColumnConfig {
     pinnable: boolean = false;
     sortable: boolean = false;
-    resizeable: boolean = true;
+    resizable: boolean = true;
     whitespace: string = 'normal';
     minWidth: number;
     headerClass: string;
