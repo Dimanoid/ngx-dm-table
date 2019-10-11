@@ -27,6 +27,6 @@ deploy:
   - provider: pages
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
-    local_dir: ../demo-app
+    local_dir: dist/demo-app
     on:
       tags: true
