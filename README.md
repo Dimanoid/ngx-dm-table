@@ -115,9 +115,10 @@ export class DmTableColumnConfig {
         [2, 'two', { key: 'value2' }],
         [3, 'three', { key: 'value3' }]
     ]"
+    [colsWidth]="{ 0: 50 }"
     [defaultColumnConfig]="{ minWidth: 200 }">
     <dm-column title="ID"
-        width="50" minWidth="50" maxWidth="150"
+        minWidth="50" maxWidth="150"
         sortable="true" sort="number">
     </dm-column>
     <dm-column title="Text" sortable="true" sort="string"></dm-column>
