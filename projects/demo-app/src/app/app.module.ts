@@ -14,6 +14,7 @@ import {
     NzToolTipModule,
     NzCheckboxModule
 } from 'ng-zorro-antd';
+import { DmDividerModule } from './dm-divider.module';
 
 import { DmTableModule } from '@dimanoid/ngx-dm-table';
 
@@ -27,7 +28,7 @@ import { AppComponent } from './app.component';
         BrowserModule, BrowserAnimationsModule, CommonModule,
         FormsModule, ReactiveFormsModule,
         NzSwitchModule, NzSelectModule, NzToolTipModule, NzCheckboxModule,
-        DmTableModule
+        DmDividerModule, DmTableModule
     ],
     providers: [
         { provide: NZ_I18N, useValue: en_US },

@@ -3,7 +3,7 @@
     .dmtd-panel {
         .dmtd-panel-left {
             width: 300px;
-            padding: 10px;
+            padding: 10px 0 10px 10px;
             background-color: #f8f8f8;
             margin-right: 10px;
             & > div {
@@ -56,6 +56,57 @@ dm-table {
                 border-right: 2px solid #0070af !important;
                 color: #0070af;
             }
+        }
+    }
+}
+
+.dm-divider, 
+.dm-divider-vert {
+    background-color: transparent;
+    transition: all 0.2s;
+    & > div.dm-divider-inner {
+        border-color: #ccc;
+        border-style: dashed;
+        transition: all 0.2s;
+    }
+    &:hover, 
+    &.dm-divider-moving {
+        & > div.dm-divider-inner {
+            border-color: #999;
+            border-style: solid;
+        }
+    }
+}
+.dm-divider {
+    height: 7px;
+    cursor: row-resize;
+    & > div.dm-divider-inner {
+        height: 3px;
+        width: 50px;
+        border-width: 1px 0;
+        margin-left: 20px;
+    }
+    &:hover, 
+    &.dm-divider-moving {
+        & > div.dm-divider-inner {
+            width: 90%;
+            width: calc(100% - 60px);
+        }
+    }
+}
+.dm-divider-vert {
+    width: 7px;
+    cursor: col-resize;
+    & > div.dm-divider-inner {
+        width: 3px;
+        height: 50px;
+        border-width: 0 1px;
+    }
+    &:hover, 
+    &.dm-divider-moving {
+        & > div.dm-divider-inner {
+            height: 90%;
+            height: calc(100% - 60px);
         }
     }
 }

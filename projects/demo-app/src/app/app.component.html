@@ -3,34 +3,46 @@
     <div class="layout flex relative">
 
         <div class="dmtd-panel layout fit">
-            <div class="dmtd-panel-left layout vertical">
-                <b class="mb1 fs-l">Table options:</b>
-                <div class="layout center">
-                    <span class="mr05">Number of lines:</span>
-                    <nz-select style="width: 120px;"
-                        [(ngModel)]="lines"
-                        [nzLoading]="linesGenerating"
-                        (ngModelChange)="linesGenerating = true; generateData();">
-                        <nz-option *ngFor="let ln of linesList" [nzValue]="ln" [nzLabel]="ln"></nz-option>
-                    </nz-select>
-                </div>
-                <div class="layout center">
-                    <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
-                    <span class="ml05">Zebra stripped</span>
-                </div>
-                <div class="layout vertical mt1">
-                    <b class="mb05">Current sort:</b>
-                    <span class="dmtd-data">{{ sort | json }}</span>
-                </div>
-                <div class="layout vertical mt1">
-                    <b class="mb05">Columns:</b>
-                    <div *ngFor="let id of colsOrder" class="layout center">
-                        <label nz-checkbox class="mb05"
-                            [(ngModel)]="colsVisibility[id]"
-                            (ngModelChange)="colsVisibility = Object.assign({}, colsVisibility)">
-                            id: <b>{{ id }}</b>, width: <b>{{ colsWidth[id] }}</b>
-                        </label>
+            <div class="dmtd-panel-left layout" [style.width.px]="divider['d1'].size">
+                <div class="layout flex relative">
+                    <div class="layout vertical fit scroll">
+                        <b class="mb1 fs-l">Table options:</b>
+                        <div class="layout center">
+                            <span class="mr05">Number of lines:</span>
+                            <nz-select style="width: 120px;"
+                                [(ngModel)]="lines"
+                                [nzLoading]="linesGenerating"
+                                (ngModelChange)="linesGenerating = true; generateData();">
+                                <nz-option *ngFor="let ln of linesList" [nzValue]="ln" [nzLabel]="ln"></nz-option>
+                            </nz-select>
+                        </div>
+                        <div class="layout center mt05">
+                            <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
+                            <span class="ml05">Zebra stripped</span>
+                        </div>
+                        <div class="layout vertical mt1">
+                            <b class="mb05">Current sort:</b>
+                            <span class="dmtd-data">{{ sort | json }}</span>
+                        </div>
+                        <div class="layout vertical mt1">
+                            <b class="mb05">Columns:</b>
+                            <div *ngFor="let id of colsOrder" class="layout center">
+                                <label nz-checkbox class="mb05"
+                                    [(ngModel)]="colsVisibility[id]"
+                                    (ngModelChange)="colsVisibility = Object.assign({}, colsVisibility)">
+                                    id: <b>{{ id }}</b>, width: <b>{{ colsWidth[id] }}</b>
+                                </label>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div dm-divider class="dm-divider-vert layout center-center" style="width: 12px"
+                    enabled="true"
+                    [class.dm-divider-moving]="divider['d1'].moving"
+                    (dmDividerDragStart)="dividerDragStart('d1', $event)"
+                    (dmDividerDragEnd)="dividerDragEnd('d1', $event)"
+                    (dmDividerMove)="dividerMove('d1', $event)">
+                    <div class="dm-divider-inner"></div>
                 </div>
             </div>
 
