@@ -8,55 +8,31 @@ sudo: required
 branches:
   only:
   - master
-  - release
 
-stages:
-  - test
-  - name: npm
-    if: branch = release
-  - name: demo
-    if: branch = release
+before_script:
+  - npm install -g @angular/cli
+  - npm install -g coveralls
+script:
+  - npm run lint
+  - npm run test
+  - npm run build
+  - npm run build:demo
+after_success:
+  - npm run coverall
+  - cd dist/lib
 
-jobs:
-  include:
-    - stage: test
-      before_script:
-        - npm install -g @angular/cli
-        - npm install -g coveralls
-      script:
-        - npm run lint
-        - npm run test
-        - npm run build
-        - npm run build:demo
-      after_success:
-        - npm run coverall
-
-    - stage: npm
-      before_script:
-        - npm install -g @angular/cli
-      script:
-        - npm run build
-        - cd dist/lib
-      deploy:
-        provider: npm
-        before_deploy:
-          - cd dist/lib
-        skip_cleanup: true
-        email: $NPM_EMAIL
-        api_key: $NPM_TOKEN
-        on:
-          branch: release
-
-    - stage: demo
-      before_script:
-        - npm install -g @angular/cli
-      script:
-        - npm run build
-        - npm run build:demo
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        local_dir: dist/demo-app
-        on:
-          branch: release
+deploy:
+  - provider: npm
+    skip_cleanup: true
+    email: $NPM_EMAIL
+    api_key: $NPM_TOKEN
+    on:
+      branch: master
+      tags: true
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    local_dir: ../demo-app
+    on:
+      branch: master
+      tags: true
