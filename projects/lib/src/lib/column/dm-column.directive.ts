@@ -37,7 +37,7 @@ export class DmColumnDirective implements OnInit {
     @ContentChild('cell', { static: true }) cellTpl: TemplateRef<any>;
     @ContentChild('footer', { static: true }) footerTpl: TemplateRef<any>;
 
-    constructor(private _dts: DmTableService, private _elemRef: ElementRef) {}
+    constructor(private _dts: DmTableService) {}
 
     ngOnInit() {
         const cfg = this._dts.getColumnConfig();

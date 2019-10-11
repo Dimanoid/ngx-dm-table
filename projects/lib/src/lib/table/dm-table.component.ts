@@ -36,13 +36,15 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @ContentChildren(DmColumnDirective)
     set columnTemplatesQL(val: QueryList<DmColumnDirective>) {
         this._columnTemplatesQL = val;
-        this.columnTemplates = val ? val.toArray() : [];
+        this.columnTemplates = val ? val.toArray() : null;
+        if (!this.columnTemplates) {
+            return;
+        }
         for (let i = 0; i < this.columnTemplates.length; i++) {
             if (!this.columnTemplates[i].colId) {
                 this.columnTemplates[i].colId = '' + i;
             }
         }
-        this._columnTemplatesOriginal = this.columnTemplates.slice();
         this.updateColumnsOrder();
         setTimeout(() => {
             this.updateColumns();
@@ -53,7 +55,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         return this._columnTemplatesQL;
     }
     columnTemplates: DmColumnDirective[] = [];
-    private _columnTemplatesOriginal: DmColumnDirective[] = [];
     ctMap: { [colId: string]: DmColumnDirective };
 
     @Input() rows: any[];
@@ -118,17 +119,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     resizerDiv: HTMLDivElement;
     resizerX: number = -1000;
     resizeColumnStartPoint: Point;
-    colsIndex: { [id: string]: number } = {};
     horScroll: number = 0;
     noColumns: boolean;
 
     constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone, private _dts: DmTableService) {
-        [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
-        const xw = this.getHostDims();
-        if (xw) {
-            this.tableWidth = xw[1] - this.scrollBarWidth;
-            this.tableLeft = xw[0];
-        }
+        this.updateHelpers();
     }
 
     ngOnInit() {
@@ -136,6 +131,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     ngAfterViewInit() {
+        this.updateHelpers();
         const xw = this.getHostDims();
         this.tableWidth = xw[1] - this.scrollBarWidth;
         this.tableLeft = xw[0];
@@ -148,18 +144,18 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         if (this._elemRef && this._elemRef.nativeElement && ResizeObserver) {
             const ro = new ResizeObserver(entries => {
                 if (entries[0]) {
-                    [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
-                    const nw = entries[0].contentRect.width - this.scrollBarWidth;
-                    if (nw != this.tableWidth) {
-                        const rd = nw - this.tableWidth;
+                    const tw = this.tableWidth;
+                    this.updateHelpers();
+                    const nw = Math.round(entries[0].contentRect.width - this.scrollBarWidth);
+                    if (nw != tw) {
+                        const rd = nw - tw;
                         this.tableWidth = nw;
                         this.colsWidthTmp = Object.assign({}, this.colsWidth);
                         if (rd < 0) {
                             this.shrinkTmpColumns(-rd);
                         }
                         else {
-                            this.colsWidthTmp[this.colsIndex[this.flexColumnId]] += this.tableWidth
-                                - sumValues(this.colsWidthTmp, this.colsVisibility);
+                            this.colsWidthTmp[this.flexColumnId] += this.tableWidth - sumValues(this.colsWidthTmp, this.colsVisibility);
                         }
                         this.colsWidth = this.colsWidthTmp;
                         this.colsWidthChange.emit(this.colsWidth);
@@ -184,6 +180,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     updateColumns(): void {
+        if (!this.columnTemplates || !this.columnTemplatesQL) {
+            return;
+        }
         this.ctMap = {};
         this.hasFooter = false;
         if (this.columnTemplates.length < 1) {
@@ -284,45 +283,29 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.resizeColumnStartPoint = new Point(event.clientX, event.clientY);
         }
         if (this.resizeColumnStartPoint) {
-            document.body.onmousemove = (e: MouseEvent) => {
-                // tslint:disable-next-line: deprecation
-                e = e || window.event as MouseEvent;
-                e.stopPropagation();
-                e.preventDefault();
-                let endX = 0;
-                let endY = 0;
-                if (e.pageX) {
-                    endX = e.pageX;
-                    endY = e.pageY;
-                }
-                else if (e.clientX) {
-                    endX = e.clientX;
-                    endY = e.clientX;
-                }
-                this.resizeColumnMove(endX - this.resizeColumnStartPoint.x);
-            };
-
-            document.body.onmouseup = (e: MouseEvent) => {
+            document.body.onmousemove = e => this.resizeColumnMove(this._getEndX(e) - this.resizeColumnStartPoint.x);
+            document.body.onmouseup = e => {
                 document.body.onmousemove = document.body.onmouseup = null;
-                // tslint:disable-next-line: deprecation
-                e = e || window.event as MouseEvent;
-                e.stopPropagation();
-                e.preventDefault();
-                let endX = 0;
-                let endY = 0;
-                if (e.pageX) {
-                    endX = e.pageX;
-                    endY = e.pageY;
-                }
-                else if (e.clientX) {
-                    endX = e.clientX;
-                    endY = e.clientX;
-                }
-                this.resizeColumnEnd(endX - this.resizeColumnStartPoint.x);
+                this.resizeColumnEnd(this._getEndX(e) - this.resizeColumnStartPoint.x);
             };
         }
         this.resizerX = this.resizerDiv.getBoundingClientRect().left - this.tableLeft;
         this._cdr.markForCheck();
+    }
+
+    private _getEndX(e: MouseEvent): number {
+        // tslint:disable-next-line: deprecation
+        e = e || window.event as MouseEvent;
+        e.stopPropagation();
+        e.preventDefault();
+        let endX = 0;
+        if (e.pageX) {
+            endX = e.pageX;
+        }
+        else if (e.clientX) {
+            endX = e.clientX;
+        }
+        return endX;
     }
 
     resizeColumnMove(delta: number): void {
@@ -354,10 +337,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             nw = ct.maxWidth;
         }
         this.colsWidthTmp[this.resizeColumnId] = nw;
-        const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
-        const rd = sv - this.tableWidth;
-        // _D('resizeColumnUpdateWidth, resizeColumnId:', this.resizeColumnId, 'sv:', sv, 'tableWidth:', this.tableWidth,
-        //     'rd:', rd, 'colsWidthTmp:', this.colsWidthTmp);
+        const rd = sumValues(this.colsWidthTmp, this.colsVisibility) - this.tableWidth;
         if (rd > 0) {
             this.shrinkTmpColumns(rd, this.flexColumnId != this.resizeColumnId);
         }
@@ -372,6 +352,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         const fid = withFlex ? this.flexColumnId : this.colsOrder[this.colsOrder.length - 1];
         const fct = this.ctMap[fid];
         const fw = this.colsWidthTmp[fid];
+        if (!fct) {
+            return;
+        }
         if (fw - d >= fct.minWidth) {
             this.colsWidthTmp[fid] -= d;
             return;
@@ -432,10 +415,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             }
         }
 
-        this.colsIndex = {};
-        for (let j = 0; j < this._colsOrder.length; j++) {
-            this.colsIndex[this._colsOrder[j]] = j;
-        }
         if (changed) {
             setTimeout(() => this.colsOrderChange.emit(this._colsOrderOriginal));
         }
@@ -444,10 +423,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     columnHeaderDrop(event: CdkDragDrop<any>): void {
         if (event.previousIndex != event.currentIndex) {
             moveItemInArray(this.colsOrder, event.previousIndex, event.currentIndex);
-            this.colsIndex = {};
-            for (let i = 0; i < this.colsOrder.length; i++) {
-                this.colsIndex[this.colsOrder[i]] = i;
-            }
             const co: string[] = this.colsOrder.slice();
             for (const id of this._colsOrderOriginal) {
                 if (co.indexOf(id) == -1) {
@@ -502,6 +477,15 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         const sl = (e.target as Element).scrollLeft;
         if (this.headerWrapper && this.headerWrapper.nativeElement) {
             this.headerWrapper.nativeElement.scrollLeft = sl;
+        }
+    }
+
+    updateHelpers() {
+        [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
+        const xw = this.getHostDims();
+        if (xw) {
+            this.tableWidth = xw[1] - this.scrollBarWidth;
+            this.tableLeft = xw[0];
         }
     }
 
