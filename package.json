@@ -1,6 +1,6 @@
 {
     "name": "@dimanoid/ngx-dm-table",
-    "version": "0.1.26",
+    "version": "0.1.27",
     "scripts": {
         "build": "ng build lib",
         "build:demo": "ng build --aot --prod --base-href /dm-table/ demo-app",
