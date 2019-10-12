@@ -250,7 +250,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 this.colsWidth[this.flexColumnId] += this.tableWidth - sumValues(this.colsWidth, this.colsVisibility);
             }
             else if (tcw > this.tableWidth) {
-
+                this.colsWidthTmp = Object.assign({}, this.colsWidth);
+                this.shrinkTmpColumns(tcw - this.tableWidth);
+                this.colsWidth = this.colsWidthTmp;
             }
             if (cwChanged) {
                 this.colsWidth = Object.assign({}, this.colsWidth);
