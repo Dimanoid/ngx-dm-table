@@ -275,7 +275,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.resizerDiv = resizer;
         this.resizeColumnId = colId;
         this.colsWidthTmp = Object.assign({}, this.colsWidth);
-        _D('[DmTableComponent] resizeColumnStart, colWidths:', this.colsWidth);
         event.stopPropagation();
         event.preventDefault();
         if (event.pageX) {
@@ -318,7 +317,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     resizeColumnEnd(delta: number): void {
         this.resizeColumnUpdateWidth(delta);
-        this.colsWidth = this.colsWidthTmp;
+        this.colsWidth = Object.assign({}, this.colsWidthTmp);
         this.colsWidthChange.emit(this.colsWidth);
         this.colsWidthTmp = undefined;
         this.resizeColumnStartPoint = undefined;
@@ -338,15 +337,64 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         else if (ct.maxWidth && ct.maxWidth < nw) {
             nw = ct.maxWidth;
         }
-        this.colsWidthTmp[this.resizeColumnId] = nw;
-        const rd = sumValues(this.colsWidthTmp, this.colsVisibility) - this.tableWidth;
+        const rd = nw - w;
         if (rd > 0) {
-            this.shrinkTmpColumns(rd, this.flexColumnId != this.resizeColumnId);
+            this.colsWidthTmp[this.resizeColumnId] = nw;
+            if (this.flexColumnId == this.resizeColumnId) {
+                const ci = this.colsOrder.indexOf(this.resizeColumnId);
+                if (ci > -1) {
+                    let d = rd;
+                    if (ci < this.colsOrder.length - 1) {
+                        for (let i = ci + 1; i < this.colsOrder.length; i++) {
+                            d = this._shrinkTmpColumn(this.colsOrder[i], d);
+                        }
+                    }
+                }
+            }
+            else {
+                const d = this._shrinkTmpColumn(this.flexColumnId, rd);
+                this.colsWidthTmp[this.resizeColumnId] = nw - d;
+            }
         }
         else if (rd < 0) {
-            const ci = this.flexColumnId == this.resizeColumnId ? this.colsWidthTmp.length - 1 : this.flexColumnId;
-            this.colsWidthTmp[ci] -= rd;
+            if (this.flexColumnId == this.resizeColumnId) {
+                const ci = this.colsOrder.indexOf(this.resizeColumnId);
+                let d = rd;
+                if (ci < this.colsOrder.length - 1) {
+                    for (let i = ci + 1; i < this.colsOrder.length; i++) {
+                        d = this._shrinkTmpColumn(this.colsOrder[i], d);
+                    }
+                }
+                this.colsWidthTmp[this.resizeColumnId] = nw + d;
+                const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
+                if (this.tableWidth < sv) {
+                    this._shrinkTmpColumn(this.colsOrder[this.colsOrder.length - 1], sv - this.tableWidth);
+                }
+            }
+            else {
+                this.colsWidthTmp[this.resizeColumnId] = nw;
+                const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
+                if (this.tableWidth < sv) {
+                    this.colsWidthTmp[this.flexColumnId] = this.ctMap[this.flexColumnId].minWidth;
+                }
+                else {
+                    this.colsWidthTmp[this.flexColumnId] = this.colsWidth[this.flexColumnId] - rd;
+                }
+            }
         }
+    }
+
+    _shrinkTmpColumn(id: string, delta: number): number {
+        const ct = this.ctMap[id];
+        if (this.colsWidth[id] - delta >= ct.minWidth) {
+            this.colsWidthTmp[id] = this.colsWidth[id] - delta;
+            return 0;
+        }
+        else if (this.colsWidth[id] > ct.minWidth) {
+            delta -= this.colsWidth[id] - ct.minWidth;
+            this.colsWidthTmp[id] = ct.minWidth;
+        }
+        return delta;
     }
 
     shrinkTmpColumns(delta: number, withFlex = true): void {
@@ -366,7 +414,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.colsWidthTmp[fid] = fct.minWidth;
         }
         let i = this.colsOrder.length;
-        // _D('shrinkTmpColumns, d:', d, 'fid:', fid, 'fw:', fw, 'fct.minWidth:', fct.minWidth);
         while (i--) {
             const id = this.colsOrder[i];
             if (id != fid) {
