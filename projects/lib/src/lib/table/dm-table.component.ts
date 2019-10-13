@@ -19,6 +19,12 @@ export interface DmTableSort {
     order: number;
 }
 
+export interface DmTableRowContextMenuEvent {
+    index: number;
+    row: any;
+    event: MouseEvent;
+}
+
 @Component({
     selector: 'dm-table',
     exportAs: 'dmTable',
@@ -107,6 +113,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         return this._colsVisibility;
     }
     @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
+
+    @Output() rowContextMenu: EventEmitter<MouseEvent> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnId: string;
