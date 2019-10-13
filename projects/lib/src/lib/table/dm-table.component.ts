@@ -114,7 +114,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
     @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
 
-    @Output() rowContextMenu: EventEmitter<MouseEvent> = new EventEmitter();
+    @Output() rowContextMenu: EventEmitter<DmTableRowContextMenuEvent> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnId: string;
