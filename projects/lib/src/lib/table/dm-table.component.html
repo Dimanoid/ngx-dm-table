@@ -46,7 +46,9 @@
                     <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
-                    <tr *cdkVirtualFor="let r of rows; let ri = index" (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
+                    <tr *cdkVirtualFor="let r of rows; let ri = index"
+                        [ngClass]="getRowClasses(r)"
+                        (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
                         <td *ngFor="let cid of colsOrder; let i = index"
                             [ngClass]="ctMap[cid].cellClass"
                             [style.white-space]="ctMap[cid].whitespace">

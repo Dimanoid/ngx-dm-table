@@ -218,19 +218,6 @@ table.ngx-dmt {
                     border-right-color: transparent !important;
                 }
             }
-            &:hover > td {
-                border-color: $hoveredBorderColor;
-                background-color: $hoveredBgColor !important;
-            }
-            &.ngx-dmt-selected {
-                &:hover {
-                    background-color: $hoveredBgColor !important;
-                }
-                & > td {
-                    border-color: $selectedBorderColor;
-                    background-color: $selectedBgColor !important;
-                }
-            }
         }
     }
 

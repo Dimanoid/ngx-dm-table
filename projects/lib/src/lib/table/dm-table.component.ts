@@ -122,6 +122,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
     @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
 
+    @Input() rowClasses: { [className: string]: (row: any) => boolean } = {};
+
     @Output() headerContextMenu: EventEmitter<DmTableHeaderContextMenuEvent> = new EventEmitter();
     @Output() rowContextMenu: EventEmitter<DmTableRowContextMenuEvent> = new EventEmitter();
 
@@ -553,6 +555,18 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.tableWidth = xw[1] - this.scrollBarWidth;
             this.tableLeft = xw[0];
         }
+    }
+
+    getRowClasses(row: any): string {
+        let res = '';
+        if (this.rowClasses) {
+            for (const k in this.rowClasses) {
+                if (this.rowClasses[k](row)) {
+                    res += ' ' + k;
+                }
+            }
+        }
+        return res;
     }
 
 }
