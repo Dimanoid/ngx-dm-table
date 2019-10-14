@@ -42,8 +42,8 @@ export class AppComponent implements OnInit {
     linesList: string[] = ['0', '10', '100', '1000', '10000', '100000'];
     linesGenerating: boolean = true;
     colsData: { [id: string]: any } = {};
-    colsVisibility: { [id: string]: boolean } = { 0: true, 1: true, 2: false, 3: false, 4: true, 5: true, 6: false, 7: true };
-    colsWidth: { [id: string]: number } = { 0: 100, 1: 160, 2: 200, 3: 200, 5: 400, 6: 100 };
+    colsVisibility: { [id: string]: boolean } = { 0: true, 1: true, 2: true, 3: false, 4: false, 5: true, 6: true, 7: false, 8: true };
+    colsWidth: { [id: string]: number } = { 0: 38, 1: 100, 2: 160, 3: 200, 4: 200, 5: 30, 6: 400, 7: 100 };
     colsOrder: string[];
     sort: DmTableSort;
     public divider: {
@@ -57,8 +57,10 @@ export class AppComponent implements OnInit {
             size?: number
         }
     } = {};
+    selected: { [id: number]: boolean } = {};
 
     Object = Object;
+    selectedFn = (row: any) => this.selected[row[0]];
 
     constructor() {
         this.divider['d1'] = { min: 200, max: 700, vertical: true, size: 300 };
@@ -77,6 +79,7 @@ export class AppComponent implements OnInit {
             this.data.push(
                 [
                     i,
+                    i,
                     { icon: 'dmtd-' + ICONS[icon], name: NAMES[icon] },
                     `${i}_Not very long string with spaces`,
                     `${i}_Not_very_long_string_without_spaces`,
@@ -91,7 +94,7 @@ export class AppComponent implements OnInit {
     }
 
     customSort(a: any, b: any): number {
-        return (a[1].name as string).localeCompare(b[1].name);
+        return (a[2].name as string).localeCompare(b[2].name);
     }
 
     log(...args) {

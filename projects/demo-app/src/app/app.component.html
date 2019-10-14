@@ -52,10 +52,20 @@
                         [rows]="data"
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
+                        [rowClasses]="{ 'dmt-selected': selectedFn }"
                         [(colsVisibility)]="colsVisibility"
                         [(colsWidth)]="colsWidth"
                         [(colsOrder)]="colsOrder"
                         [(sort)]="sort">
+                        <dm-column
+                            minWidth="38"
+                            resizable="false"
+                            sortable="false"
+                            headerTooltip="width=38, not resizable">
+                            <ng-template #cell let-item>
+                                <label nz-checkbox [(ngModel)]="selected[item]"></label>
+                            </ng-template>
+                        </dm-column>
                         <dm-column
                             title="Numbers"
                             width="100"
