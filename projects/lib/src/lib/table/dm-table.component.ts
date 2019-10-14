@@ -25,6 +25,14 @@ export interface DmTableRowContextMenuEvent {
     event: MouseEvent;
 }
 
+export interface DmTableHeaderContextMenuEvent {
+    colId: string;
+    index: number;
+    first: boolean;
+    last: boolean;
+    event: MouseEvent;
+}
+
 @Component({
     selector: 'dm-table',
     exportAs: 'dmTable',
@@ -114,6 +122,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
     @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
 
+    @Output() headerContextMenu: EventEmitter<DmTableHeaderContextMenuEvent> = new EventEmitter();
     @Output() rowContextMenu: EventEmitter<DmTableRowContextMenuEvent> = new EventEmitter();
 
     hasFooter: boolean = false;
