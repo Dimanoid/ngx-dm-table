@@ -149,6 +149,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             setTimeout(() => {
+                this.updateColumnsVisibility();
                 this.updateColumns();
                 this._cdr.markForCheck();
             });
@@ -211,7 +212,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     updateColumns(): void {
-        if (!this.columnTemplates || !this.columnTemplatesQL) {
+        if (!this.columnTemplates || !this.columnTemplatesQL || !this.colsVisibility) {
             return;
         }
         this.ctMap = {};
