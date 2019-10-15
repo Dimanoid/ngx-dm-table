@@ -12,7 +12,8 @@ import {
     NzSwitchModule,
     NzSelectModule,
     NzToolTipModule,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzButtonModule
 } from 'ng-zorro-antd';
 import { DmDividerModule } from './dm-divider.module';
 
@@ -27,7 +28,7 @@ import { AppComponent } from './app.component';
     imports: [
         BrowserModule, BrowserAnimationsModule, CommonModule,
         FormsModule, ReactiveFormsModule,
-        NzSwitchModule, NzSelectModule, NzToolTipModule, NzCheckboxModule,
+        NzSwitchModule, NzSelectModule, NzToolTipModule, NzCheckboxModule, NzButtonModule,
         DmDividerModule, DmTableModule
     ],
     providers: [

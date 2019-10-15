@@ -185,7 +185,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.sortRows();
         }
         if (changes['colsVisibility'] || changes['colsWidth']) {
-            _D('ngOnChanges', changes['colsVisibility'], this.colsVisibility);
             this.updateColumnsOrder();
             this.updateColumns();
         }
@@ -344,35 +343,17 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         const rd = nw - w;
         if (rd > 0) {
             this.colsWidthTmp[this.resizeColumnId] = nw;
-            if (this.flexColumnId == this.resizeColumnId) {
-                const ci = this.colsOrder.indexOf(this.resizeColumnId);
-                if (ci > -1) {
-                    let d = rd;
-                    if (ci < this.colsOrder.length - 1) {
-                        for (let i = ci + 1; i < this.colsOrder.length; i++) {
-                            d = this._shrinkTmpColumn(this.colsOrder[i], d);
-                        }
-                    }
-                }
+            if (this.flexColumnId != this.resizeColumnId) {
+                this._shrinkTmpColumn(this.flexColumnId, rd);
             }
-            else {
-                const d = this._shrinkTmpColumn(this.flexColumnId, rd);
-                this.colsWidthTmp[this.resizeColumnId] = nw - d;
-            }
+            this.colsWidthTmp[this.resizeColumnId] = nw;
         }
         else if (rd < 0) {
             if (this.flexColumnId == this.resizeColumnId) {
-                const ci = this.colsOrder.indexOf(this.resizeColumnId);
-                let d = rd;
-                if (ci < this.colsOrder.length - 1) {
-                    for (let i = ci + 1; i < this.colsOrder.length; i++) {
-                        d = this._shrinkTmpColumn(this.colsOrder[i], d);
-                    }
-                }
-                this.colsWidthTmp[this.resizeColumnId] = nw + d;
+                this.colsWidthTmp[this.resizeColumnId] = nw;
                 const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
-                if (this.tableWidth < sv) {
-                    this._shrinkTmpColumn(this.colsOrder[this.colsOrder.length - 1], sv - this.tableWidth);
+                if (this.tableWidth > sv) {
+                    this.colsWidthTmp[this.resizeColumnId] += this.tableWidth - sv;
                 }
             }
             else {
