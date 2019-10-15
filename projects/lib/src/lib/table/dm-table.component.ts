@@ -111,10 +111,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() defaultColumnConfig: any;
     @Input() tableClass: string;
-
     @Input() colsVisibility: { [id: string]: boolean };
-    @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
-
     @Input() rowClasses: { [className: string]: (row: any) => boolean } = {};
 
     @Output() headerContextMenu: EventEmitter<DmTableHeaderContextMenuEvent> = new EventEmitter();
@@ -149,7 +146,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             setTimeout(() => {
-                this.updateColumnsVisibility();
                 this.updateColumns();
                 this._cdr.markForCheck();
             });
@@ -188,31 +184,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         }
         if (changes['colsVisibility'] || changes['colsWidth']) {
             _D('ngOnChanges', changes['colsVisibility'], this.colsVisibility);
-            this.updateColumnsVisibility();
             this.updateColumnsOrder();
             this.updateColumns();
         }
     }
 
-    updateColumnsVisibility(): void {
-        if (!this.columnTemplates || this.colsVisibility) {
-            return;
-        }
-        this.colsVisibility = {};
-        let visChanged = false;
-        for (const cd of this.columnTemplates) {
-            if (!(cd.colId in this.colsVisibility)) {
-                this.colsVisibility[cd.colId] = true;
-                visChanged = true;
-            }
-        }
-        if (visChanged) {
-            this.colsVisibilityChange.emit(this.colsVisibility);
-        }
-    }
-
     updateColumns(): void {
-        if (!this.columnTemplates || !this.columnTemplatesQL || !this.colsVisibility) {
+        if (!this.columnTemplates || !this.columnTemplatesQL) {
             return;
         }
         this.ctMap = {};
@@ -225,7 +203,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.flexColumnId = null;
         for (const cd of this.columnTemplates) {
             this.ctMap[cd.colId] = cd;
-            if (this.colsVisibility[cd.colId]) {
+            if (!this.colsVisibility || this.colsVisibility[cd.colId]) {
                 if (cd.footerTpl) {
                     this.hasFooter = true;
                 }
@@ -457,7 +435,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     updateColumnsOrder(): void {
         let changed = false;
-        if (!this.columnTemplates || !this.colsVisibility) {
+        if (!this.columnTemplates) {
             return;
         }
         if (!this._colsOrderOriginal) {
@@ -483,7 +461,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this._colsOrder = this._colsOrderOriginal.slice();
         let i = this._colsOrder.length;
         while (i--) {
-            if (!this.colsVisibility[this._colsOrder[i]]) {
+            if (this.colsVisibility && !this.colsVisibility[this._colsOrder[i]]) {
                 this._colsOrder.splice(i, 1);
             }
         }
