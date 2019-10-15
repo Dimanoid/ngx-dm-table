@@ -20,7 +20,6 @@ dm-table {
     table.ngx-dmt {
         & > thead > tr.ngx-dmt-header-row {
             & > th.ngx-dmt-header-cell {
-                // color: #0070af;
                 &.th-icon {
                     padding: 2px;
                     text-overflow: clip;
@@ -35,7 +34,6 @@ dm-table {
         }
         & > tbody > tr {
             & > td {
-                border-width: 1px 1px 1px 0;
                 &.td-icon {
                     padding: 2px;
                     text-overflow: clip;
@@ -59,14 +57,11 @@ dm-table {
                 font-size: 25px;
                 transform: rotate(360deg);
             }
-            &:hover > td {
-                border-top-color: rgba(#0070af, .4) !important;
-                border-bottom-color: rgba(#0070af, .4) !important;
+            &:hover {
+                box-shadow: inset rgba(#0070af, .7) 0 0 3px 0;
             }
             &.dmt-selected {
-                & > td {
-                    background-color: rgba(#0070af, .1) !important;
-                }
+                background-color: rgba(#0070af, .1) !important;
             }
         }
     }
@@ -121,4 +116,8 @@ dm-table {
             height: calc(100% - 60px);
         }
     }
+}
+
+.gray {
+    background-color: rgba(0, 0, 0, .05);
 }

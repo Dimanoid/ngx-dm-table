@@ -36,7 +36,7 @@ const NAMES = [
 })
 export class AppComponent implements OnInit {
 
-    stripes: boolean = true;
+    stripes: boolean = false;
     data: any[][] = [];
     lines: string = '100';
     linesList: string[] = ['0', '10', '100', '1000', '10000', '100000'];

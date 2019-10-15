@@ -61,7 +61,8 @@
                         [colsVisibility]="hideAll ? { '8': true } : colsVisibility"
                         [(colsWidth)]="colsWidth"
                         [(colsOrder)]="colsOrder"
-                        [(sort)]="sort">
+                        [(sort)]="sort"
+                        (rowClick)="selected[$event.row[0]] = !selected[$event.row[0]]">
                         <dm-column
                             minWidth="38"
                             resizable="false"
@@ -78,7 +79,7 @@
                             maxWidth="150"
                             sortable="true"
                             sort="number"
-                            cellClass="tar"
+                            cellClass="tar gray"
                             headerTooltip="minWidth=50, maxWidth=150, sortable as numbers, custom cell CSS class, resizable">
                         </dm-column>
                         <dm-column
