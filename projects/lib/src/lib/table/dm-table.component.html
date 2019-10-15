@@ -20,6 +20,7 @@
                         [class.ngx-dmt-sorted]="sort && sort.colId == cid"
                         [class.ngx-dmt-sorted-asc]="sort && sort.order > 0"
                         [class.ngx-dmt-sorted-desc]="sort && sort.order < 0"
+                        (click)="headerClick.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         (contextmenu)="headerContextMenu.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         cdkDrag cdkDragLockAxis="x">
                         <div class="ngx-dmt-column-title" (click)="ctMap[cid].sortable ? toggleSort(cid) : null">
@@ -48,6 +49,7 @@
                 <tbody *ngIf="rows">
                     <tr *cdkVirtualFor="let r of rows; let ri = index"
                         [ngClass]="getRowClasses(r)"
+                        (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                         (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
                         <td *ngFor="let cid of colsOrder; let i = index"
                             [ngClass]="ctMap[cid].cellClass"

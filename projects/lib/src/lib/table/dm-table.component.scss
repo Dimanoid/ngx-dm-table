@@ -200,8 +200,10 @@ table.ngx-dmt {
             }
         }
     }
+
     & > tbody {
         & > tr {
+            background-color: $bodyBgColor;
             & > td {
                 cursor: pointer;
                 text-align: left;
@@ -210,7 +212,6 @@ table.ngx-dmt {
                 border-right-color: $tableBorderColor !important;
                 border-style: solid;
                 padding: 7px 10px;
-                background-color: $bodyBgColor;
                 font-weight: normal;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -223,6 +224,7 @@ table.ngx-dmt {
 
     & > tfoot {
         & > tr {
+            background-color: $bodyBgColor;
             & > td {
                 white-space: nowrap;
                 text-align: left;
@@ -230,7 +232,6 @@ table.ngx-dmt {
                 border-color: $tableBorderColor;
                 border-style: solid;
                 padding: 5px 10px;
-                background-color: $bodyBgColor;
                 font-weight: normal;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -250,7 +251,7 @@ th.ngx-dmt-header-cell.cdk-drag-preview {
 }
 
 dm-table.ngx-dmt-stripes > .ngx-dmt-body-wrapper {
-    table > tbody > tr:nth-child(even) > td {
+    table > tbody > tr:nth-child(even) {
         background-color: $bodyBgColor2;
     }
 }

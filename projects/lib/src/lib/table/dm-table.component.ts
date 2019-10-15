@@ -19,13 +19,13 @@ export interface DmTableSort {
     order: number;
 }
 
-export interface DmTableRowContextMenuEvent {
+export interface DmTableRowEvent {
     index: number;
     row: any;
     event: MouseEvent;
 }
 
-export interface DmTableHeaderContextMenuEvent {
+export interface DmTableHeaderEvent {
     colId: string;
     index: number;
     first: boolean;
@@ -114,8 +114,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() colsVisibility: { [id: string]: boolean };
     @Input() rowClasses: { [className: string]: (row: any) => boolean } = {};
 
-    @Output() headerContextMenu: EventEmitter<DmTableHeaderContextMenuEvent> = new EventEmitter();
-    @Output() rowContextMenu: EventEmitter<DmTableRowContextMenuEvent> = new EventEmitter();
+    @Output() headerClick: EventEmitter<DmTableHeaderEvent> = new EventEmitter();
+    @Output() headerContextMenu: EventEmitter<DmTableHeaderEvent> = new EventEmitter();
+    @Output() rowClick: EventEmitter<DmTableRowEvent> = new EventEmitter();
+    @Output() rowContextMenu: EventEmitter<DmTableRowEvent> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnId: string;
