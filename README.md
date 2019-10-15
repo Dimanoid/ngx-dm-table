@@ -46,11 +46,14 @@ Property | Description | Type | Default value
 **`[moveableColumns]`** | Whether table columns can be reordered by drag-n-drop or not | `boolean` | **true**
 **`[(colsOrder)]`** | Array of row's IDs defining the current display order, can be changed if `[moveableColumns]` is set to **true** | `string[]` | 
 **`(colsOrderChange)`** | Callback executed when `[colsOrder]` is changed | `EventEmitter<string[]>` | 
-**`[(colsWidth)]`** | Hashmap of columns widths, object where key is column ID and value width in pixels | `{ [id: string]: number }` | 
+**`[(colsWidth)]`** | Hashmap of columns widths, object where key is column ID and value is width in pixels | `{ [id: string]: number }` | 
 **`(colsWidthChange)`** | Callback executed when `[colsWidth]` is changed | `EventEmitter<{ [id: string]: number }>` | 
+**`[colsVisibility]`** | Hashmap of columns visibility, object where key is column ID and value is boolean indicating if this column should be displayed | `{ [id: string]: boolean }` |
 **`[(sort)]`** | Column ID and order used for internal sorting | [`DmTableSort`](#dmtablesort) | 
 **`(sortChange)`** | Callback executed when `[sort]` is changed | `EventEmitter<DmTableSort>` | 
 **`[defaultColumnConfig]`** | Default config for columns, can be overriden in column's definition | [`DmTableColumnConfig`](#dmtablecolumnconfig) | 
+**`[tableClass]`** | CSS classes that will be added to the `<table>` tags (header, body and footer tables) | `string` | 
+**`[rowClasses]`** | Hashmap where key is CSS classes that will be added to row's `<tr>` tag if value function will return true | `{ [className: string]: (row: any) => boolean }` |
 
 <br><br>
 
@@ -69,9 +72,9 @@ Property | Description | Type
 **`[maxWidth]`** | Maximum width of the column in pixels, column will not be expanded more then this value | `number`
 **`[frozen]`** | *Not yet implemented* | `'left' \| 'right' \| 'no'`
 **`[headerTooltip]`** | This will be set as a `title` of column's header tag  | `string`
-**`[headerClass]`** | CSS classes will be added to column's header `<th>` tag | `string`
-**`[cellClass]`** | CSS classes will be added to column's cell `<td>` tag | `string`
-**`[footerClass]`** | CSS classes will be added to column's footer `<td>` tag | `string`
+**`[headerClass]`** | CSS classes that will be added to column's header `<th>` tag | `string`
+**`[cellClass]`** | CSS classes that will be added to column's cell `<td>` tag | `string`
+**`[footerClass]`** | CSS classes that will be added to column's footer `<td>` tag | `string`
 **`[sort]`** | Type of data for internal sort or custom sort function | `'string' \| 'number' \| 'boolean' \| ((a: any, b: any) => number)`
 
 <br>
