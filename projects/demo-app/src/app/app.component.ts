@@ -28,6 +28,8 @@ const NAMES = [
     'Mary Poppins'
 ];
 
+const COLS_WIDTH = { 0: 38, 1: 100, 2: 160, 3: 200, 4: 200, 5: 30, 6: 400, 7: 100 };
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -43,7 +45,7 @@ export class AppComponent implements OnInit {
     linesGenerating: boolean = true;
     colsData: { [id: string]: any } = {};
     colsVisibility: { [id: string]: boolean } = { 0: true, 1: true, 2: true, 3: false, 4: false, 5: true, 6: true, 7: false, 8: true };
-    colsWidth: { [id: string]: number } = { 0: 38, 1: 100, 2: 160, 3: 200, 4: 200, 5: 30, 6: 400, 7: 100 };
+    colsWidth: { [id: string]: number } = Object.assign({}, COLS_WIDTH);
     colsOrder: string[];
     sort: DmTableSort;
     public divider: {
@@ -136,6 +138,10 @@ export class AppComponent implements OnInit {
             }
             this.divider[name].size = size;
         }
+    }
+
+    resetWidths() {
+        this.colsWidth = Object.assign({}, COLS_WIDTH);
     }
 
 }
