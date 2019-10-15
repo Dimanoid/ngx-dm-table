@@ -112,14 +112,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() defaultColumnConfig: any;
     @Input() tableClass: string;
 
-    private _colsVisibility: { [id: string]: boolean } = {};
-    @Input()
-    set colsVisibility(v: { [id: string]: boolean }) {
-        this._colsVisibility = v ? v : {};
-    }
-    get colsVisibility(): { [id: string]: boolean } {
-        return this._colsVisibility;
-    }
+    @Input() colsVisibility: { [id: string]: boolean };
     @Output() colsVisibilityChange: EventEmitter<{ [id: string]: boolean }> = new EventEmitter();
 
     @Input() rowClasses: { [className: string]: (row: any) => boolean } = {};
@@ -192,9 +185,28 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         if (changes['rows'] || changes['sort']) {
             this.sortRows();
         }
-        if (changes['colsVisibility']) {
+        if (changes['colsVisibility'] || changes['colsWidth']) {
+            _D('ngOnChanges', changes['colsVisibility'], this.colsVisibility);
+            this.updateColumnsVisibility();
             this.updateColumnsOrder();
             this.updateColumns();
+        }
+    }
+
+    updateColumnsVisibility(): void {
+        if (!this.columnTemplates || this.colsVisibility) {
+            return;
+        }
+        this.colsVisibility = {};
+        let visChanged = false;
+        for (const cd of this.columnTemplates) {
+            if (!(cd.colId in this.colsVisibility)) {
+                this.colsVisibility[cd.colId] = true;
+                visChanged = true;
+            }
+        }
+        if (visChanged) {
+            this.colsVisibilityChange.emit(this.colsVisibility);
         }
     }
 
@@ -208,15 +220,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             this.noColumns = true;
             return;
         }
-        let visChanged = false;
         this.noColumns = false;
         this.flexColumnId = null;
         for (const cd of this.columnTemplates) {
             this.ctMap[cd.colId] = cd;
-            if (!(cd.colId in this.colsVisibility)) {
-                this.colsVisibility[cd.colId] = true;
-                visChanged = true;
-            }
             if (this.colsVisibility[cd.colId]) {
                 if (cd.footerTpl) {
                     this.hasFooter = true;
@@ -231,9 +238,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 this.flexColumnId = this.colsOrder[i];
                 break;
             }
-        }
-        if (visChanged) {
-            this.colsVisibilityChange.emit(this.colsVisibility);
         }
 
         let cwChanged = false;
