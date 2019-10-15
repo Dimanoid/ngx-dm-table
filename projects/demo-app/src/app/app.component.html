@@ -28,10 +28,15 @@
                             <b class="mb05">Columns:</b>
                             <div *ngFor="let id of colsOrder" class="layout center">
                                 <label nz-checkbox class="mb05"
+                                    [nzDisabled]="hideAll"
                                     [(ngModel)]="colsVisibility[id]"
                                     (ngModelChange)="colsVisibility = Object.assign({}, colsVisibility)">
                                     id: <b>{{ id }}</b>, width: <b>{{ colsWidth[id] }}</b>
                                 </label>
+                            </div>
+                            <div class="layout center mt1">
+                                <nz-switch nzSize="small" [(ngModel)]="hideAll"></nz-switch>
+                                <span class="ml05">Hide all columns except last</span>
                             </div>
                         </div>
                     </div>
@@ -53,7 +58,7 @@
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
                         [rowClasses]="{ 'dmt-selected': selectedFn }"
-                        [(colsVisibility)]="colsVisibility"
+                        [colsVisibility]="hideAll ? { '8': true } : colsVisibility"
                         [(colsWidth)]="colsWidth"
                         [(colsOrder)]="colsOrder"
                         [(sort)]="sort">

@@ -58,6 +58,7 @@ export class AppComponent implements OnInit {
         }
     } = {};
     selected: { [id: number]: boolean } = {};
+    hideAll: boolean = false;
 
     Object = Object;
     selectedFn = (row: any) => this.selected[row[0]];
