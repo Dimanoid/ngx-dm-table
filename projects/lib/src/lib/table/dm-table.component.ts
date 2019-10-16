@@ -2,10 +2,11 @@ import {
     Component, OnInit, AfterViewInit,
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
-    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild
+    ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone,
+    Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterContentInit
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
-import { _D, getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues, _W } from '../utils';
+import { getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues } from '../utils';
 import { InputBoolean, sumValues } from '../utils';
 
 import ResizeObserver from 'resize-observer-polyfill';
@@ -41,7 +42,7 @@ export interface DmTableHeaderEvent {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
+export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, AfterContentInit {
     @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
     @ViewChild('headerWrapper', { static: false }) headerWrapper: ElementRef;
@@ -59,16 +60,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 this.columnTemplates[i].colId = '' + i;
             }
         }
-        this.updateColumnsOrder();
-        setTimeout(() => {
-            this.updateColumns();
-            this._cdr.markForCheck();
-        });
     }
     get columnTemplatesQL(): QueryList<DmColumnDirective> {
         return this._columnTemplatesQL;
     }
-    columnTemplates: DmColumnDirective[] = [];
+    columnTemplates: DmColumnDirective[];
     ctMap: { [colId: string]: DmColumnDirective };
 
     @Input() rows: any[];
@@ -84,6 +80,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() @InputBoolean() moveableColumns: boolean = true;
 
+    private _colsOrderEmited: string[];
     private _colsOrderOriginal: string[];
     private _colsOrder: string[];
     @Input()
@@ -96,6 +93,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
     }
     @Output() colsOrderChange: EventEmitter<string[]> = new EventEmitter();
 
+    private _colsWidthEmited: { [id: string]: number } = {};
     private _colsWidth: { [id: string]: number } = {};
     @Input()
     set colsWidth(v: { [id: string]: number }) {
@@ -148,7 +146,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             setTimeout(() => {
-                this.updateColumns();
+                this.initColumnWidths();
                 this._cdr.markForCheck();
             });
         }
@@ -163,13 +161,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                         this.tableWidth = nw;
                         this.colsWidthTmp = Object.assign({}, this.colsWidth);
                         if (rd < 0) {
-                            this.shrinkTmpColumns(-rd);
+                            // this.shrinkTmpColumns(-rd);
                         }
                         else {
                             this.colsWidthTmp[this.flexColumnId] += this.tableWidth - sumValues(this.colsWidthTmp, this.colsVisibility);
                         }
-                        this.colsWidth = this.colsWidthTmp;
-                        this.colsWidthChange.emit(this.colsWidth);
+                        this._colsWidth = this.colsWidthTmp;
+                        this.colsWidthChangeEmit(this._colsWidth);
                         this.colsWidthTmp = undefined;
                         this._ngZone.run(() => this._cdr.markForCheck());
                     }
@@ -179,18 +177,29 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         }
     }
 
+    ngAfterContentInit() {
+        this.updateColumnsOrder();
+        this.initColumns();
+    }
+
     ngOnChanges(changes: SimpleChanges): void {
         // _D('[DmTableComponent] ngOnChanges, changes:', changes);
         if (changes['rows'] || changes['sort']) {
             this.sortRows();
         }
-        if (changes['colsVisibility'] || changes['colsWidth']) {
+        if (changes['colsVisibility']) {
             this.updateColumnsOrder();
-            this.updateColumns();
+        }
+        if (changes['colsWidth']) {
+            if (this.colsWidth != this._colsWidthEmited) {
+                this._colsWidthEmited = undefined;
+                this.updateColumnsOrder();
+                this.initColumnWidths();
+            }
         }
     }
 
-    updateColumns(): void {
+    initColumns(): void {
         if (!this.columnTemplates || !this.columnTemplatesQL) {
             return;
         }
@@ -219,7 +228,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
                 break;
             }
         }
+        this.initColumnWidths();
+    }
 
+    initColumnWidths(): void {
+        if (!this.ctMap) {
+            return;
+        }
         let cwChanged = false;
         if (this.tableWidth > 0) {
             let tcw = 0;
@@ -255,11 +270,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             else if (tcw > this.tableWidth) {
                 this.colsWidthTmp = Object.assign({}, this.colsWidth);
                 this.shrinkTmpColumns(tcw - this.tableWidth);
-                this.colsWidth = this.colsWidthTmp;
+                this._colsWidth = this.colsWidthTmp;
             }
             if (cwChanged) {
-                this.colsWidth = Object.assign({}, this.colsWidth);
-                this.colsWidthChange.emit(this.colsWidth);
+                this._colsWidth = Object.assign({}, this.colsWidth);
+                this.colsWidthChangeEmit(this._colsWidth);
             }
         }
     }
@@ -320,8 +335,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
 
     resizeColumnEnd(delta: number): void {
         this.resizeColumnUpdateWidth(delta);
-        this.colsWidth = Object.assign({}, this.colsWidthTmp);
-        this.colsWidthChange.emit(this.colsWidth);
+        this._colsWidth = Object.assign({}, this.colsWidthTmp);
+        this.colsWidthChangeEmit(this.colsWidth);
         this.colsWidthTmp = undefined;
         this.resizeColumnStartPoint = undefined;
         this.resizeColumnId = undefined;
@@ -343,10 +358,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
         const rd = nw - w;
         if (rd > 0) {
             this.colsWidthTmp[this.resizeColumnId] = nw;
-            if (this.flexColumnId != this.resizeColumnId) {
-                this._shrinkTmpColumn(this.flexColumnId, rd);
-            }
-            this.colsWidthTmp[this.resizeColumnId] = nw;
         }
         else if (rd < 0) {
             if (this.flexColumnId == this.resizeColumnId) {
@@ -359,10 +370,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             else {
                 this.colsWidthTmp[this.resizeColumnId] = nw;
                 const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
-                if (this.tableWidth < sv) {
-                    this.colsWidthTmp[this.flexColumnId] = this.ctMap[this.flexColumnId].minWidth;
-                }
-                else {
+                if (this.tableWidth > sv) {
                     this.colsWidthTmp[this.flexColumnId] = this.colsWidth[this.flexColumnId] - rd;
                 }
             }
@@ -533,6 +541,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges {
             }
         }
         return res;
+    }
+
+    colsWidthChangeEmit(v: { [id: string]: number }): void {
+        this._colsWidthEmited = v;
+        this.colsWidthChange.emit(v);
     }
 
 }

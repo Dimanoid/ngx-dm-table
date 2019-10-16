@@ -30,7 +30,7 @@
                         </div>
                         <div class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
                         <div *ngIf="ctMap[cid].sortable" class="ngx-dmt-column-sort-container" (click)="toggleSort(cid)"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
-                        <div *ngIf="ctMap[cid].resizable && !l" class="ngx-dmt-resizer"
+                        <div *ngIf="ctMap[cid].resizable" class="ngx-dmt-resizer"
                             [class.ngx-dmt-resizer-dragging]="resizeColumnId == cid"
                             (mousedown)="resizeColumnStart(cid, resizer, $event)" #resizer>
                         </div>
