@@ -362,8 +362,20 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         else if (rd < 0) {
             if (this.flexColumnId == this.resizeColumnId) {
                 this.colsWidthTmp[this.resizeColumnId] = nw;
-                const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
+                let sv = sumValues(this.colsWidthTmp, this.colsVisibility);
                 if (this.tableWidth > sv) {
+                    const fci = this.colsOrder.indexOf(this.flexColumnId);
+                    if (fci > -1 && fci < this.colsOrder.length - 1) {
+                        const lid = this.colsOrder[this.colsOrder.length - 1];
+                        if (!this.ctMap[lid].maxWidth || this.tableWidth - sv + this.colsWidth[lid] <= this.ctMap[lid].maxWidth) {
+                            this.colsWidthTmp[lid] += this.tableWidth - sv;
+                        }
+                        else if (this.colsWidth[lid] < this.ctMap[lid].maxWidth) {
+                            const ld = this.ctMap[lid].maxWidth - this.colsWidth[lid];
+                            sv -= ld;
+                            this.colsWidthTmp[lid] += ld;
+                        }
+                    }
                     this.colsWidthTmp[this.resizeColumnId] += this.tableWidth - sv;
                 }
             }
@@ -375,19 +387,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                 }
             }
         }
-    }
-
-    _shrinkTmpColumn(id: string, delta: number): number {
-        const ct = this.ctMap[id];
-        if (this.colsWidth[id] - delta >= ct.minWidth) {
-            this.colsWidthTmp[id] = this.colsWidth[id] - delta;
-            return 0;
-        }
-        else if (this.colsWidth[id] > ct.minWidth) {
-            delta -= this.colsWidth[id] - ct.minWidth;
-            this.colsWidthTmp[id] = ct.minWidth;
-        }
-        return delta;
     }
 
     shrinkTmpColumns(delta: number, withFlex = true): void {
