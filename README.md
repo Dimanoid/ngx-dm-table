@@ -49,6 +49,7 @@ Property | Description | Type | Default value
 **`[(colsWidth)]`** | Hashmap of columns widths, object where key is column ID and value is width in pixels | `{ [id: string]: number }` | 
 **`(colsWidthChange)`** | Callback executed when `[colsWidth]` is changed | `EventEmitter<{ [id: string]: number }>` | 
 **`[colsVisibility]`** | Hashmap of columns visibility, object where key is column ID and value is boolean indicating if this column should be displayed | `{ [id: string]: boolean }` |
+**`[externalSort]`** | If `true` no internal sort will be performed, just change value and display | `boolean` | **false**
 **`[(sort)]`** | Column ID and order used for internal sorting | [`DmTableSort`](#dmtablesort) | 
 **`(sortChange)`** | Callback executed when `[sort]` is changed | `EventEmitter<DmTableSort>` | 
 **`[defaultColumnConfig]`** | Default config for columns, can be overriden in column's definition | [`DmTableColumnConfig`](#dmtablecolumnconfig) | 

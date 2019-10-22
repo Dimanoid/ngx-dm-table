@@ -104,6 +104,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
     @Output() colsWidthChange: EventEmitter<{ [id: string]: number }> = new EventEmitter();
 
+    @Input() externalSort: boolean = false;
     @Input() sort: DmTableSort;
     @Output() sortChange: EventEmitter<DmTableSort> = new EventEmitter();
 
@@ -482,6 +483,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         }
         const ct = this.columnTemplates.find(item => item.colId == this.sort.colId);
         if (!ct) {
+            return;
+        }
+        if (this.externalSort) {
+            this._cdr.markForCheck();
             return;
         }
         let sort = ct.sort;
