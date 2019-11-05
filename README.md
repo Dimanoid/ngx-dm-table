@@ -6,13 +6,9 @@ Demo page: https://dimanoid.github.io/dm-table/
 
 ## Installation
 
-Install the library:
+Install the library and dependecies:
 
-  `npm i -S @dimanoid/ngx-dm-table`
-
-Install peer dependencies if you don't use them already:
-    
-  `npm i -D @angular/cdk resize-observer-polyfill`
+  `npm i -S @angular/cdk resize-observer-polyfill @dimanoid/ngx-dm-table`
 
 Add module to imports:
 
