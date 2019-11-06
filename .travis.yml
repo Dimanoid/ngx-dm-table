@@ -10,7 +10,7 @@ before_script:
   - npm install -g coveralls
 script:
   - npm run lint
-  - npm run test --verbose
+  - npm run test
   - npm run build
   - npm run build:demo
 after_success:

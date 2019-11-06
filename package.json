@@ -4,7 +4,7 @@
     "scripts": {
         "build": "ng build lib",
         "build:demo": "ng build --aot --prod --base-href /ngx-dm-table/ demo-app",
-        "test": "jest projects/lib",
+        "test": "jest --verbose projects/lib",
         "test:watch": "jest projects/lib --watch --notify",
         "cover": "jest projects/lib --coverage",
         "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
