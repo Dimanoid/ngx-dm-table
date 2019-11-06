@@ -93,8 +93,7 @@
                     "options": {
                         "tsConfig": [
                             "projects/demo-app/tsconfig.app.json",
-                            "projects/demo-app/tsconfig.spec.json",
-                            "projects/demo-app/e2e/tsconfig.json"
+                            "projects/demo-app/tsconfig.spec.json"
                         ],
                         "exclude": [
                             "**/node_modules/**"
