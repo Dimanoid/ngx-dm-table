@@ -80,7 +80,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
 
     @Input() @InputBoolean() moveableColumns: boolean = true;
 
-    private _colsOrderEmited: string[];
     private _colsOrderOriginal: string[];
     private _colsOrder: string[];
     @Input()
@@ -448,9 +447,16 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             }
             changed = true;
         }
+        let i = this._colsOrderOriginal.length;
+        while (i--) {
+            if (!this.ctMap[this._colsOrderOriginal[i]]) {
+                this._colsOrderOriginal.splice(i, 1);
+                changed = true;
+            }
+        }
 
         this._colsOrder = this._colsOrderOriginal.slice();
-        let i = this._colsOrder.length;
+        i = this._colsOrder.length;
         while (i--) {
             if (this.colsVisibility && !this.colsVisibility[this._colsOrder[i]]) {
                 this._colsOrder.splice(i, 1);
