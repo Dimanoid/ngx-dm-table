@@ -50,6 +50,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     private _columnTemplatesQL: QueryList<DmColumnDirective>;
     @ContentChildren(DmColumnDirective)
     set columnTemplatesQL(val: QueryList<DmColumnDirective>) {
+        this.ctMap = {};
         this._columnTemplatesQL = val;
         this.columnTemplates = val ? val.toArray() : null;
         if (!this.columnTemplates) {
@@ -59,6 +60,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             if (!this.columnTemplates[i].colId) {
                 this.columnTemplates[i].colId = '' + i;
             }
+            this.ctMap[this.columnTemplates[i].colId] = this.columnTemplates[i];
         }
     }
     get columnTemplatesQL(): QueryList<DmColumnDirective> {
@@ -203,7 +205,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         if (!this.columnTemplates || !this.columnTemplatesQL) {
             return;
         }
-        this.ctMap = {};
         this.hasFooter = false;
         if (this.columnTemplates.length < 1) {
             this.noColumns = true;
@@ -212,7 +213,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         this.noColumns = false;
         this.flexColumnId = null;
         for (const cd of this.columnTemplates) {
-            this.ctMap[cd.colId] = cd;
             if (!this.colsVisibility || this.colsVisibility[cd.colId]) {
                 if (cd.footerTpl) {
                     this.hasFooter = true;
@@ -425,7 +425,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
 
     updateColumnsOrder(): void {
         let changed = false;
-        if (!this.columnTemplates) {
+        if (!this.columnTemplates || !this.ctMap) {
             return;
         }
         if (!this._colsOrderOriginal) {
