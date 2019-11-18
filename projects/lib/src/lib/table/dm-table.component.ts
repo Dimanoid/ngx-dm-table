@@ -308,7 +308,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                 this.resizeColumnEnd(this._getEndX(e) - this.resizeColumnStartPoint.x);
             };
         }
-        this.resizerX = this.resizerDiv.getBoundingClientRect().left - this.tableLeft;
+        this.resizerX = this._getResizerOffset();
         this._cdr.markForCheck();
     }
 
@@ -328,7 +328,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     resizeColumnMove(delta: number): void {
-        this.resizerX = this.resizerDiv.getBoundingClientRect().left - this.tableLeft;
+        this.resizerX = this._getResizerOffset();
         this.resizeColumnUpdateWidth(delta);
         this._cdr.markForCheck();
     }
@@ -556,6 +556,23 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     colsWidthChangeEmit(v: { [id: string]: number }): void {
         this._colsWidthEmited = v;
         this.colsWidthChange.emit(v);
+    }
+
+    private _getOffset(el: HTMLElement): { x: number, y: number } {
+        let _x = 0;
+        let _y = 0;
+        while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+            _x += el.offsetLeft - el.scrollLeft;
+            _y += el.offsetTop - el.scrollTop;
+            el = el.offsetParent as HTMLElement;
+        }
+        return { y: _y, x: _x };
+    }
+
+    private _getResizerOffset(): number {
+        const to = this._getOffset(this._elemRef.nativeElement);
+        const ro = this._getOffset(this.resizerDiv);
+        return ro.x - to.x;
     }
 
 }
