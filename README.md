@@ -46,11 +46,15 @@ Property | Description | Type | Default value
 **`(colsWidthChange)`** | Callback executed when `[colsWidth]` is changed | `EventEmitter<{ [id: string]: number }>` | 
 **`[colsVisibility]`** | Hashmap of columns visibility, object where key is column ID and value is boolean indicating if this column should be displayed | `{ [id: string]: boolean }` |
 **`[externalSort]`** | If `true` no internal sort will be performed, just change value and display | `boolean` | **false**
-**`[(sort)]`** | Column ID and order used for internal sorting | [`DmTableSort`](#dmtablesort) | 
-**`(sortChange)`** | Callback executed when `[sort]` is changed | `EventEmitter<DmTableSort>` | 
-**`[defaultColumnConfig]`** | Default config for columns, can be overriden in column's definition | [`DmTableColumnConfig`](#dmtablecolumnconfig) | 
+**`[(sort)]`** | Column ID and order used for internal sorting | [`DmTableSort`](#DmTableSort) | 
+**`(sortChange)`** | Callback executed when `[sort]` is changed | `EventEmitter<`[`DmTableSort`](#DmTableSort)`>` | 
+**`[defaultColumnConfig]`** | Default config for columns, can be overriden in column's definition | [`DmTableColumnConfig`](#DmTableColumnConfig) | 
 **`[tableClass]`** | CSS classes that will be added to the `<table>` tags (header, body and footer tables) | `string` | 
 **`[rowClasses]`** | Hashmap where key is CSS classes that will be added to row's `<tr>` tag if value function will return true | `{ [className: string]: (row: any) => boolean }` |
+**`(headerClick)`** | Fires when table header is clicked | `EventEmitter<`[`DmTableHeaderEvent`](#DmTableHeaderEvent)`>` | 
+**`(headerContextMenu)`** | Fires when table header is right-clicked | `EventEmitter<`[`DmTableHeaderEvent`](#DmTableHeaderEvent)`>` | 
+**`(rowClick)`** | Fires when table row is clicked | `EventEmitter<`[`DmTableRowEvent`](#DmTableRowEvent)`>` |
+**`(rowContextMenu)`** | Fires when table row is right-clicked | `EventEmitter<`[`DmTableRowEvent`](#DmTableRowEvent)`>` | 
 
 <br><br>
 
@@ -87,7 +91,6 @@ export interface DmTableSort {
 <br>
 
 ### DmTableColumnConfig
-
 ```ts
 export class DmTableColumnConfig {
     pinnable: boolean = false;
@@ -103,11 +106,31 @@ export class DmTableColumnConfig {
     constructor(json?: any) { }
 }
 ```
+<br>
 
+### DmTableHeaderEvent
+```ts
+export interface DmTableHeaderEvent {
+    colId: string;
+    index: number;
+    first: boolean;
+    last: boolean;
+    event: MouseEvent;
+}
+```
+<br>
+
+### DmTableRowEvent
+```ts
+export interface DmTableRowEvent {
+    index: number;
+    row: any;
+    event: MouseEvent;
+}
+```
 <br>
 
 ### Example
-
 ```html
 <dm-table class="ngx-dmt-stripes"
     [rows]="[
