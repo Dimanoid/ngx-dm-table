@@ -47,20 +47,24 @@
                     <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
-                    <tr *cdkVirtualFor="let r of rows; let ri = index"
-                        [ngClass]="getRowClasses(r)"
-                        (click)="rowClick.emit({ index: ri, row: r, event: $event })"
-                        (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
-                        <td *ngFor="let cid of colsOrder; let i = index"
-                            [ngClass]="ctMap[cid].cellClass"
-                            [style.white-space]="ctMap[cid].whitespace">
-                            <ng-container *ngIf="ctMap[cid].cellTpl"
-                                [ngTemplateOutlet]="ctMap[cid].cellTpl"
-                                [ngTemplateOutletContext]="{ row: r, ct: ctMap[cid], $implicit: r[cid], ci: i, ri: ri }">
-                            </ng-container>
-                            <ng-template [ngIf]="!ctMap[cid].cellTpl">{{ r[cid] }}</ng-template>
-                        </td>
-                    </tr>
+                    <ng-container *cdkVirtualFor="let r of rows; let ri = index">
+                        <tr *ngIf="ri % 10 == 0">
+                            <td [colSpan]="colsOrder.length">типа групхедер</td>
+                        </tr>
+                        <tr [ngClass]="getRowClasses(r)"
+                            (click)="rowClick.emit({ index: ri, row: r, event: $event })"
+                            (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
+                            <td *ngFor="let cid of colsOrder; let i = index"
+                                [ngClass]="ctMap[cid].cellClass"
+                                [style.white-space]="ctMap[cid].whitespace">
+                                <ng-container *ngIf="ctMap[cid].cellTpl"
+                                    [ngTemplateOutlet]="ctMap[cid].cellTpl"
+                                    [ngTemplateOutletContext]="{ row: r, ct: ctMap[cid], $implicit: r[cid], ci: i, ri: ri }">
+                                </ng-container>
+                                <ng-template [ngIf]="!ctMap[cid].cellTpl">{{ r[cid] }}</ng-template>
+                            </td>
+                        </tr>
+                    </ng-container>
                 </tbody>
             </table>
         </cdk-virtual-scroll-viewport>

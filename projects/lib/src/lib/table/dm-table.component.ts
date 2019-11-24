@@ -3,7 +3,7 @@ import {
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
     ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone,
-    Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterContentInit
+    Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterContentInit, ContentChild, TemplateRef
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues } from '../utils';
@@ -34,6 +34,13 @@ export interface DmTableHeaderEvent {
     event: MouseEvent;
 }
 
+export interface DmTableRowsGroup {
+    index?: number;
+    firstRowIndex?: number;
+    lastRowIndex?: number;
+    rows: any[];
+}
+
 @Component({
     selector: 'dm-table',
     exportAs: 'dmTable',
@@ -46,6 +53,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     @HostBinding('class.ngx-dmt-container') _hostCss = true;
 
     @ViewChild('headerWrapper', { static: false }) headerWrapper: ElementRef;
+
+    @ContentChild('groupHeader', { static: false }) groupHeaderTpl: TemplateRef<any>;
+    @ContentChild('groupFooter', { static: false }) groupFooterTpl: TemplateRef<any>;
 
     private _columnTemplatesQL: QueryList<DmColumnDirective>;
     @ContentChildren(DmColumnDirective)
@@ -69,7 +79,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     columnTemplates: DmColumnDirective[];
     ctMap: { [colId: string]: DmColumnDirective };
 
-    @Input() rows: any[];
+    rows: any[];
+    @Input() data: DmTableRowsGroup[] | any[];
+    @Input() @InputBoolean() groupped: boolean = false;
 
     private _itemSize: number = MIN_ITEM_SIZE;
     @Input() @InputNumber()
@@ -185,8 +197,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // _D('[DmTableComponent] ngOnChanges, changes:', changes);
-        if (changes['rows'] || changes['sort']) {
+        // console.log('[DmTableComponent] ngOnChanges, changes:', changes);
+        if (changes['data'] || changes['sort']) {
             this.sortRows();
         }
         if (changes['colsVisibility']) {
@@ -484,7 +496,18 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     sortRows(): void {
-        if (!this.rows || !this.sort || !this.columnTemplates) {
+        if (this.groupped) {
+            this.rows = [];
+            for (const group of this.data) {
+                if (group.rows) {
+                    this.rows.push(...group.rows);
+                }
+            }
+        }
+        else {
+            this.rows = this.data;
+        }
+        if (!this.data || !this.sort || !this.columnTemplates) {
             return;
         }
         const ct = this.columnTemplates.find(item => item.colId == this.sort.colId);
@@ -496,7 +519,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             return;
         }
         let sort = ct.sort;
-        // _D('[DmTableComponent] sortRows, ct:', ct);
         if (typeof sort != 'function') {
             if (sort == 'number') {
                 sort = SortNumbersBy(ct.colId);
@@ -508,11 +530,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                 sort = SortStringsBy(ct.colId);
             }
         }
-        const rows = this.rows.sort(sort);
+        const rows = this.data.sort(sort);
         if (this.sort.order < 0) {
             rows.reverse();
         }
-        this.rows = rows.slice();
+        this.data = rows.slice();
     }
 
     toggleSort(id: string) {

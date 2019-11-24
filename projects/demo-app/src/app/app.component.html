@@ -57,7 +57,7 @@
             <div class="layout flex relative">
                 <div class="layout fit scroll">
                     <dm-table #example1
-                        [rows]="data"
+                        [data]="data"
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
                         [rowClasses]="{ 'dmt-selected': selectedFn }"
