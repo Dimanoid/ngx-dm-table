@@ -48,9 +48,9 @@
                 </colgroup>
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of rows; let ri = index">
-                        <tr *ngIf="ri % 10 == 0">
-                            <td [colSpan]="colsOrder.length">типа групхедер</td>
-                        </tr>
+                        <!-- <tr *ngIf="ri % 10 == 0">
+                            <td [colSpan]="colsOrder.length">test</td>
+                        </tr> -->
                         <tr [ngClass]="getRowClasses(r)"
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
