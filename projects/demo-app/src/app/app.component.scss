@@ -32,8 +32,8 @@ dm-table {
                 }
             }
         }
-        & > tbody > tr {
-            & > td {
+        & > tbody > tr.ngx-dmt-row {
+            & > td.ngx-dmt-cell {
                 &.td-icon {
                     padding: 2px;
                     text-overflow: clip;
@@ -52,7 +52,7 @@ dm-table {
                     color: #0070af;
                 }
             }
-            &:hover > td.td-icon > i {
+            &:hover > td.ngx-dmt-cell.td-icon > i {
                 color: #080;
                 font-size: 25px;
                 transform: rotate(360deg);

@@ -34,10 +34,10 @@ export interface DmTableHeaderEvent {
     event: MouseEvent;
 }
 
-export interface DmTableRowsGroup {
-    index?: number;
-    firstRowIndex?: number;
-    lastRowIndex?: number;
+export class DmTableRowsGroup {
+    index: number;
+    first: number;
+    last: number;
     rows: any[];
 }
 
@@ -80,7 +80,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     ctMap: { [colId: string]: DmColumnDirective };
 
     rows: any[];
-    @Input() data: DmTableRowsGroup[] | any[];
+    groups: DmTableRowsGroup[];
+    groupStart: { [index: number]: DmTableRowsGroup };
+    groupEnd: { [index: number]: DmTableRowsGroup };
+    @Input() data: any[];
     @Input() @InputBoolean() groupped: boolean = false;
 
     private _itemSize: number = MIN_ITEM_SIZE;
@@ -498,9 +501,20 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     sortRows(): void {
         if (this.groupped) {
             this.rows = [];
+            this.groups = [];
+            this.groupStart = {};
+            this.groupEnd = {};
             for (const group of this.data) {
                 if (group.rows) {
+                    const gr = new DmTableRowsGroup();
+                    gr.index = this.groups.length - 1;
+                    gr.rows = group.rows;
+                    gr.first = this.rows.length;
                     this.rows.push(...group.rows);
+                    gr.last = this.rows.length - 1;
+                    this.groups.push(gr);
+                    this.groupStart[gr.first] = gr;
+                    this.groupEnd[gr.last] = gr;
                 }
             }
         }
@@ -518,23 +532,38 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             this._cdr.markForCheck();
             return;
         }
-        let sort = ct.sort;
-        if (typeof sort != 'function') {
-            if (sort == 'number') {
+        let sort: (a: any, b: any) => number;
+        if (typeof ct.sort != 'function') {
+            if (ct.sort == 'number') {
                 sort = SortNumbersBy(ct.colId);
             }
-            else if (sort == 'boolean') {
+            else if (ct.sort == 'boolean') {
                 sort = SortBooleansBy(ct.colId);
             }
             else {
                 sort = SortStringsBy(ct.colId);
             }
         }
-        const rows = this.data.sort(sort);
-        if (this.sort.order < 0) {
-            rows.reverse();
+        if (this.groupped) {
+            for (const group of this.groups) {
+                group.rows = group.rows.sort((a, b) => this.sort.order < 0 ? 1 - sort(a, b) : sort(a, b));
+            }
+            this.groups = this.groups.sort(
+                (a, b) => this.sort.order < 0 ? 1 - sort(a.rows[0], b.rows[0]) : sort(a.rows[0], b.rows[0])
+            );
+            this.groupStart = {};
+            this.groupEnd = {};
+            for (let i = 0; i < this.groups.length; i++) {
+                const group = this.groups[i];
+                group.index = i;
+                this.groupStart[this.rows.length] = group;
+                this.rows.push(...group.rows);
+                this.groupStart[this.rows.length - 1] = group;
+            }
         }
-        this.data = rows.slice();
+        else {
+            this.rows = this.data.sort((a, b) => this.sort.order < 0 ? 1 - sort(a, b) : sort(a, b));
+        }
     }
 
     toggleSort(id: string) {

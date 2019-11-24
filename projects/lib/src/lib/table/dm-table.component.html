@@ -48,13 +48,18 @@
                 </colgroup>
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of rows; let ri = index">
-                        <!-- <tr *ngIf="ri % 10 == 0">
-                            <td [colSpan]="colsOrder.length">test</td>
-                        </tr> -->
-                        <tr [ngClass]="getRowClasses(r)"
+                        <tr *ngIf="groupped && groupHeaderTpl && groupStart[ri]" class="ngx-dmt-group-header-row">
+                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-header-cell">
+                                <ng-container [ngTemplateOutlet]="groupHeaderTpl"
+                                    [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupStart[ri] }">
+                                </ng-container>
+                            </td>
+                        </tr>
+                        <tr class="ngx-dmt-row" [ngClass]="getRowClasses(r)"
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
                             <td *ngFor="let cid of colsOrder; let i = index"
+                                class="ngx-dmt-cell"
                                 [ngClass]="ctMap[cid].cellClass"
                                 [style.white-space]="ctMap[cid].whitespace">
                                 <ng-container *ngIf="ctMap[cid].cellTpl"
@@ -62,6 +67,13 @@
                                     [ngTemplateOutletContext]="{ row: r, ct: ctMap[cid], $implicit: r[cid], ci: i, ri: ri }">
                                 </ng-container>
                                 <ng-template [ngIf]="!ctMap[cid].cellTpl">{{ r[cid] }}</ng-template>
+                            </td>
+                        </tr>
+                        <tr *ngIf="groupped && groupFooterTpl && groupEnd[ri]" class="ngx-dmt-group-footer-row">
+                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-footer-cell">
+                                <ng-container [ngTemplateOutlet]="groupFooterTpl"
+                                    [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupEnd[ri] }">
+                                </ng-container>
                             </td>
                         </tr>
                     </ng-container>

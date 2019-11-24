@@ -202,9 +202,9 @@ table.ngx-dmt {
     }
 
     & > tbody {
-        & > tr {
+        & > tr.ngx-dmt-row {
             background-color: $bodyBgColor;
-            & > td {
+            & > td.ngx-dmt-cell {
                 cursor: pointer;
                 text-align: left;
                 border-width: 0 1px 0 0;
@@ -218,6 +218,22 @@ table.ngx-dmt {
                 &:last-child {
                     border-right-color: transparent !important;
                 }
+            }
+        }
+        & > tr.ngx-dmt-group-header-row {
+            background-color: $tableBorderColor;
+            & > td.ngx-dmt-group-header-cell {
+                padding: 5px 10px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+        & > tr.ngx-dmt-group-footer-row {
+            background-color: $bodyBgColor;
+            & > td.ngx-dmt-group-footer-cell {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                height: 5px;
             }
         }
     }
