@@ -544,6 +544,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                 sort = SortStringsBy(ct.colId);
             }
         }
+        else {
+            sort = ct.sort;
+        }
         if (this.groupped) {
             for (const group of this.groups) {
                 group.rows = group.rows.sort((a, b) => this.sort.order < 0 ? 1 - sort(a, b) : sort(a, b));
