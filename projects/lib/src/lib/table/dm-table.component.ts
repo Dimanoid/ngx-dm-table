@@ -549,10 +549,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         }
         if (this.groupped) {
             for (const group of this.groups) {
-                group.rows = group.rows.sort((a, b) => this.sort.order < 0 ? 1 - sort(a, b) : sort(a, b));
+                group.rows = group.rows.sort((a, b) => this.sort.order < 0 ? sort(b, a) : sort(a, b));
             }
             this.groups = this.groups.sort(
-                (a, b) => this.sort.order < 0 ? 1 - sort(a.rows[0], b.rows[0]) : sort(a.rows[0], b.rows[0])
+                (a, b) => this.sort.order < 0 ? sort(b.rows[0], a.rows[0]) : sort(a.rows[0], b.rows[0])
             );
             this.groupStart = {};
             this.groupEnd = {};
@@ -565,8 +565,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             }
         }
         else {
-            this.rows = this.data.sort((a, b) => this.sort.order < 0 ? 1 - sort(a, b) : sort(a, b));
+            this.rows = this.data.sort((a, b) => this.sort.order < 0 ? sort(b, a) : sort(a, b));
         }
+        this.rows = this.rows.slice();
+        this._cdr.markForCheck();
     }
 
     toggleSort(id: string) {
@@ -575,7 +577,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             order: this.sort && this.sort.colId == id ? -this.sort.order : 1
         };
         this.sortChange.emit(this.sort);
-        this.sortRows();
+        // this.sortRows();
         this._cdr.markForCheck();
     }
 
