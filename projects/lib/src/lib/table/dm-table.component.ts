@@ -567,6 +567,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         else {
             this.rows = this.data.sort((a, b) => this.sort.order < 0 ? sort(b, a) : sort(a, b));
         }
+        this.rows = this.rows.slice();
+        this._cdr.markForCheck();
     }
 
     toggleSort(id: string) {
@@ -575,7 +577,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             order: this.sort && this.sort.colId == id ? -this.sort.order : 1
         };
         this.sortChange.emit(this.sort);
-        this.sortRows();
+        // this.sortRows();
         this._cdr.markForCheck();
     }
 
