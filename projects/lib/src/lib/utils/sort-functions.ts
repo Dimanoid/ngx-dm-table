@@ -4,7 +4,7 @@ export function SortStringsBy(name: string) {
         : (
             b[name] == null
                 ? 1
-                : (<String>a[name]).toLocaleLowerCase().localeCompare(b[name].toLocaleLowerCase())
+                : (a[name] as string).toLocaleLowerCase().localeCompare(b[name].toLocaleLowerCase())
         );
 }
 
