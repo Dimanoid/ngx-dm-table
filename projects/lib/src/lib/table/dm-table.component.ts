@@ -84,6 +84,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     groupStart: { [index: number]: DmTableRowsGroup };
     groupEnd: { [index: number]: DmTableRowsGroup };
     @Input() data: any[];
+    @Input() trackBy: (index: number, item: any) => any;
     @Input() @InputBoolean() groupped: boolean = false;
 
     private _itemSize: number = MIN_ITEM_SIZE;
@@ -508,7 +509,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             for (const group of this.data) {
                 if (group.rows) {
                     const gr = new DmTableRowsGroup();
-                    gr.index = this.groups.length - 1;
+                    gr.index = this.groups.length;
                     gr.rows = group.rows;
                     gr.first = this.rows.length;
                     this.rows.push(...group.rows);
@@ -632,6 +633,10 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         const to = this._getOffset(this._elemRef.nativeElement);
         const ro = this._getOffset(this.resizerDiv);
         return ro.x - to.x;
+    }
+
+    trackByFn(index: number, row: any): any {
+        return this.trackBy ? this.trackBy(index, row) : row;
     }
 
 }

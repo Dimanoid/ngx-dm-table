@@ -37,7 +37,8 @@ export class AppModule { }
 
 Property | Description | Type | Default value
 ---------|-------------|------|--------------
-**`[rows]`** | Array of rows to display | `any[]` | 
+**`[data]`** | Array of rows to display | `any[]` | 
+**`[trackBy]`** | trackBy function that will be used in `*cdkVirtualFor` | `(index: number, item: T) => any` | 
 **`[itemSize]`** | Row height in pixels, minimum if rows has variable height | `number` | **MIN_ITEM_SIZE** (30)
 **`[moveableColumns]`** | Whether table columns can be reordered by drag-n-drop or not | `boolean` | **true**
 **`[(colsOrder)]`** | Array of row's IDs defining the current display order, can be changed if `[moveableColumns]` is set to **true** | `string[]` | 
@@ -133,7 +134,7 @@ export interface DmTableRowEvent {
 ### Example
 ```html
 <dm-table class="ngx-dmt-stripes"
-    [rows]="[
+    [data]="[
         [1, 'one', { key: 'value1' }],
         [2, 'two', { key: 'value2' }],
         [3, 'three', { key: 'value3' }]
