@@ -200,7 +200,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        // console.log('[DmTableComponent] ngOnChanges, changes:', changes);
+        // tslint:disable-next-line: no-console
+        console.debug('[DmTableComponent] ngOnChanges, changes:', changes);
         if (changes['data'] || changes['sort']) {
             this.sortRows();
         }
@@ -517,6 +518,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                     this.groupEnd[gr.last] = gr;
                 }
             }
+            // tslint:disable-next-line: no-console
+            console.debug('[DmTableComponent] sortRows, groups:', this.groups, 'start:', this.groupStart, 'end:', this.groupEnd);
         }
         else {
             this.rows = this.data;
