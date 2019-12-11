@@ -49,14 +49,13 @@
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of rows; let ri = index; trackBy: trackByFn">
                         <tr *ngIf="groupped && groupHeaderTpl && groupStart[ri]" class="ngx-dmt-group-header-row">
-                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-header-cell"
-                                title="ri: {{ ri | json }}, {{ groupStart[ri].index }}/{{ groupStart[ri].first }}-{{ groupStart[ri].last }}, id: {{ r.id }}">
+                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-header-cell">
                                 <ng-container [ngTemplateOutlet]="groupHeaderTpl"
                                     [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupStart[ri] }">
                                 </ng-container>
                             </td>
                         </tr>
-                        <tr class="ngx-dmt-row" [ngClass]="getRowClasses(r)" title="ri: {{ ri | json }}, id: {{ r.id }}"
+                        <tr class="ngx-dmt-row" [ngClass]="getRowClasses(r)"
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
                             <td *ngFor="let cid of colsOrder; let i = index"
@@ -71,8 +70,7 @@
                             </td>
                         </tr>
                         <tr *ngIf="groupped && groupFooterTpl && groupEnd[ri]" class="ngx-dmt-group-footer-row">
-                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-footer-cell"
-                                title="ri: {{ ri | json }}, {{ groupEnd[ri].index }}/{{ groupEnd[ri].first }}-{{ groupEnd[ri].last }}, id: {{ r.id }}">
+                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-footer-cell">
                                 <ng-container [ngTemplateOutlet]="groupFooterTpl"
                                     [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupEnd[ri] }">
                                 </ng-container>
