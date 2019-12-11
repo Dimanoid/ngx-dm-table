@@ -635,8 +635,6 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         return ro.x - to.x;
     }
 
-    trackByFn(index: number, row: any): any {
-        return this.trackBy ? this.trackBy(index, row) : row;
-    }
+    trackByFn = (index: number, row: any): any => this.trackBy ? this.trackBy(index, row) : row;
 
 }
