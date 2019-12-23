@@ -34,11 +34,12 @@ export interface DmTableHeaderEvent {
     event: MouseEvent;
 }
 
-export class DmTableRowsGroup {
+export interface DmTableRowsGroup {
     index: number;
     first: number;
     last: number;
     rows: any[];
+    data: any;
 }
 
 @Component({
@@ -506,10 +507,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             this.groupEnd = {};
             for (const group of this.data) {
                 if (group.rows) {
-                    const gr = new DmTableRowsGroup();
-                    gr.index = this.groups.length;
-                    gr.rows = group.rows;
-                    gr.first = this.rows.length;
+                    const gr = {
+                        index: this.groups.length,
+                        first: this.rows.length,
+                        last: this.rows.length,
+                        rows: group.rows,
+                        data: group.data
+                    };
                     this.rows.push(...group.rows);
                     gr.last = this.rows.length - 1;
                     this.groups.push(gr);
