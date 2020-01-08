@@ -64,6 +64,7 @@ Property | Description | Type | Default value
 Property | Description | Type
 ---------|-------------|-----
 **`[colId]`** | Unique ID of the column | `string`
+**`[colIdAlias]`** | Alternative ID of the column that can be used to match the current sort | `string`
 **`[title]`** | Column header title string, will be displayed if no `#header` template is defined | `string`
 **`[pinnable]`** | *Not yet implemented* | `boolean`
 **`[sortable]`** | Whether the table can be sorted by this column or not | `boolean`

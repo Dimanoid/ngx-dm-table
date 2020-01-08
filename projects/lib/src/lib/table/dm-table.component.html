@@ -17,7 +17,7 @@
                         [ngClass]="ctMap[cid].headerClass"
                         [class.ngx-dmt-sortable]="ctMap[cid].sortable"
                         [class.ngx-dmt-resizable]="ctMap[cid].resizable && !l"
-                        [class.ngx-dmt-sorted]="sort && sort.colId == cid"
+                        [class.ngx-dmt-sorted]="sort && (sort.colId == cid || sort.colId == ctMap[cid].colIdAlias)"
                         [class.ngx-dmt-sorted-asc]="sort && sort.order > 0"
                         [class.ngx-dmt-sorted-desc]="sort && sort.order < 0"
                         (click)="headerClick.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
