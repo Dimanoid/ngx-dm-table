@@ -576,6 +576,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     toggleSort(id: string) {
+        if (this.ctMap[id].colIdAlias) {
+            id = this.ctMap[id].colIdAlias;
+        }
         this.sort = {
             colId: id,
             order: this.sort && this.sort.colId == id ? -this.sort.order : 1

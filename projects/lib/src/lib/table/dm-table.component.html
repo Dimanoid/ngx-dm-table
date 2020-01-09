@@ -24,7 +24,6 @@
                         (contextmenu)="headerContextMenu.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         cdkDrag cdkDragLockAxis="x">
                         <div class="ngx-dmt-column-title" (click)="ctMap[cid].sortable ? toggleSort(cid) : null">
-                            <!-- {{ resizeColumnIndex > -1 ? colsWidthTmp[i] : colsWidth[i] }} <small class="fw-n">({{ ctMap[cid].minWidth }} - {{ ctMap[cid].maxWidth ? ctMap[cid].maxWidth : '∞' }})</small> -->
                             <ng-container *ngIf="ctMap[cid].headerTpl" [ngTemplateOutlet]="ctMap[cid].headerTpl"></ng-container>
                             <ng-template [ngIf]="!ctMap[cid].headerTpl">{{ ctMap[cid].title }}</ng-template>
                         </div>
