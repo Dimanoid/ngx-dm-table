@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { DmTableSort } from '@dimanoid/ngx-dm-table';
 import { Point } from './dm-divider.module';
+import { DmTableRowDragEvent } from 'projects/lib/src/public-api';
 
 const ICONS = [
     'rocket',
@@ -37,6 +38,7 @@ const COLS_WIDTH = { 0: 38, 1: 100, 2: 160, 3: 200, 4: 200, 5: 30, 6: 400, 7: 10
     encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
+    @ViewChild('dragHelper', { static: false }) dragHelper: ElementRef;
 
     stripes: boolean = false;
     data: any[][] = [];
@@ -61,6 +63,12 @@ export class AppComponent implements OnInit {
     } = {};
     selected: { [id: number]: boolean } = {};
     hideAll: boolean = false;
+    dndEnabled: boolean = true;
+    multiLineDnd: boolean = false;
+
+    dragging: any;
+    dropped: any;
+    dragIds: string[];
 
     Object = Object;
     selectedFn = (row: any) => this.selected[row[0]];
@@ -142,6 +150,44 @@ export class AppComponent implements OnInit {
 
     resetWidths() {
         this.colsWidth = Object.assign({}, COLS_WIDTH);
+    }
+
+    onRowDragStart(e: DmTableRowDragEvent) {
+        console.log('onRowDragStart', e);
+        this.dragIds = [];
+        if (!this.multiLineDnd) {
+            this.dragIds = [e.row[0]];
+        }
+        else {
+            this.dragIds = Object.keys(this.selected).filter(id => this.selected[id]);
+            if (this.dragIds.length == 0) {
+                this.dragIds.push(e.row[0]);
+            }
+            const helper = this.dragHelper.nativeElement;
+            e.event.dataTransfer.setDragImage(helper, -5, -5);
+        }
+        e.event.dataTransfer.setData('text/plain', JSON.stringify(this.dragIds));
+        this.dragging = this.dragIds;
+        this.dropped = null;
+    }
+
+    onRowDragEnd(e: DmTableRowDragEvent) {
+        console.log('onRowDragEnd', e);
+        this.dragging = null;
+        const helper = this.dragHelper.nativeElement;
+    }
+
+    onRowDrop(e: DmTableRowDragEvent) {
+        console.log('onRowDrop', e);
+        const dd: any = { droppedOn: e.row[0] };
+        try {
+            const data = JSON.parse(e.event.dataTransfer.getData('text/plain'));
+            dd.droppedIds = data;
+        }
+        catch (ex) {
+            dd.error = ex.toString();
+        }
+        this.dropped = dd;
     }
 
 }

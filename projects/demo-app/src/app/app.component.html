@@ -38,9 +38,25 @@
                                 <nz-switch nzSize="small" [(ngModel)]="hideAll"></nz-switch>
                                 <span class="ml05">Hide all columns except last</span>
                             </div>
+                            <div class="layout center mt1">
+                                <nz-switch nzSize="small" [(ngModel)]="dndEnabled"></nz-switch>
+                                <span class="ml05">Enable rows Drag-n-Drop</span>
+                            </div>
+                            <div *ngIf="dndEnabled" class="layout center mt1 ml1">
+                                <nz-switch nzSize="small" [(ngModel)]="multiLineDnd"></nz-switch>
+                                <span class="ml05">Enable multiple rows Drag</span>
+                            </div>
                         </div>
                         <div class="layout vertical mt1">
                             <button nz-button (click)="resetWidths()">Reset columns widths</button>
+                        </div>
+                        <div *ngIf="dragging" class="layout vertical mt1">
+                            <b>Dragging:</b>
+                            <span class="dmtd-drag-data">{{ dragging | json }}</span>
+                        </div>
+                        <div *ngIf="dropped" class="layout vertical mt1">
+                            <b>Dropped:</b>
+                            <pre class="dmtd-drag-data">{{ dropped | json }}</pre>
                         </div>
                     </div>
                 </div>
@@ -65,7 +81,13 @@
                         [(colsWidth)]="colsWidth"
                         [(colsOrder)]="colsOrder"
                         [(sort)]="sort"
-                        (rowClick)="selected[$event.row[0]] = !selected[$event.row[0]]">
+                        [rowsDragEnabled]="dndEnabled"
+                        [rowsDropEnabled]="dndEnabled"
+                        (rowClick)="selected[$event.row[0]] = !selected[$event.row[0]]"
+                        (rowDragStart)="onRowDragStart($event)"
+                        (rowDragEnd)="onRowDragEnd($event)"
+                        (rowDrop)="onRowDrop($event)"
+                        >
                         <dm-column
                             minWidth="38"
                             resizable="false"
@@ -149,4 +171,8 @@
         </div>
 
     </div>
+</div>
+
+<div class="dmtd-drag-helper" [style.display]="dragging && multiLineDnd ? 'block' : 'none'" #dragHelper>
+    {{ dragIds?.length }} row(s) dragging.
 </div>
