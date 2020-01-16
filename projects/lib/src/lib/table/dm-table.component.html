@@ -55,6 +55,13 @@
                             </td>
                         </tr>
                         <tr class="ngx-dmt-row" [ngClass]="getRowClasses(r)"
+                            [draggable]="rowsDragEnabled"
+                            (dragstart)="onRowDragStart(ri, r, $event)"
+                            (dragend)="onRowDragEnd(ri, r, $event)"
+                            (dragleave)="onRowDragLeave(ri, r, $event)"
+                            (dragenter)="onRowDragEnter(ri, r, $event)"
+                            (dragover)="onRowDragOver(ri, r, $event)"
+                            (drop)="onRowDrop(ri, r, $event)"
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
                             <td *ngFor="let cid of colsOrder; let i = index"

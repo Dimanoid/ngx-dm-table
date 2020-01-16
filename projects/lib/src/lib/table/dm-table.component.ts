@@ -42,6 +42,12 @@ export interface DmTableRowsGroup {
     data: any;
 }
 
+export interface DmTableRowDragEvent {
+    index: number;
+    row: any;
+    event: DragEvent;
+}
+
 @Component({
     selector: 'dm-table',
     exportAs: 'dmTable',
@@ -133,8 +139,15 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
 
     @Output() headerClick: EventEmitter<DmTableHeaderEvent> = new EventEmitter();
     @Output() headerContextMenu: EventEmitter<DmTableHeaderEvent> = new EventEmitter();
+
     @Output() rowClick: EventEmitter<DmTableRowEvent> = new EventEmitter();
     @Output() rowContextMenu: EventEmitter<DmTableRowEvent> = new EventEmitter();
+
+    @Input() rowsDragEnabled: boolean = false;
+    @Input() rowsDropEnabled: boolean = false;
+    @Output() rowDragStart: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
+    @Output() rowDragEnd: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
+    @Output() rowDrop: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
 
     hasFooter: boolean = false;
     flexColumnId: string;
@@ -639,5 +652,32 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     trackByFn = (index: number, row: any): any => this.trackBy ? this.trackBy(index, row) : row;
+
+    onRowDragStart(index: number, row: any, event: DragEvent) {
+        this.rowDragStart.emit({  index, row, event });
+    }
+
+    onRowDragEnd(index: number, row: any, event: DragEvent) {
+        this.rowDragEnd.emit({  index, row, event });
+    }
+
+    onRowDragEnter(index: number, row: any, event: DragEvent) {
+    }
+
+    onRowDragLeave(index: number, row: any, event: DragEvent) {
+    }
+
+    onRowDragOver(index: number, row: any, event: DragEvent) {
+        if (this.rowsDropEnabled) {
+            event.preventDefault();
+        }
+    }
+
+    onRowDrop(index: number, row: any, event: DragEvent) {
+        if (this.rowsDropEnabled) {
+            event.preventDefault();
+            this.rowDrop.emit({  index, row, event });
+        }
+    }
 
 }
