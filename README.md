@@ -56,6 +56,11 @@ Property | Description | Type | Default value
 **`(headerContextMenu)`** | Fires when table header is right-clicked | `EventEmitter<`[`DmTableHeaderEvent`](#DmTableHeaderEvent)`>` | 
 **`(rowClick)`** | Fires when table row is clicked | `EventEmitter<`[`DmTableRowEvent`](#DmTableRowEvent)`>` |
 **`(rowContextMenu)`** | Fires when table row is right-clicked | `EventEmitter<`[`DmTableRowEvent`](#DmTableRowEvent)`>` | 
+**`[rowsDragEnabled]`** | Enable DragEvents on rows | `boolean` | **false**
+**`(rowDragStart)`** | Fires (if `rowsDragEnabled = true`) when table row gets `ondragstart` event.  | `EventEmitter<`[`DmTableRowDragEvent`](#DmTableRowDragEvent)`>` | 
+**`(rowDragEnd)`** | Fires (if `rowsDragEnabled = true`) when table row gets `ondragend` event.  | `EventEmitter<`[`DmTableRowDragEvent`](#DmTableRowDragEvent)`>` | 
+**`[rowsDropEnabled]`** | Enable DropEvents on rows | `boolean` | **false**
+**`(rowDrop)`** | Fires (if `rowsDropEnabled = true`) when table row gets `ondrop` event.  | `EventEmitter<`[`DmTableRowDragEvent`](#DmTableRowDragEvent)`>` | 
 
 <br><br>
 
@@ -128,6 +133,16 @@ export interface DmTableRowEvent {
     index: number;
     row: any;
     event: MouseEvent;
+}
+```
+<br>
+
+### DmTableRowDragEvent
+```ts
+export interface DmTableRowDragEvent {
+    index: number;
+    row: any;
+    event: DragEvent;
 }
 ```
 <br>
