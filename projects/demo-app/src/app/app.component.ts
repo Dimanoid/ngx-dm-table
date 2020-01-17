@@ -176,7 +176,6 @@ export class AppComponent implements OnInit {
     onRowDragEnd(e: DmTableRowDragEvent) {
         console.log('onRowDragEnd', e);
         this.dragging = null;
-        const helper = this.dragHelper.nativeElement;
     }
 
     onRowDrop(e: DmTableRowDragEvent) {
