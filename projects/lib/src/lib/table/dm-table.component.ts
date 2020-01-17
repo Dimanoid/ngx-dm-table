@@ -3,7 +3,8 @@ import {
     ChangeDetectionStrategy, ViewEncapsulation,
     Input, HostBinding,
     ContentChildren, QueryList, ElementRef, ChangeDetectorRef, NgZone,
-    Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterContentInit, ContentChild, TemplateRef
+    Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterContentInit,
+    ContentChild, TemplateRef, Renderer2
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
 import { getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues } from '../utils';
@@ -148,6 +149,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     @Output() rowDragStart: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDragEnd: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDrop: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
+    @Input() rowDropAllowed: (row: any) => boolean = () => true;
 
     hasFooter: boolean = false;
     flexColumnId: string;
@@ -163,7 +165,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     horScroll: number = 0;
     noColumns: boolean;
 
-    constructor(private _elemRef: ElementRef, private _cdr: ChangeDetectorRef, private _ngZone: NgZone, private _dts: DmTableService) {
+    constructor(
+        private _elemRef: ElementRef,
+        private _cdr: ChangeDetectorRef,
+        private _ngZone: NgZone,
+        private _r2: Renderer2,
+        private _dts: DmTableService
+    ) {
         this.updateHelpers();
     }
 
@@ -661,23 +669,34 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         this.rowDragEnd.emit({  index, row, event });
     }
 
-    onRowDragEnter(index: number, row: any, event: DragEvent) {
+    onRowDragEnter(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
+        this._r2.addClass(el, this.rowDropAllowed(row) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
-    onRowDragLeave(index: number, row: any, event: DragEvent) {
+    onRowDragLeave(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
+        this._removeDragClasses(el);
     }
 
-    onRowDragOver(index: number, row: any, event: DragEvent) {
-        if (this.rowsDropEnabled) {
-            event.preventDefault();
+    onRowDragOver(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
+        if (!this.rowsDropEnabled) {
+            return;
         }
+        event.preventDefault();
+        this._r2.addClass(el, 'ngx-dmt-row-dragover');
     }
 
-    onRowDrop(index: number, row: any, event: DragEvent) {
-        if (this.rowsDropEnabled) {
+    onRowDrop(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
+        if (this.rowsDropEnabled && this.rowDropAllowed(row)) {
             event.preventDefault();
             this.rowDrop.emit({  index, row, event });
         }
+        this._removeDragClasses(el);
+    }
+
+    private _removeDragClasses(el: HTMLTableRowElement) {
+        this._r2.removeClass(el, 'ngx-dmt-row-dragover');
+        this._r2.removeClass(el, 'ngx-dmt-row-drop-allowed');
+        this._r2.removeClass(el, 'ngx-dmt-row-drop-forbiden');
     }
 
 }

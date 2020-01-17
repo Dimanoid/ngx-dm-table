@@ -58,12 +58,13 @@
                             [draggable]="rowsDragEnabled"
                             (dragstart)="onRowDragStart(ri, r, $event)"
                             (dragend)="onRowDragEnd(ri, r, $event)"
-                            (dragleave)="onRowDragLeave(ri, r, $event)"
-                            (dragenter)="onRowDragEnter(ri, r, $event)"
-                            (dragover)="onRowDragOver(ri, r, $event)"
-                            (drop)="onRowDrop(ri, r, $event)"
+                            (dragleave)="onRowDragLeave(ri, r, $event, bodyRow)"
+                            (dragenter)="onRowDragEnter(ri, r, $event, bodyRow)"
+                            (dragover)="onRowDragOver(ri, r, $event, bodyRow)"
+                            (drop)="onRowDrop(ri, r, $event, bodyRow)"
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
-                            (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })">
+                            (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })"
+                            #bodyRow>
                             <td *ngFor="let cid of colsOrder; let i = index"
                                 class="ngx-dmt-cell"
                                 [ngClass]="ctMap[cid].cellClass"
