@@ -46,6 +46,10 @@
                                 <nz-switch nzSize="small" [(ngModel)]="multiLineDnd"></nz-switch>
                                 <span class="ml05">Enable multiple rows Drag</span>
                             </div>
+                            <div *ngIf="dndEnabled" class="layout center mt1 ml1">
+                                <nz-switch nzSize="small" [(ngModel)]="evenRowDrop"></nz-switch>
+                                <span class="ml05">Allow drop only or rows with even id</span>
+                            </div>
                         </div>
                         <div class="layout vertical mt1">
                             <button nz-button (click)="resetWidths()">Reset columns widths</button>
@@ -83,6 +87,7 @@
                         [(sort)]="sort"
                         [rowsDragEnabled]="dndEnabled"
                         [rowsDropEnabled]="dndEnabled"
+                        [rowDropAllowed]="dropAllowedFn"
                         (rowClick)="selected[$event.row[0]] = !selected[$event.row[0]]"
                         (rowDragStart)="onRowDragStart($event)"
                         (rowDragEnd)="onRowDragEnd($event)"

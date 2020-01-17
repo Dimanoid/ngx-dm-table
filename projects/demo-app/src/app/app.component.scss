@@ -52,6 +52,16 @@ dm-table {
             }
         }
         & > tbody > tr.ngx-dmt-row {
+            &.ngx-dmt-row-dragover {
+                &.ngx-dmt-row-drop-allowed {
+                    cursor: copy;
+                    box-shadow: inset rgba(#0a0, .7) 0 0 3px 0;
+                }
+                &.ngx-dmt-row-drop-forbiden {
+                    cursor: no-drop;
+                    box-shadow: inset rgba(#a00, .7) 0 0 3px 0;
+                }
+            }
             & > td.ngx-dmt-cell {
                 &.td-icon {
                     padding: 2px;

@@ -65,6 +65,8 @@ export class AppComponent implements OnInit {
     hideAll: boolean = false;
     dndEnabled: boolean = true;
     multiLineDnd: boolean = false;
+    evenRowDrop: boolean = false;
+    dropAllowedFn = (row: any) => !this.evenRowDrop || row[0] % 2;
 
     dragging: any;
     dropped: any;
