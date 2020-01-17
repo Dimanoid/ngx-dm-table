@@ -670,6 +670,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
 
     onRowDragEnter(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
+        this._r2.addClass(el, 'ngx-dmt-row-dragover');
         this._r2.addClass(el, this.rowDropAllowed(row) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
@@ -683,6 +684,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         }
         event.preventDefault();
         this._r2.addClass(el, 'ngx-dmt-row-dragover');
+        this._r2.addClass(el, this.rowDropAllowed(row) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
     onRowDrop(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
