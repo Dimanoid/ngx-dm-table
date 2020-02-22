@@ -61,7 +61,7 @@ Property | Description | Type | Default value
 **`(rowDragEnd)`** | Fires (if `rowsDragEnabled = true`) when table row gets `ondragend` event.  | `EventEmitter<`[`DmTableRowDragEvent`](#DmTableRowDragEvent)`>` | 
 **`[rowsDropEnabled]`** | Enable DropEvents on rows | `boolean` | **false**
 **`(rowDrop)`** | Fires (if `rowsDropEnabled = true`) when table row gets `ondrop` event.  | `EventEmitter<`[`DmTableRowDragEvent`](#DmTableRowDragEvent)`>` | 
-**`[rowDropAllowed]`** | Callback function that determines if the dragged object can be dropped on this row | `(row: any) => boolean` | **() => true**
+**`[rowDropAllowed]`** | Callback function that determines if the dragged object can be dropped on this row | `(row: any, event: DragEvent) => boolean` | **() => true**
 
 <br><br>
 

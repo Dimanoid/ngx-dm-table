@@ -149,7 +149,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     @Output() rowDragStart: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDragEnd: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDrop: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
-    @Input() rowDropAllowed: (row: any) => boolean = () => true;
+    @Input() rowDropAllowed: (row: any, event: DragEvent) => boolean = () => true;
 
     hasFooter: boolean = false;
     flexColumnId: string;
@@ -671,7 +671,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
 
     onRowDragEnter(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
         this._r2.addClass(el, 'ngx-dmt-row-dragover');
-        this._r2.addClass(el, this.rowDropAllowed(row) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
+        this._r2.addClass(el, this.rowDropAllowed(row, event) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
     onRowDragLeave(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
@@ -684,11 +684,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         }
         event.preventDefault();
         this._r2.addClass(el, 'ngx-dmt-row-dragover');
-        this._r2.addClass(el, this.rowDropAllowed(row) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
+        this._r2.addClass(el, this.rowDropAllowed(row, event) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
     onRowDrop(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
-        if (this.rowsDropEnabled && this.rowDropAllowed(row)) {
+        if (this.rowsDropEnabled && this.rowDropAllowed(row, event)) {
             event.preventDefault();
             this.rowDrop.emit({  index, row, event });
         }
