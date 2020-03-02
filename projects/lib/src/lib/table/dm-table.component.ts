@@ -149,7 +149,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     @Output() rowDragStart: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDragEnd: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDrop: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
-    @Input() rowDropAllowed: (row: any, event: DragEvent) => boolean = () => true;
+    @Input() rowDropAllowed: (event: DmTableRowDragEvent) => boolean = () => true;
 
     hasFooter: boolean = false;
     flexColumnId: string;
@@ -662,16 +662,16 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     trackByFn = (index: number, row: any): any => this.trackBy ? this.trackBy(index, row) : row;
 
     onRowDragStart(index: number, row: any, event: DragEvent) {
-        this.rowDragStart.emit({  index, row, event });
+        this.rowDragStart.emit({ index, row, event });
     }
 
     onRowDragEnd(index: number, row: any, event: DragEvent) {
-        this.rowDragEnd.emit({  index, row, event });
+        this.rowDragEnd.emit({ index, row, event });
     }
 
     onRowDragEnter(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
         this._r2.addClass(el, 'ngx-dmt-row-dragover');
-        this._r2.addClass(el, this.rowDropAllowed(row, event) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
+        this._r2.addClass(el, this.rowDropAllowed({ index, row, event }) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
     onRowDragLeave(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
@@ -684,13 +684,13 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         }
         event.preventDefault();
         this._r2.addClass(el, 'ngx-dmt-row-dragover');
-        this._r2.addClass(el, this.rowDropAllowed(row, event) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
+        this._r2.addClass(el, this.rowDropAllowed({ index, row, event }) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
     onRowDrop(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
-        if (this.rowsDropEnabled && this.rowDropAllowed(row, event)) {
+        if (this.rowsDropEnabled && this.rowDropAllowed({ index, row, event })) {
             event.preventDefault();
-            this.rowDrop.emit({  index, row, event });
+            this.rowDrop.emit({ index, row, event });
         }
         this._removeDragClasses(el);
     }
