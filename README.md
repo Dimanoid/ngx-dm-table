@@ -33,7 +33,29 @@ export class AppModule { }
 ## API
 <br>
 
-### DmTableComponent `<dm-table></dm-table>`
+### DmTableComponent
+```html
+<dm-table>
+    <!-- see DmColumnDirective below -->
+    <dm-column></dm-column>
+    <dm-column></dm-column>
+    <dm-column></dm-column>
+
+    <!-- optional header for groups -->
+    <ng-template #groupHeader
+        let-row="row"
+        let-rowIndex="ri"
+        let-group="group"> <!-- group: DmTableRowsGroup -->
+    </ng-template>
+
+    <!-- optional footer for groups -->
+    <ng-template #groupFooter
+        let-row="row"
+        let-rowIndex="ri"
+        let-group="group"> <!-- group: DmTableRowsGroup -->
+    </ng-template>
+</dm-table>
+```
 
 Property | Description | Type | Default value
 ---------|-------------|------|--------------
@@ -65,7 +87,14 @@ Property | Description | Type | Default value
 
 <br><br>
 
-### DmColumnDirective `<dm-column></dm-column>`
+### DmColumnDirective
+```html
+<dm-column>
+    <ng-template #header></ng-template> <!-- optional header template for column -->
+    <ng-template #cell></ng-template>   <!-- optional cell template for column -->
+    <ng-template #footer></ng-template> <!-- optional footer template for column -->
+</dm-column>
+```
 
 Property | Description | Type
 ---------|-------------|-----
@@ -144,6 +173,18 @@ export interface DmTableRowDragEvent {
     index: number;
     row: any;
     event: DragEvent;
+}
+```
+<br>
+
+### DmTableRowsGroup
+```ts
+export interface DmTableRowsGroup {
+    index: number;
+    first: number;
+    last: number;
+    rows: any[];
+    data: any;
 }
 ```
 <br>
