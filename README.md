@@ -1,6 +1,6 @@
 # ngx-dm-table
 
-![npm version](https://img.shields.io/npm/v/@dimanoid/ngx-dm-table/latest) ![bundle size](https://img.shields.io/bundlephobia/min/@dimanoid/ngx-dm-table) ![build](https://travis-ci.com/Dimanoid/ngx-dm-table.svg?branch=release) [![Coverage Status](https://coveralls.io/repos/github/Dimanoid/ngx-dm-table/badge.svg?branch=release)](https://coveralls.io/github/Dimanoid/ngx-dm-table?branch=release)
+![npm version](https://img.shields.io/npm/v/@dimanoid/ngx-dm-table/latest) ![bundle size](https://img.shields.io/bundlephobia/min/@dimanoid/ngx-dm-table) ![build](https://travis-ci.com/Dimanoid/ngx-dm-table.svg?branch=release) [![Coverage Status](https://coveralls.io/repos/github/Dimanoid/ngx-dm-table/badge.svg?branch=master)](https://coveralls.io/github/Dimanoid/ngx-dm-table?branch=master)
 
 Demo page: https://dimanoid.github.io/ngx-dm-table/
 
