@@ -1,4 +1,4 @@
-import { Directive, OnInit, Input, ContentChild, TemplateRef, ElementRef } from '@angular/core';
+import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
 import { InputBoolean, InputNumber, _D } from '../utils';
 import { DmTableService, DMT_CONFIG_FIELDS } from '../dm-table.service';
 
