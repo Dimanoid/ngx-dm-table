@@ -67,7 +67,7 @@
                             #bodyRow>
                             <td *ngFor="let cid of colsOrder; let i = index"
                                 class="ngx-dmt-cell"
-                                [ngClass]="ctMap[cid].cellClass"
+                                [ngClass]="getCellClasses(r[cid], ctMap[cid])"
                                 [style.white-space]="ctMap[cid].whitespace">
                                 <ng-container *ngIf="ctMap[cid].cellTpl"
                                     [ngTemplateOutlet]="ctMap[cid].cellTpl"

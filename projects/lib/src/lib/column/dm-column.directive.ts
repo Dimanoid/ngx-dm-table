@@ -31,6 +31,7 @@ export class DmColumnDirective implements OnInit {
     @Input() headerTooltip: string;
     @Input() headerClass: string;
     @Input() cellClass: string;
+    @Input() cellClasses: { [className: string]: (row: any) => boolean } = {};
     @Input() footerClass: string;
     @Input() sort: 'string' | 'number' | 'boolean' | ((a: any, b: any) => number);
 

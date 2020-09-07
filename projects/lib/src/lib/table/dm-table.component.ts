@@ -637,6 +637,18 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         return res;
     }
 
+    getCellClasses(value: any, cell: DmColumnDirective) {
+        let res = cell.cellClass;
+        if (cell.cellClasses) {
+            for (const k in cell.cellClasses) {
+                if (cell.cellClasses[k](value)) {
+                    res += ' ' + k;
+                }
+            }
+        }
+        return res;
+    }
+
     colsWidthChangeEmit(v: { [id: string]: number }): void {
         this._colsWidthEmited = v;
         this.colsWidthChange.emit(v);

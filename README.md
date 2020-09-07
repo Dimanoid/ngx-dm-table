@@ -83,6 +83,7 @@ Property | Description | Type
 **`[headerTooltip]`** | This will be set as a `title` of column's header tag  | `string`
 **`[headerClass]`** | CSS classes that will be added to column's header `<th>` tag | `string`
 **`[cellClass]`** | CSS classes that will be added to column's cell `<td>` tag | `string`
+**`[cellClasses]`** | Hashmap where key is CSS classes that will be added to cell's `<td>` tag if value function will return true | `{ [className: string]: (row: any) => boolean }` |
 **`[footerClass]`** | CSS classes that will be added to column's footer `<td>` tag | `string`
 **`[sort]`** | Type of data for internal sort or custom sort function | `'string' \| 'number' \| 'boolean' \| ((a: any, b: any) => number)`
 
