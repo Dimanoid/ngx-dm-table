@@ -67,6 +67,7 @@ export class AppComponent implements OnInit {
     multiLineDnd: boolean = false;
     evenRowDrop: boolean = false;
     dropAllowedFn = (row: any) => !this.evenRowDrop || !(row[0] % 2);
+    isEvenFn = (cell: any) => !(cell % 2);
 
     dragging: any;
     dropped: any;

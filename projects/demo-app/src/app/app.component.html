@@ -110,6 +110,7 @@
                             sortable="true"
                             sort="number"
                             cellClass="tar gray"
+                            [cellClasses]="{ red: isEvenFn }"
                             headerTooltip="minWidth=50, maxWidth=150, sortable as numbers, custom cell CSS class, resizable">
                         </dm-column>
                         <dm-column
