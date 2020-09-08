@@ -22,12 +22,12 @@
                         [class.ngx-dmt-sorted-desc]="sort && sort.order < 0"
                         (click)="headerClick.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         (contextmenu)="headerContextMenu.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
-                        cdkDrag cdkDragLockAxis="x">
+                        cdkDrag cdkDragLockAxis="x" cdkDragDisabled="!moveableColumns">
                         <div class="ngx-dmt-column-title" (click)="ctMap[cid].sortable ? toggleSort(cid) : null">
                             <ng-container *ngIf="ctMap[cid].headerTpl" [ngTemplateOutlet]="ctMap[cid].headerTpl"></ng-container>
                             <ng-template [ngIf]="!ctMap[cid].headerTpl">{{ ctMap[cid].title }}</ng-template>
                         </div>
-                        <div class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
+                        <div *ngIf="moveableColumns" class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
                         <div *ngIf="ctMap[cid].sortable" class="ngx-dmt-column-sort-container" (click)="toggleSort(cid)"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
                         <div *ngIf="ctMap[cid].resizable" class="ngx-dmt-resizer"
                             [class.ngx-dmt-resizer-dragging]="resizeColumnId == cid"
