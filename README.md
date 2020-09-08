@@ -91,7 +91,18 @@ Property | Description | Type | Default value
 ```html
 <dm-column>
     <ng-template #header></ng-template> <!-- optional header template for column -->
-    <ng-template #cell></ng-template>   <!-- optional cell template for column -->
+
+    <!-- optional cell template for column -->
+    <ng-template #cell
+        let-row="row"
+        let-dmColumnDirective="ct"
+        let-colIndex="ci"
+        let-rowIndex="ri">
+    </ng-template>
+
+    <!-- OR -->
+    <ng-template #cell let-cellValue></ng-template>
+    
     <ng-template #footer></ng-template> <!-- optional footer template for column -->
 </dm-column>
 ```
