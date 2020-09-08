@@ -1,6 +1,7 @@
 import { Directive, OnInit, Input, ContentChild, TemplateRef } from '@angular/core';
 import { InputBoolean, InputNumber, _D } from '../utils';
 import { DmTableService, DMT_CONFIG_FIELDS } from '../dm-table.service';
+import { DmTableRowsGroup } from '../models';
 
 export const MIN_COLUMN_WIDTH = 30;
 export const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
@@ -31,7 +32,15 @@ export class DmColumnDirective implements OnInit {
     @Input() headerTooltip: string;
     @Input() headerClass: string;
     @Input() cellClass: string;
-    @Input() cellClasses: { [className: string]: (row: any) => boolean } = {};
+    @Input() cellClasses: {
+        [className: string]: (
+            row: { [colId: string]: any },
+            cellId: string,
+            rowIndex: number,
+            colIndex: number,
+            group: DmTableRowsGroup
+        ) => boolean
+    } = {};
     @Input() footerClass: string;
     @Input() sort: 'string' | 'number' | 'boolean' | ((a: any, b: any) => number);
 

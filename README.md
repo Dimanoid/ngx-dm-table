@@ -73,7 +73,7 @@ Property | Description | Type | Default value
 **`(sortChange)`** | Callback executed when `[sort]` is changed | `EventEmitter<`[`DmTableSort`](#DmTableSort)`>` | 
 **`[defaultColumnConfig]`** | Default config for columns, can be overriden in column's definition | [`DmTableColumnConfig`](#DmTableColumnConfig) | 
 **`[tableClass]`** | CSS classes that will be added to the `<table>` tags (header, body and footer tables) | `string` | 
-**`[rowClasses]`** | Hashmap where key is CSS classes that will be added to row's `<tr>` tag if value function will return true | `{ [className: string]: (row: any) => boolean }` |
+**`[rowClasses]`** | Hashmap where key is CSS classes that will be added to row's `<tr>` tag if value function will return true | `{ [className: string]: (`<br><dd>`row: { [colId: string]: any },`<br><dd>`index: number,`</dd><dd>`group: `[`DmTableRowsGroup`](#DmTableRowsGroup)</dd>`) => boolean }` |
 **`(headerClick)`** | Fires when table header is clicked | `EventEmitter<`[`DmTableHeaderEvent`](#DmTableHeaderEvent)`>` | 
 **`(headerContextMenu)`** | Fires when table header is right-clicked | `EventEmitter<`[`DmTableHeaderEvent`](#DmTableHeaderEvent)`>` | 
 **`(rowClick)`** | Fires when table row is clicked | `EventEmitter<`[`DmTableRowEvent`](#DmTableRowEvent)`>` |
@@ -112,7 +112,7 @@ Property | Description | Type
 **`[headerTooltip]`** | This will be set as a `title` of column's header tag  | `string`
 **`[headerClass]`** | CSS classes that will be added to column's header `<th>` tag | `string`
 **`[cellClass]`** | CSS classes that will be added to column's cell `<td>` tag | `string`
-**`[cellClasses]`** | Hashmap where key is CSS classes that will be added to cell's `<td>` tag if value function will return true | `{ [className: string]: (row: any) => boolean }` |
+**`[cellClasses]`** | Hashmap where key is CSS classes that will be added to cell's `<td>` tag if value function will return true | `{ [className: string]: (`<br><dd>`row: { [colId: string]: any },`</dd><dd>`colId: string,`</dd><dd>`rowIndex: number,`</dd><dd>`colIndex: number,`</dd><dd>`group: `[`DmTableRowsGroup`](#DmTableRowsGroup)</dd>`) => boolean }` |
 **`[footerClass]`** | CSS classes that will be added to column's footer `<td>` tag | `string`
 **`[sort]`** | Type of data for internal sort or custom sort function | `'string' \| 'number' \| 'boolean' \| ((a: any, b: any) => number)`
 

@@ -47,14 +47,14 @@
                 </colgroup>
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of rows; let ri = index; trackBy: trackByFn">
-                        <tr *ngIf="groupped && groupHeaderTpl && groupStart[ri]" class="ngx-dmt-group-header-row">
+                        <tr *ngIf="groupped && groupHeaderTpl && groupStart && groupStart[ri]" class="ngx-dmt-group-header-row">
                             <td [colSpan]="colsOrder.length" class="ngx-dmt-group-header-cell">
                                 <ng-container [ngTemplateOutlet]="groupHeaderTpl"
                                     [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupStart[ri] }">
                                 </ng-container>
                             </td>
                         </tr>
-                        <tr class="ngx-dmt-row" [ngClass]="getRowClasses(r)"
+                        <tr class="ngx-dmt-row" [ngClass]="getRowClasses(r, ri)"
                             [draggable]="rowsDragEnabled"
                             (dragstart)="onRowDragStart(ri, r, $event)"
                             (dragend)="onRowDragEnd(ri, r, $event)"
@@ -67,7 +67,7 @@
                             #bodyRow>
                             <td *ngFor="let cid of colsOrder; let i = index"
                                 class="ngx-dmt-cell"
-                                [ngClass]="getCellClasses(r[cid], ctMap[cid])"
+                                [ngClass]="getCellClasses(r, cid, ri, i)"
                                 [style.white-space]="ctMap[cid].whitespace">
                                 <ng-container *ngIf="ctMap[cid].cellTpl"
                                     [ngTemplateOutlet]="ctMap[cid].cellTpl"

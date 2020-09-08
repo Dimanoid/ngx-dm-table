@@ -13,41 +13,9 @@ import { InputBoolean, sumValues } from '../utils';
 import ResizeObserver from 'resize-observer-polyfill';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DmTableService } from '../dm-table.service';
+import { DmTableRowsGroup, DmTableSort, DmTableHeaderEvent, DmTableRowEvent, DmTableRowDragEvent } from '../models';
 
 export const MIN_ITEM_SIZE = 30;
-
-export interface DmTableSort {
-    colId: string;
-    order: number;
-}
-
-export interface DmTableRowEvent {
-    index: number;
-    row: any;
-    event: MouseEvent;
-}
-
-export interface DmTableHeaderEvent {
-    colId: string;
-    index: number;
-    first: boolean;
-    last: boolean;
-    event: MouseEvent;
-}
-
-export interface DmTableRowsGroup {
-    index: number;
-    first: number;
-    last: number;
-    rows: any[];
-    data: any;
-}
-
-export interface DmTableRowDragEvent {
-    index: number;
-    row: any;
-    event: DragEvent;
-}
 
 @Component({
     selector: 'dm-table',
@@ -136,7 +104,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     @Input() defaultColumnConfig: any;
     @Input() tableClass: string;
     @Input() colsVisibility: { [id: string]: boolean };
-    @Input() rowClasses: { [className: string]: (row: any) => boolean } = {};
+    @Input() rowClasses: { [className: string]: (row: { [colId: string]: any }, index: number, group: DmTableRowsGroup) => boolean } = {};
 
     @Output() headerClick: EventEmitter<DmTableHeaderEvent> = new EventEmitter();
     @Output() headerContextMenu: EventEmitter<DmTableHeaderEvent> = new EventEmitter();
@@ -625,11 +593,11 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         }
     }
 
-    getRowClasses(row: any): string {
+    getRowClasses(row: any, index: number): string {
         let res = '';
         if (this.rowClasses) {
             for (const k in this.rowClasses) {
-                if (this.rowClasses[k](row)) {
+                if (this.rowClasses[k](row, index, this.groupStart ? this.groupStart[index] : null)) {
                     res += ' ' + k;
                 }
             }
@@ -637,11 +605,12 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
         return res;
     }
 
-    getCellClasses(value: any, cell: DmColumnDirective) {
+    getCellClasses(row: any, colId: string, rowIndex: number, colIndex: number) {
+        const cell = this.ctMap[colId];
         let res = cell.cellClass;
         if (cell.cellClasses) {
             for (const k in cell.cellClasses) {
-                if (cell.cellClasses[k](value)) {
+                if (cell.cellClasses[k](row, colId, rowIndex, colIndex, this.groupStart ? this.groupStart[rowIndex] : null)) {
                     res += ' ' + k;
                 }
             }
