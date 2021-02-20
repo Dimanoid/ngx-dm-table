@@ -61,18 +61,18 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     groupEnd: { [index: number]: DmTableRowsGroup };
     @Input() data: any[];
     @Input() trackBy: (index: number, item: any) => any;
-    @Input() @InputBoolean() groupped: boolean = false;
+    @Input() @InputBoolean() groupped: boolean | string = false;
 
     private _itemSize: number = MIN_ITEM_SIZE;
     @Input() @InputNumber()
-    set itemSize(v: number) {
+    set itemSize(v: number | string) {
         this._itemSize = v && v > MIN_ITEM_SIZE ? +v : MIN_ITEM_SIZE;
     }
-    get itemSize(): number {
+    get itemSize(): number | string{
         return this._itemSize;
     }
 
-    @Input() @InputBoolean() moveableColumns: boolean = true;
+    @Input() @InputBoolean() moveableColumns: boolean | string = true;
 
     private _colsOrderOriginal: string[];
     private _colsOrder: string[];
@@ -97,7 +97,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     }
     @Output() colsWidthChange: EventEmitter<{ [id: string]: number }> = new EventEmitter();
 
-    @Input() externalSort: boolean = false;
+    @Input() @InputBoolean() externalSort: boolean | string = false;
     @Input() sort: DmTableSort;
     @Output() sortChange: EventEmitter<DmTableSort> = new EventEmitter();
 
@@ -112,8 +112,8 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
     @Output() rowClick: EventEmitter<DmTableRowEvent> = new EventEmitter();
     @Output() rowContextMenu: EventEmitter<DmTableRowEvent> = new EventEmitter();
 
-    @Input() rowsDragEnabled: boolean = false;
-    @Input() rowsDropEnabled: boolean = false;
+    @Input() @InputBoolean() rowsDragEnabled: boolean | string = false;
+    @Input() @InputBoolean() rowsDropEnabled: boolean | string = false;
     @Output() rowDragStart: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDragEnd: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
     @Output() rowDrop: EventEmitter<DmTableRowDragEvent> = new EventEmitter();
@@ -167,16 +167,19 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                     if (nw != tw) {
                         const rd = nw - tw;
                         this.tableWidth = nw;
-                        this.colsWidthTmp = Object.assign({}, this.colsWidth);
+                        const colsWidthTmp = Object.assign({}, this.colsWidth);
+                        if (this.resizeColumnId && this.colsWidthTmp[this.resizeColumnId]) {
+                            colsWidthTmp[this.resizeColumnId] = this.colsWidthTmp[this.resizeColumnId];
+                        }
                         if (rd < 0) {
-                            this.colsWidthTmp[this.flexColumnId] += rd;
+                            colsWidthTmp[this.flexColumnId] += rd;
                         }
                         else {
-                            this.colsWidthTmp[this.flexColumnId] += this.tableWidth - sumValues(this.colsWidthTmp, this.colsVisibility);
+                            colsWidthTmp[this.flexColumnId] += this.tableWidth - sumValues(colsWidthTmp, this.colsVisibility);
                         }
-                        this._colsWidth = this.colsWidthTmp;
+                        this.colsWidthTmp = this.resizeColumnId ? colsWidthTmp : undefined;
+                        this._colsWidth = colsWidthTmp;
                         this.colsWidthChangeEmit(this._colsWidth);
-                        // this.colsWidthTmp = undefined;
                         this._ngZone.run(() => this._cdr.markForCheck());
                     }
                 }
@@ -573,7 +576,9 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
             order: this.sort && this.sort.colId == id ? -this.sort.order : 1
         };
         this.sortChange.emit(this.sort);
-        // this.sortRows();
+        if (!this.externalSort) {
+            this.sortRows();
+        }
         this._cdr.markForCheck();
     }
 
