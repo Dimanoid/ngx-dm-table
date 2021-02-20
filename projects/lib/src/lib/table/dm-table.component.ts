@@ -176,7 +176,7 @@ export class DmTableComponent implements OnInit, AfterViewInit, OnChanges, After
                         }
                         this._colsWidth = this.colsWidthTmp;
                         this.colsWidthChangeEmit(this._colsWidth);
-                        this.colsWidthTmp = undefined;
+                        // this.colsWidthTmp = undefined;
                         this._ngZone.run(() => this._cdr.markForCheck());
                     }
                 }
