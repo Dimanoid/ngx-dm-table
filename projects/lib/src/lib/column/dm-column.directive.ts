@@ -10,24 +10,24 @@ export const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
     selector: 'dm-column',
     exportAs: 'dmColumn'
 })
-export class DmColumnDirective implements OnInit {
+export class DmColumnDirective<T> implements OnInit {
     @Input() colId: string;
     @Input() colIdAlias: string;
     @Input() title: string;
-    @Input() @InputBoolean() pinnable: boolean;
-    @Input() @InputBoolean() sortable: boolean;
-    @Input() @InputBoolean() resizable: boolean;
-    @Input() @InputBoolean() flexible: boolean;
+    @Input() @InputBoolean() pinnable: boolean | string;
+    @Input() @InputBoolean() sortable: boolean | string;
+    @Input() @InputBoolean() resizable: boolean | string;
+    @Input() @InputBoolean() flexible: boolean | string;
     @Input() whitespace: string;
     private _minWidth: number;
     @Input() @InputNumber()
-    set minWidth(v: number) {
+    set minWidth(v: number | string) {
         this._minWidth = v && v > MIN_COLUMN_WIDTH ? +v : MIN_COLUMN_WIDTH;
     }
-    get minWidth(): number {
+    get minWidth(): number | string {
         return this._minWidth;
     }
-    @Input() @InputNumber() maxWidth: number;
+    @Input() @InputNumber() maxWidth: number | string;
     @Input() frozen: 'left' | 'right' | 'no' = 'no';
     @Input() headerTooltip: string;
     @Input() headerClass: string;
@@ -38,7 +38,7 @@ export class DmColumnDirective implements OnInit {
             cellId: string,
             rowIndex: number,
             colIndex: number,
-            group: DmTableRowsGroup
+            group: DmTableRowsGroup<T>
         ) => boolean
     } = {};
     @Input() footerClass: string;

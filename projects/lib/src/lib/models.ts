@@ -1,11 +1,16 @@
+export type DmTableGrouppedRows<T> = {
+    rows: T[],
+    data: any
+}
+
 export interface DmTableSort {
     colId: string;
     order: number;
 }
 
-export interface DmTableRowEvent {
+export interface DmTableRowEvent<T> {
     index: number;
-    row: any;
+    row: T;
     event: MouseEvent;
 }
 
@@ -17,16 +22,24 @@ export interface DmTableHeaderEvent {
     event: MouseEvent;
 }
 
-export interface DmTableRowsGroup {
+export interface DmTableRowsGroup<T> {
     index: number;
     first: number;
     last: number;
-    rows: any[];
+    rows: T[];
     data: any;
 }
 
-export interface DmTableRowDragEvent {
+export interface DmTableRowDragEvent<T> {
     index: number;
-    row: any;
+    row: T;
     event: DragEvent;
+}
+
+export interface DmTableControllerState {
+    itemsTotal: number;
+    itemsVisible: number;
+    itemsSelected: number;
+    sort?: DmTableSort;
+    sortChanged?: boolean;
 }
