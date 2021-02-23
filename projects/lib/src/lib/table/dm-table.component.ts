@@ -552,17 +552,21 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         else {
             this.rows = data;
         }
+
         if (!data || !this.sort || !this.columnTemplates) {
+            this._cdr.markForCheck();
             return;
         }
         const ct = this.columnTemplates.find(item => item.colId == this.sort.colId);
         if (!ct) {
+            this._cdr.markForCheck();
             return;
         }
         if (this.externalSort) {
             this._cdr.markForCheck();
             return;
         }
+
         let sort: (a: any, b: any) => number;
         if (typeof ct.sort != 'function') {
             if (ct.sort == 'number') {

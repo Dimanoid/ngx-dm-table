@@ -76,6 +76,7 @@ export class DmTableController<T> {
                 }
             }
         }
+        console.log('[DMC] setItems:', this._items);
         this.invalidate();
     }
 
@@ -119,12 +120,16 @@ export class DmTableController<T> {
                 }
             }
         }
+        else {
+            items.push(...this._items as any);
+        }
 
         const sort = this.sort.getValue();
         if (sort && this.sortFn) {
             items = this.sortFn(items as any, sort);
         }
 
+        console.log('[DMC] invalidate, items:', items, 'state:', state);
         this.visibleItems.next(items);
         this.state.next(state);
 
