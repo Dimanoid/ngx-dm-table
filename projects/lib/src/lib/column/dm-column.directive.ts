@@ -35,7 +35,7 @@ export class DmColumnDirective<T> implements OnInit {
     @Input() cellClasses: {
         [className: string]: (
             row: { [colId: string]: any },
-            cellId: string,
+            cellId: string | number,
             rowIndex?: number,
             colIndex?: number,
             group?: DmTableRowsGroup<T>

@@ -205,9 +205,11 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (changes['data']) {
             if (this.dataSubscription) {
                 this.dataSubscription.unsubscribe();
+                this.dataSubscription = undefined;
             }
             if (this.sortSubscription) {
                 this.sortSubscription.unsubscribe();
+                this.sortSubscription = undefined;
             }
             if (this.data instanceof DmTableController) {
                 this.dataSubscription = this.data.visibleItems.subscribe(() => this.sortRows());
@@ -217,6 +219,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     this.sortRows();
                 });
             }
+            this.sortRows();
         }
         else if (changes['sort']) {
             this.sortRows();

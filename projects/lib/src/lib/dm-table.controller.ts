@@ -27,7 +27,6 @@ export class DmTableController<T> {
 
     readonly state: BehaviorSubject<DmTableControllerState> = new BehaviorSubject({ itemsTotal: 0, itemsSelected: 0, itemsVisible: 0 });
     readonly visibleItems: BehaviorSubject<T[] | DmTableGrouppedRows<T>[] | undefined> = new BehaviorSubject(undefined);
-    readonly selectedIds: BehaviorSubject<StringOrNumber[]> = new BehaviorSubject([]);
 
     readonly filter: BehaviorSubject<any> = new BehaviorSubject(undefined);
     filterFn: (item: T, filter: any) => boolean | undefined = DM_TABLE_DEFAULT_FILTERFN;
@@ -38,6 +37,7 @@ export class DmTableController<T> {
         | undefined;
 
     private _items: T[] | DmTableGrouppedRows<T>[];
+    readonly selected: Map<number | string, boolean> = new Map();
 
     constructor(public groupped = false, filterFn?: (item: T, filter: any) => boolean, sortFn?: (items: T[]) => T[]) {
         if (filterFn) {
@@ -50,8 +50,32 @@ export class DmTableController<T> {
         this.sort.subscribe(() => this.invalidate());
     }
 
-    setItems(items: T[] | undefined): void {
+    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined): void {
         this._items = items;
+        if (this.selected.size > 0) {
+            const m: Map<number | string, boolean> = new Map();
+            if (this.groupped) {
+                for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                    for (const r of g.rows) {
+                        if (this.selected.get((r as any).id)) {
+                            m.set((r as any).id, true);
+                        }
+                    }
+                }
+            }
+            else {
+                for (const r of (this._items as T[])) {
+                    if (this.selected.get((r as any).id)) {
+                        m.set((r as any).id, true);
+                    }
+                }
+            }
+            for (const k of this.selected.keys()) {
+                if (!m.has(k)) {
+                    this.selected.delete(k);
+                }
+            }
+        }
         this.invalidate();
     }
 
@@ -59,7 +83,7 @@ export class DmTableController<T> {
         if (this._items == null) {
             this.state.next({ itemsTotal: 0, itemsSelected: 0, itemsVisible: 0 });
             this.visibleItems.next(undefined);
-            this.selectedIds.next([]);
+            this.selected.clear();
             return;
         }
 
@@ -104,6 +128,42 @@ export class DmTableController<T> {
         this.visibleItems.next(items);
         this.state.next(state);
 
+    }
+
+    setAllSelected(selected: boolean): void {
+        this.selected.clear();
+        if (selected) {
+            if (this.groupped) {
+                for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                    for (const r of g.rows) {
+                        this.selected.set((r as any).id, true);
+                    }
+                }
+            }
+            else {
+                for (const r of (this._items as T[])) {
+                    this.selected.set((r as any).id, true);
+                }
+            }
+        }
+        const state = Object.assign({}, this.state.getValue());
+        state.itemsSelected = this.selected.size;
+        this.state.next(state);
+    }
+
+    setSelected(key: string | number, selected: boolean): void {
+        this.selected.set(key, selected);
+        const state = Object.assign({}, this.state.getValue());
+        let count = 0;
+        this.selected.forEach(v => {
+            if (v) { count++; }
+        });
+        state.itemsSelected = count;
+        this.state.next(state);
+    }
+
+    toggleSelected(key: string | number): void {
+        this.setSelected(key, !this.selected.get(key));
     }
 
 }
