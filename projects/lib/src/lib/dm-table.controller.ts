@@ -16,7 +16,7 @@ export const DM_TABLE_DEFAULT_FILTERFN = (item, filter) => {
             (keys.length == 1 || k !== 'id')
             && item[k]
             && typeof item[k] === 'string'
-            && item[k].toLocaleLowerCase().contains(f)
+            && item[k].toLocaleLowerCase().indexOf(f) > -1
         ) {
             return true;
         }
