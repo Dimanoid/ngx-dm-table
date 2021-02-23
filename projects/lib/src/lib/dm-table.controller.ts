@@ -21,6 +21,7 @@ export const DM_TABLE_DEFAULT_FILTERFN = (item, filter) => {
             return true;
         }
     }
+    return false;
 };
 
 export class DmTableController<T> {
@@ -129,7 +130,6 @@ export class DmTableController<T> {
             items = this.sortFn(items as any, sort);
         }
 
-        console.log('[DMC] invalidate, items:', items, 'state:', state);
         this.visibleItems.next(items);
         this.state.next(state);
 
