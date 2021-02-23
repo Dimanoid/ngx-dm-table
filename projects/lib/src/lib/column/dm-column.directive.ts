@@ -36,9 +36,9 @@ export class DmColumnDirective<T> implements OnInit {
         [className: string]: (
             row: { [colId: string]: any },
             cellId: string,
-            rowIndex: number,
-            colIndex: number,
-            group: DmTableRowsGroup<T>
+            rowIndex?: number,
+            colIndex?: number,
+            group?: DmTableRowsGroup<T>
         ) => boolean
     } = {};
     @Input() footerClass: string;

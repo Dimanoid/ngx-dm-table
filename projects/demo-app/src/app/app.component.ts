@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
     multiLineDnd: boolean = false;
     evenRowDrop: boolean = false;
     isEvenFn = (row: any, colId: number) => !(row[colId] % 2);
-    dropAllowedFn = (e: DmTableRowDragEvent) => !this.evenRowDrop || !(e.row[0] % 2);
+    dropAllowedFn = (e: DmTableRowDragEvent<any[]>) => !this.evenRowDrop || !(e.row[0] % 2);
 
     dragging: any;
     dropped: any;
@@ -155,7 +155,7 @@ export class AppComponent implements OnInit {
         this.colsWidth = Object.assign({}, COLS_WIDTH);
     }
 
-    onRowDragStart(e: DmTableRowDragEvent) {
+    onRowDragStart(e: DmTableRowDragEvent<any[]>) {
         console.log('onRowDragStart', e);
         this.dragIds = [];
         if (!this.multiLineDnd) {
@@ -174,12 +174,12 @@ export class AppComponent implements OnInit {
         this.dropped = null;
     }
 
-    onRowDragEnd(e: DmTableRowDragEvent) {
+    onRowDragEnd(e: DmTableRowDragEvent<any[]>) {
         console.log('onRowDragEnd', e);
         this.dragging = null;
     }
 
-    onRowDrop(e: DmTableRowDragEvent) {
+    onRowDrop(e: DmTableRowDragEvent<any[]>) {
         console.log('onRowDrop', e);
         const dd: any = { droppedOn: e.row[0] };
         try {

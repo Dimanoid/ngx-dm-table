@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div dm-divider class="dm-divider-vert layout center-center" style="width: 12px"
-                    enabled="true"
+                    [enabled]="true"
                     [class.dm-divider-moving]="divider['d1'].moving"
                     (dmDividerDragStart)="dividerDragStart('d1', $event)"
                     (dmDividerDragEnd)="dividerDragEnd('d1', $event)"
