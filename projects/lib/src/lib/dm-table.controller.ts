@@ -77,7 +77,6 @@ export class DmTableController<T> {
                 }
             }
         }
-        console.log('[DMC] setItems:', this._items);
         this.invalidate();
     }
 
