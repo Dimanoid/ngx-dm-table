@@ -5,13 +5,14 @@
     <div *ngIf="ctMap" class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
         <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass">
             <colgroup>
+                <col *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
                 <col *ngFor="let cid of colsOrder" [style.width.px]="resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid]">
             </colgroup>
             <thead>
                 <tr class="ngx-dmt-header-row"
                     cdkDropList cdkDropListOrientation="horizontal"
                     (cdkDropListDropped)="columnHeaderDrop($event)">
-                    <th *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
+                    <th>
                         <ng-container
                             [ngTemplateOutlet]="selectColumnTpl"
                             [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
@@ -49,6 +50,7 @@
         <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
             <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass">
                 <colgroup>
+                    <col *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
                     <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
