@@ -12,7 +12,7 @@
                 <tr class="ngx-dmt-header-row"
                     cdkDropList cdkDropListOrientation="horizontal"
                     (cdkDropListDropped)="columnHeaderDrop($event)">
-                    <th>
+                    <th class="ngx-dmt-header-cell">
                         <ng-container
                             [ngTemplateOutlet]="selectColumnTpl"
                             [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
@@ -73,7 +73,7 @@
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })"
                             #bodyRow>
-                            <td *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
+                            <td *ngIf="selectColumnTpl" class="ngx-dmt-cell">
                                 <ng-container
                                     [ngTemplateOutlet]="selectColumnTpl"
                                     [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r.id), ri: ri }">
