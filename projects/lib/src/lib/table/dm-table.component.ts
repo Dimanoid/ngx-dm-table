@@ -14,7 +14,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DmTableService } from '../dm-table.service';
 import { DmTableRowsGroup, DmTableSort, DmTableHeaderEvent, DmTableRowEvent, DmTableRowDragEvent, DmTableGrouppedRows } from '../models';
-import { DmTableController, StringOrNumber } from '../dm-table.controller';
+import { DmTableController } from '../dm-table.controller';
 import { Subscription } from 'rxjs';
 
 export const MIN_ITEM_SIZE = 30;
@@ -32,6 +32,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     @ViewChild('headerWrapper', { static: false }) headerWrapper: ElementRef;
 
+    @ContentChild('selectColumn', { static: false }) selectColumnTpl: TemplateRef<any>;
     @ContentChild('groupHeader', { static: false }) groupHeaderTpl: TemplateRef<any>;
     @ContentChild('groupFooter', { static: false }) groupFooterTpl: TemplateRef<any>;
 
@@ -125,6 +126,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @Output() rowDrop: EventEmitter<DmTableRowDragEvent<T>> = new EventEmitter();
     @Input() rowDropAllowed: (event: DmTableRowDragEvent<T>) => boolean = () => true;
 
+    @Input() @InputNumber() selectColumnWidth: number | string = 50;
+
     hasFooter: boolean = false;
     flexColumnId: string;
     tableWidth: number = 0;
@@ -138,6 +141,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     resizeColumnStartPoint: Point;
     horScroll: number = 0;
     noColumns: boolean;
+    allRowsSelected: boolean = false;
+    allRowsNotSelected: boolean = true;
 
     constructor(
         private _elemRef: ElementRef,
@@ -201,6 +206,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     dataSubscription: Subscription;
     sortSubscription: Subscription;
+    stateSubscription: Subscription;
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
             if (this.dataSubscription) {
@@ -211,12 +217,21 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 this.sortSubscription.unsubscribe();
                 this.sortSubscription = undefined;
             }
+            if (this.stateSubscription) {
+                this.stateSubscription.unsubscribe();
+                this.stateSubscription = undefined;
+            }
             if (this.data instanceof DmTableController) {
                 this.dataSubscription = this.data.visibleItems.subscribe(() => this.sortRows());
                 this.sortSubscription = this.data.sort.subscribe(sort => {
                     this.sort = sort;
                     this.sortChange.emit(sort);
                     this.sortRows();
+                });
+                this.stateSubscription = this.data.state.subscribe(state => {
+                    this.allRowsSelected = state.itemsSelected == state.itemsTotal;
+                    this.allRowsNotSelected = state.itemsSelected == 0;
+                    this._cdr.markForCheck();
                 });
             }
             this.sortRows();
@@ -724,6 +739,15 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         this._r2.removeClass(el, 'ngx-dmt-row-dragover');
         this._r2.removeClass(el, 'ngx-dmt-row-drop-allowed');
         this._r2.removeClass(el, 'ngx-dmt-row-drop-forbiden');
+    }
+
+    isRowSelected(id: number | string): boolean {
+        if (this.data instanceof DmTableController) {
+            return this.data.selected[id];
+        }
+        else {
+            return false;
+        }
     }
 
 }

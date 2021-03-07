@@ -1,7 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { DmTableControllerState, DmTableGrouppedRows, DmTableSort } from './models';
 
-export type StringOrNumber = string | number;
 export const DM_TABLE_DEFAULT_FILTERFN = (item, filter) => {
     if (filter == null) {
         return true;

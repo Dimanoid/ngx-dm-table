@@ -11,6 +11,12 @@
                 <tr class="ngx-dmt-header-row"
                     cdkDropList cdkDropListOrientation="horizontal"
                     (cdkDropListDropped)="columnHeaderDrop($event)">
+                    <th *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
+                        <ng-container
+                            [ngTemplateOutlet]="selectColumnTpl"
+                            [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
+                        </ng-container>
+                    </th>
                     <th *ngFor="let cid of colsOrder; let ci = index; let f = first; let l = last"
                         class="ngx-dmt-header-cell"
                         [title]="ctMap[cid].headerTooltip ? ctMap[cid].headerTooltip : ''"
@@ -65,6 +71,12 @@
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })"
                             #bodyRow>
+                            <td *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
+                                <ng-container
+                                    [ngTemplateOutlet]="selectColumnTpl"
+                                    [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r.id), ri: ri }">
+                                </ng-container>
+                            </td>
                             <td *ngFor="let cid of colsOrder; let i = index"
                                 class="ngx-dmt-cell"
                                 [ngClass]="getCellClasses(r, cid, ri, i)"
