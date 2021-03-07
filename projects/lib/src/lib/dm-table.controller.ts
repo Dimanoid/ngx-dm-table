@@ -121,6 +121,8 @@ export class DmTableController<T> {
         }
         else {
             items.push(...this._items as any);
+            state.itemsVisible = this._items.length;
+            state.itemsTotal = this._items.length;
         }
 
         const sort = this.sort.getValue();
