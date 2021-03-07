@@ -33,6 +33,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @ViewChild('headerWrapper', { static: false }) headerWrapper: ElementRef;
 
     @ContentChild('selectColumn', { static: false }) selectColumnTpl: TemplateRef<any>;
+    @ContentChild('selectColumnHeader', { static: false }) selectColumnHeaderTpl: TemplateRef<any>;
     @ContentChild('groupHeader', { static: false }) groupHeaderTpl: TemplateRef<any>;
     @ContentChild('groupFooter', { static: false }) groupFooterTpl: TemplateRef<any>;
 

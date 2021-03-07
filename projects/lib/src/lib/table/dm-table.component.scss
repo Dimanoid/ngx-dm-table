@@ -84,6 +84,9 @@ table.ngx-dmt {
                 background-color: $headerBgColor;
                 font-weight: bold;
                 position: relative;
+                &.ngx-dmt-cell-select-select {
+                    padding: 5px;
+                }
                 &.cdk-drag-placeholder {
                     opacity: .5;
                 }
@@ -217,6 +220,9 @@ table.ngx-dmt {
                 overflow: hidden;
                 &:last-child {
                     border-right-color: transparent !important;
+                }
+                &.ngx-dmt-cell-select {
+                    padding: 5px;
                 }
             }
         }

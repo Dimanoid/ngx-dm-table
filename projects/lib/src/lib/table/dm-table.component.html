@@ -5,14 +5,14 @@
     <div *ngIf="ctMap" class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
         <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass">
             <colgroup>
-                <col *ngIf="selectColumnTpl" [style.width.px]="selectColumnWidth">
+                <col *ngIf="selectColumnHeaderTpl" [style.width.px]="selectColumnWidth">
                 <col *ngFor="let cid of colsOrder" [style.width.px]="resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid]">
             </colgroup>
             <thead>
                 <tr class="ngx-dmt-header-row"
                     cdkDropList cdkDropListOrientation="horizontal"
                     (cdkDropListDropped)="columnHeaderDrop($event)">
-                    <th class="ngx-dmt-header-cell">
+                    <th class="ngx-dmt-header-cell ngx-dmt-header-cell-select">
                         <ng-container
                             [ngTemplateOutlet]="selectColumnTpl"
                             [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
@@ -73,7 +73,7 @@
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })"
                             #bodyRow>
-                            <td *ngIf="selectColumnTpl" class="ngx-dmt-cell">
+                            <td *ngIf="selectColumnTpl" class="ngx-dmt-cell ngx-dmt-cell-select">
                                 <ng-container
                                     [ngTemplateOutlet]="selectColumnTpl"
                                     [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r.id), ri: ri }">
