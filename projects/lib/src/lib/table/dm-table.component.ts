@@ -232,6 +232,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 this.stateSubscription = this.data.state.subscribe(state => {
                     this.allRowsSelected = state.itemsSelected == state.itemsTotal;
                     this.allRowsNotSelected = state.itemsSelected == 0;
+                    console.log('[DMT] ngOnChanges, all:', this.allRowsSelected, 'none:', this.allRowsNotSelected, 'state:', state);
                     this._cdr.markForCheck();
                 });
             }
