@@ -14,7 +14,7 @@
                     (cdkDropListDropped)="columnHeaderDrop($event)">
                     <th class="ngx-dmt-header-cell ngx-dmt-header-cell-select">
                         <ng-container
-                            [ngTemplateOutlet]="selectColumnTpl"
+                            [ngTemplateOutlet]="selectColumnHeaderTpl"
                             [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
                         </ng-container>
                     </th>
