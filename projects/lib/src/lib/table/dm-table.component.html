@@ -14,7 +14,7 @@
                     (cdkDropListDropped)="columnHeaderDrop($event)">
                     <th *ngIf="selectColumnTpl && selectColumnHeaderTpl" class="ngx-dmt-header-cell ngx-dmt-header-cell-select" (click)="toggleSelectAll($event)">
                         <ng-container
-                            [ngTemplateOutlet]="selectColumnTpl && selectColumnHeaderTpl"
+                            [ngTemplateOutlet]="selectColumnHeaderTpl"
                             [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
                         </ng-container>
                     </th>
@@ -75,7 +75,7 @@
                             #bodyRow>
                             <td *ngIf="selectColumnTpl && selectColumnHeaderTpl" class="ngx-dmt-cell ngx-dmt-cell-select" (click)="toggleSelect(r, $event)">
                                 <ng-container
-                                    [ngTemplateOutlet]="selectColumnTpl && selectColumnHeaderTpl"
+                                    [ngTemplateOutlet]="selectColumnTpl"
                                     [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r), ri: ri }">
                                 </ng-container>
                             </td>
