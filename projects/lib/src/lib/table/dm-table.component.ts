@@ -230,7 +230,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     this.sortRows();
                 });
                 this.stateSubscription = this.data.state.subscribe(state => {
-                    this.allRowsSelected = state.itemsSelected == state.itemsTotal;
+                    this.allRowsSelected = state.itemsSelected == state.itemsTotal && state.itemsTotal > 0;
                     this.allRowsNotSelected = state.itemsSelected == 0;
                     this._cdr.markForCheck();
                 });
