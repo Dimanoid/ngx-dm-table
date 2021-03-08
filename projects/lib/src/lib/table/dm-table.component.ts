@@ -162,7 +162,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     ngAfterViewInit() {
         this.updateHelpers();
         const xw = this.getHostDims();
-        this.tableWidth = xw[1] - this.scrollBarWidth;
+        this.tableWidth = xw[1] - this.scrollBarWidth - (this.selectColumnTpl && this.selectColumnHeaderTpl ? +this.selectColumnWidth : 0);
         this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             setTimeout(() => {
@@ -178,7 +178,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     const nw = Math.round(entries[0].contentRect.width - this.scrollBarWidth);
                     if (nw != tw) {
                         const rd = nw - tw;
-                        this.tableWidth = nw;
+                        this.tableWidth = nw - (this.selectColumnTpl && this.selectColumnHeaderTpl ? +this.selectColumnWidth : 0);
                         const colsWidthTmp = Object.assign({}, this.colsWidth);
                         if (this.resizeColumnId && this.colsWidthTmp[this.resizeColumnId]) {
                             colsWidthTmp[this.resizeColumnId] = this.colsWidthTmp[this.resizeColumnId];
@@ -648,7 +648,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         [this.scrollBarWidth, this.scrollBarHeight] = getScrollBarSize();
         const xw = this.getHostDims();
         if (xw) {
-            this.tableWidth = xw[1] - this.scrollBarWidth;
+            this.tableWidth = xw[1] - this.scrollBarWidth
+                - (this.selectColumnTpl && this.selectColumnHeaderTpl ? +this.selectColumnWidth : 0);
             this.tableLeft = xw[0];
         }
     }
@@ -751,13 +752,17 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         }
     }
 
-    toggleSelect(row: any): void {
+    toggleSelect(row: any, e: MouseEvent): void {
+        e.stopImmediatePropagation();
+        e.preventDefault();
         if (this.data instanceof DmTableController) {
             this.data.toggleSelected(this.trackBy(-1, row));
         }
     }
 
-    toggleSelectAll(): void {
+    toggleSelectAll(e: MouseEvent): void {
+        e.stopImmediatePropagation();
+        e.preventDefault();
         if (this.data instanceof DmTableController) {
             this.data.setAllSelected(!this.allRowsSelected);
         }
