@@ -38,6 +38,7 @@ export class DmTableController<T> {
 
     private _items: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<number | string, boolean> = new Map();
+    readonly itemsMap: Map<number | string, T> = new Map();
 
     constructor(
         public groupped = false,
@@ -57,6 +58,8 @@ export class DmTableController<T> {
 
     setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (index: number, item: T) => any): void {
         this._items = items;
+        this.itemsMap.clear();
+
         if (trackBy) {
             this.trackBy = trackBy;
         }
@@ -75,6 +78,20 @@ export class DmTableController<T> {
         else {
             this.trackBy = (_, v) => v;
         }
+
+        if (this.groupped) {
+            for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                for (const r of g.rows) {
+                    this.itemsMap.set(this.trackBy(-1, r), r);
+                }
+            }
+        }
+        else {
+            for (const r of (this._items as T[])) {
+                this.itemsMap.set(this.trackBy(-1, r), r);
+            }
+        }
+
         if (this.selected.size > 0) {
             const m: Map<number | string, boolean> = new Map();
             if (this.groupped) {
@@ -193,6 +210,10 @@ export class DmTableController<T> {
 
     toggleSelected(key: string | number): void {
         this.setSelected(key, !this.selected.get(key));
+    }
+
+    getItem(id: string | number): T | undefined {
+        return this.itemsMap.get(id);
     }
 
 }
