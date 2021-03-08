@@ -92,7 +92,18 @@
                         (rowDragStart)="onRowDragStart($event)"
                         (rowDragEnd)="onRowDragEnd($event)"
                         (rowDrop)="onRowDrop($event)"
-                        >
+                        [trackBy]="trackBy">
+                        <!-- selectColumnWidth="40">
+                        <ng-template #selectColumnHeader let-all="all" let-none="none">
+                            <div style="text-align: center">
+                                <label nz-checkbox [ngModel]="all" [nzIndeterminate]="!all && !none" (ngModelChange)="controller.setAllSelected(!none)"></label>
+                            </div>
+                        </ng-template>
+                        <ng-template #selectColumn let-checked let-row="row">
+                            <div style="text-align: center">
+                                <label nz-checkbox [ngModel]="checked" (ngModelChange)="controller.toggleSelected(row[0])"></label>
+                            </div>
+                        </ng-template> -->
                         <dm-column
                             minWidth="38"
                             resizable="false"

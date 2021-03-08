@@ -39,7 +39,12 @@ export class DmTableController<T> {
     private _items: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<number | string, boolean> = new Map();
 
-    constructor(public groupped = false, filterFn?: (item: T, filter: any) => boolean, sortFn?: (items: T[]) => T[]) {
+    constructor(
+        public groupped = false,
+        private trackBy?: (index: number, item: T) => any,
+        filterFn?: (item: T, filter: any) => boolean,
+        sortFn?: (items: T[]) => T[]
+    ) {
         if (filterFn) {
             this.filterFn = filterFn;
         }
@@ -50,8 +55,26 @@ export class DmTableController<T> {
         this.sort.subscribe(() => this.invalidate());
     }
 
-    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined): void {
+    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (index: number, item: T) => any): void {
         this._items = items;
+        if (trackBy) {
+            this.trackBy = trackBy;
+        }
+        else if (items) {
+            const item = this.groupped ? ((items[0] as any).rows ? (items[0] as any).rows[0] : undefined) : items[0];
+            if (item && Array.isArray(item)) {
+                this.trackBy = (_, v) => v[0];
+            }
+            else if (item && typeof item == 'object' && (item as any).id !== undefined) {
+                this.trackBy = (_, v) => (v as any).id;
+            }
+            else {
+                this.trackBy = (_, v) => v;
+            }
+        }
+        else {
+            this.trackBy = (_, v) => v;
+        }
         if (this.selected.size > 0) {
             const m: Map<number | string, boolean> = new Map();
             if (this.groupped) {
@@ -141,13 +164,14 @@ export class DmTableController<T> {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
-                        this.selected.set((r as any).id, true);
+                        this.selected.set(this.trackBy(-1, r as any), true);
                     }
                 }
             }
             else {
                 for (const r of (this._items as T[])) {
-                    this.selected.set((r as any).id, true);
+                    const k = this.trackBy(-1, r as any);
+                    this.selected.set(k, true);
                 }
             }
         }

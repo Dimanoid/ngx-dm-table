@@ -232,7 +232,6 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 this.stateSubscription = this.data.state.subscribe(state => {
                     this.allRowsSelected = state.itemsSelected == state.itemsTotal;
                     this.allRowsNotSelected = state.itemsSelected == 0;
-                    console.log('[DMT] ngOnChanges, all:', this.allRowsSelected, 'none:', this.allRowsNotSelected, 'state:', state);
                     this._cdr.markForCheck();
                 });
             }
@@ -743,12 +742,24 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         this._r2.removeClass(el, 'ngx-dmt-row-drop-forbiden');
     }
 
-    isRowSelected(id: number | string): boolean {
+    isRowSelected(row: any): boolean {
         if (this.data instanceof DmTableController) {
-            return this.data.selected[id];
+            return this.data.selected.get(this.trackBy(-1, row));
         }
         else {
             return false;
+        }
+    }
+
+    toggleSelect(row: any): void {
+        if (this.data instanceof DmTableController) {
+            this.data.toggleSelected(this.trackBy(-1, row));
+        }
+    }
+
+    toggleSelectAll(): void {
+        if (this.data instanceof DmTableController) {
+            this.data.setAllSelected(!this.allRowsSelected);
         }
     }
 

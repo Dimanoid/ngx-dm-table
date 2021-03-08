@@ -86,6 +86,9 @@ table.ngx-dmt {
                 position: relative;
                 &.ngx-dmt-header-cell-select {
                     padding: 5px;
+                    & > * {
+                        pointer-events: none;
+                    }
                 }
                 &.cdk-drag-placeholder {
                     opacity: .5;
@@ -223,6 +226,9 @@ table.ngx-dmt {
                 }
                 &.ngx-dmt-cell-select {
                     padding: 5px;
+                    & > * {
+                        pointer-events: none;
+                    }
                 }
             }
         }

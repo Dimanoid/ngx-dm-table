@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { DmTableSort } from '@dimanoid/ngx-dm-table';
+import { DmTableController, DmTableSort, DmTableRowDragEvent } from '@dimanoid/ngx-dm-table';
 import { Point } from './dm-divider.module';
-import { DmTableRowDragEvent } from 'projects/lib/src/public-api';
 
 const ICONS = [
     'rocket',
@@ -75,6 +74,9 @@ export class AppComponent implements OnInit {
 
     Object = Object;
     selectedFn = (row: any) => this.selected[row[0]];
+    trackBy = (_index: number, item: any[]) => item[0];
+
+    controller: DmTableController<any[]> = new DmTableController(false, this.trackBy);
 
     constructor() {
         this.divider['d1'] = { min: 200, max: 700, vertical: true, size: 300 };
@@ -103,6 +105,7 @@ export class AppComponent implements OnInit {
                     char + ` - Random length string:` + ' text'.repeat(n) + ' with spaces',
                 ]
             );
+            // this.controller.setItems(this.data);
         }
         this.linesGenerating = false;
     }
