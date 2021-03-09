@@ -12,8 +12,8 @@
         "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
         "lint": "ng lint",
         "publish": "npm publish dist/lib --access public",
-        "up": "git diff-index --quiet HEAD -- && cd projects/lib && npm version patch && git add package.json && git commit -m \"version bump [ci skip]\" package.json && cd ../.. && npm version patch",
-        "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && git add package.json && git commit -m \"version bump [ci skip]\" package.json && cd ../.. && npm version minor"
+        "up": "git diff-index --quiet HEAD -- && cd projects/lib && npm version patch && git add package.json && git commit -m \"version bump [ci skip]\" package*.json && cd ../.. && npm version patch",
+        "up:minor": "git diff-index --quiet HEAD -- && cd projects/lib && npm version minor && git add package.json && git commit -m \"version bump [ci skip]\" package*.json && cd ../.. && npm version minor"
     },
     "dependencies": {
         "@angular/animations": "~11.2.2",
