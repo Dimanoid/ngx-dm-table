@@ -197,8 +197,13 @@ export class DmTableController<T> {
         this.state.next(state);
     }
 
-    setSelected(key: string | number, selected: boolean): void {
-        this.selected.set(key, selected);
+    setSelected(keys: string | number | (string | number)[], selected: boolean): void {
+        if (Array.isArray(keys)) {
+            keys.forEach(k => this.selected.set(k, selected))
+        }
+        else {
+            this.selected.set(keys, selected);
+        }
         const state = Object.assign({}, this.state.getValue());
         let count = 0;
         this.selected.forEach(v => {
@@ -214,6 +219,26 @@ export class DmTableController<T> {
 
     getItem(id: string | number): T | undefined {
         return this.itemsMap.get(id);
+    }
+
+    getSelectedItemIds(): (string | number)[] {
+        const res: (string | number)[] = [];
+        for (const [k, v] of this.selected.entries()) {
+            if (v) {
+                res.push(k)
+            }
+        }
+        return res;
+    }
+
+    getSelectedItems(): T[] {
+        const res: T[] = [];
+        for (const [k, v] of this.selected.entries()) {
+            if (v && this._items[k]) {
+                res.push(this._items[k])
+            }
+        }
+        return res;
     }
 
 }
