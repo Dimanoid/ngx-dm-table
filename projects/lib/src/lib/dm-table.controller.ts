@@ -23,7 +23,7 @@ export const DM_TABLE_DEFAULT_FILTERFN = (item, filter) => {
     return false;
 };
 
-export class DmTableController<T> {
+export class DmTableController<T, K = any> {
 
     readonly state: BehaviorSubject<DmTableControllerState> = new BehaviorSubject({ itemsTotal: 0, itemsSelected: 0, itemsVisible: 0 });
     readonly visibleItems: BehaviorSubject<T[] | DmTableGrouppedRows<T>[] | undefined> = new BehaviorSubject(undefined);
@@ -37,12 +37,12 @@ export class DmTableController<T> {
         | undefined;
 
     private _items: T[] | DmTableGrouppedRows<T>[];
-    readonly selected: Map<number | string, boolean> = new Map();
-    readonly itemsMap: Map<number | string, T> = new Map();
+    readonly selected: Map<K, boolean> = new Map();
+    readonly itemsMap: Map<K, T> = new Map();
 
     constructor(
         public groupped = false,
-        private trackBy?: (index: number, item: T) => any,
+        private trackBy?: (index: number, item: T) => K,
         filterFn?: (item: T, filter: any) => boolean,
         sortFn?: (items: T[]) => T[]
     ) {
@@ -56,7 +56,7 @@ export class DmTableController<T> {
         this.sort.subscribe(() => this.invalidate());
     }
 
-    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (index: number, item: T) => any): void {
+    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (index: number, item: T) => K): void {
         this._items = items;
         this.itemsMap.clear();
 
@@ -72,11 +72,11 @@ export class DmTableController<T> {
                 this.trackBy = (_, v) => (v as any).id;
             }
             else {
-                this.trackBy = (_, v) => v;
+                this.trackBy = (_, v) => v as any;
             }
         }
         else {
-            this.trackBy = (_, v) => v;
+            this.trackBy = (_, v) => v as any;
         }
 
         if (this.groupped) {
@@ -93,7 +93,7 @@ export class DmTableController<T> {
         }
 
         if (this.selected.size > 0) {
-            const m: Map<number | string, boolean> = new Map();
+            const m: Map<K, boolean> = new Map();
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
@@ -160,7 +160,7 @@ export class DmTableController<T> {
             }
         }
         else {
-            items.push(...this._items as any);
+            this._items.forEach(v => items.push(v));
             state.itemsVisible = this._items.length;
             state.itemsTotal = this._items.length;
         }
@@ -197,7 +197,7 @@ export class DmTableController<T> {
         this.state.next(state);
     }
 
-    setSelected(keys: string | number | (string | number)[], selected: boolean): void {
+    setSelected(keys: K | K[], selected: boolean): void {
         if (Array.isArray(keys)) {
             keys.forEach(k => this.selected.set(k, selected))
         }
@@ -213,16 +213,16 @@ export class DmTableController<T> {
         this.state.next(state);
     }
 
-    toggleSelected(key: string | number): void {
+    toggleSelected(key: K): void {
         this.setSelected(key, !this.selected.get(key));
     }
 
-    getItem(id: string | number): T | undefined {
+    getItem(id: K): T | undefined {
         return this.itemsMap.get(id);
     }
 
-    getSelectedItemIds(): (string | number)[] {
-        const res: (string | number)[] = [];
+    getSelectedItemIds(): K[] {
+        const res: K[] = [];
         for (const [k, v] of this.selected.entries()) {
             if (v) {
                 res.push(k)
@@ -234,8 +234,8 @@ export class DmTableController<T> {
     getSelectedItems(): T[] {
         const res: T[] = [];
         for (const [k, v] of this.selected.entries()) {
-            if (v && this._items[k]) {
-                res.push(this._items[k])
+            if (v && this.itemsMap.has(k)) {
+                res.push(this.itemsMap.get(k));
             }
         }
         return res;

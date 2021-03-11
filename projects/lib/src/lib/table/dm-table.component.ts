@@ -127,6 +127,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @Output() rowDrop: EventEmitter<DmTableRowDragEvent<T>> = new EventEmitter();
     @Input() rowDropAllowed: (event: DmTableRowDragEvent<T>) => boolean = () => true;
 
+    @Input() @InputBoolean() showSelectColumn: boolean | string = false;
     @Input() @InputNumber() selectColumnWidth: number | string = 50;
 
     hasFooter: boolean = false;
@@ -162,7 +163,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     ngAfterViewInit() {
         this.updateHelpers();
         const xw = this.getHostDims();
-        this.tableWidth = xw[1] - this.scrollBarWidth - (this.selectColumnTpl && this.selectColumnHeaderTpl ? +this.selectColumnWidth : 0);
+        this.tableWidth = xw[1] - this.scrollBarWidth - (this.showSelectColumn ? +this.selectColumnWidth : 0);
         this.tableLeft = xw[0];
         if (this._columnTemplatesQL) {
             setTimeout(() => {
@@ -178,7 +179,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     const nw = Math.round(entries[0].contentRect.width - this.scrollBarWidth);
                     if (nw != tw) {
                         const rd = nw - tw;
-                        this.tableWidth = nw - (this.selectColumnTpl && this.selectColumnHeaderTpl ? +this.selectColumnWidth : 0);
+                        this.tableWidth = nw - (this.showSelectColumn ? +this.selectColumnWidth : 0);
                         const colsWidthTmp = Object.assign({}, this.colsWidth);
                         if (this.resizeColumnId && this.colsWidthTmp[this.resizeColumnId]) {
                             colsWidthTmp[this.resizeColumnId] = this.colsWidthTmp[this.resizeColumnId];
@@ -649,7 +650,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         const xw = this.getHostDims();
         if (xw) {
             this.tableWidth = xw[1] - this.scrollBarWidth
-                - (this.selectColumnTpl && this.selectColumnHeaderTpl ? +this.selectColumnWidth : 0);
+                - (this.showSelectColumn ? +this.selectColumnWidth : 0);
             this.tableLeft = xw[0];
         }
     }
