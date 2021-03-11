@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-import { DmTableController, DmTableSort, DmTableRowDragEvent } from '@dimanoid/ngx-dm-table';
+import { DmTableController, DmTableSort, DmTableRowDragEvent, DmTableControllerState, DmTableRowEvent } from '@dimanoid/ngx-dm-table';
 import { Point } from './dm-divider.module';
 
 const ICONS = [
@@ -39,10 +39,11 @@ const COLS_WIDTH = { 0: 38, 1: 100, 2: 160, 3: 200, 4: 200, 5: 30, 6: 400, 7: 10
 export class AppComponent implements OnInit {
     @ViewChild('dragHelper', { static: false }) dragHelper: ElementRef;
 
+    dataTables: { [key: string]: any[][] } = {};
     stripes: boolean = false;
     data: any[][] = [];
     lines: string = '100';
-    linesList: string[] = ['0', '10', '100', '1000', '10000', '100000'];
+    linesList: string[] = ['0', '10', '100', '1000', '10000', '100000', '300000'];
     linesGenerating: boolean = true;
     colsData: { [id: string]: any } = {};
     colsVisibility: { [id: string]: boolean } = { 0: true, 1: true, 2: true, 3: false, 4: false, 5: true, 6: true, 7: false, 8: true };
@@ -73,10 +74,13 @@ export class AppComponent implements OnInit {
     dragIds: string[];
 
     Object = Object;
-    selectedFn = (row: any) => this.selected[row[0]];
+    selectedFn = (row: any) => this.useSelectCol ? this.controller.selected.get(row[0]) : this.selected[row[0]];
     trackBy = (_index: number, item: any[]) => item[0];
 
     controller: DmTableController<any[]> = new DmTableController(false, this.trackBy);
+    state: DmTableControllerState;
+    useController: boolean = false;
+    useSelectCol: boolean = false;
 
     constructor() {
         this.divider['d1'] = { min: 200, max: 700, vertical: true, size: 300 };
@@ -84,15 +88,17 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.generateData();
+        this.updateData();
+        this.controller.state.subscribe(state => this.state = state);
     }
 
     generateData() {
-        this.data = [];
-        for (let i = 1; i <= +this.lines; i++) {
+        const data = [];
+        for (let i = 1; i <= 300000; i++) {
             const icon = Math.trunc(Math.random() * ICONS.length);
             const n = Math.floor(Math.random() * 62);
             const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(n);
-            this.data.push(
+            data.push(
                 [
                     i,
                     i,
@@ -105,9 +111,14 @@ export class AppComponent implements OnInit {
                     char + ` - Random length string:` + ' text'.repeat(n) + ' with spaces',
                 ]
             );
-            // this.controller.setItems(this.data);
         }
+        this.linesList.forEach(k => this.dataTables[k] = data.slice(0, +k));
         this.linesGenerating = false;
+    }
+
+    updateData() {
+        this.data = this.dataTables[this.lines];
+        this.controller.setItems(this.data);
     }
 
     customSort(a: any, b: any): number {
@@ -165,7 +176,9 @@ export class AppComponent implements OnInit {
             this.dragIds = [e.row[0]];
         }
         else {
-            this.dragIds = Object.keys(this.selected).filter(id => this.selected[id]);
+            this.dragIds = this.useSelectCol
+                ? this.controller.getSelectedItemIds()
+                : Object.keys(this.selected).filter(id => this.selected[id]);
             if (this.dragIds.length == 0) {
                 this.dragIds.push(e.row[0]);
             }
@@ -193,6 +206,20 @@ export class AppComponent implements OnInit {
             dd.error = ex.toString();
         }
         this.dropped = dd;
+    }
+
+    rowClick(e: DmTableRowEvent<any[]>): void {
+        if (this.useSelectCol) {
+            this.controller.toggleSelected(e.row[0]);
+        }
+        else {
+            this.selected[e.row[0]] = !this.selected[e.row[0]]
+        }
+    }
+
+    updateSelectCol(): void {
+        this.colsVisibility[0] = !this.useSelectCol;
+        this.colsVisibility = Object.assign({}, this.colsVisibility);
     }
 
 }

@@ -12,7 +12,7 @@
                             <nz-select style="width: 120px;"
                                 [(ngModel)]="lines"
                                 [nzLoading]="linesGenerating"
-                                (ngModelChange)="linesGenerating = true; generateData();">
+                                (ngModelChange)="updateData()">
                                 <nz-option *ngFor="let ln of linesList" [nzValue]="ln" [nzLabel]="ln"></nz-option>
                             </nz-select>
                         </div>
@@ -20,9 +20,21 @@
                             <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
                             <span class="ml05">Zebra stripped</span>
                         </div>
+                        <div class="layout center mt1">
+                            <nz-switch nzSize="small" [(ngModel)]="useController" (ngModelChange)="useSelectCol = useController ? useSelectCol : useController"></nz-switch>
+                            <span class="ml05">Use DmTableController</span>
+                        </div>
+                        <div *ngIf="useController" class="layout center mt1 ml1">
+                            <nz-switch nzSize="small" [(ngModel)]="useSelectCol" (ngModelChange)="updateSelectCol()"></nz-switch>
+                            <span class="ml05">Show dedicated col for select</span>
+                        </div>
+                        <div *ngIf="useController" class="layout vertical mt1 ml1">
+                            <b class="mb05">DmTableController state:</b>
+                            <pre class="dmtd-data">{{ state | json }}</pre>
+                        </div>
                         <div class="layout vertical mt1">
                             <b class="mb05">Current sort:</b>
-                            <span class="dmtd-data">{{ sort | json }}</span>
+                            <span class="dmtd-data">{{ (sort ? sort : 'NONE') | json }}</span>
                         </div>
                         <div class="layout vertical mt1">
                             <b class="mb05">Columns:</b>
@@ -77,7 +89,7 @@
             <div class="layout flex relative">
                 <div class="layout fit scroll">
                     <dm-table #example1
-                        [data]="data"
+                        [data]="useController ? controller : data"
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"
                         [rowClasses]="{ 'dmt-selected': selectedFn }"
@@ -88,12 +100,13 @@
                         [rowsDragEnabled]="dndEnabled"
                         [rowsDropEnabled]="dndEnabled"
                         [rowDropAllowed]="dropAllowedFn"
-                        (rowClick)="selected[$event.row[0]] = !selected[$event.row[0]]"
+                        (rowClick)="rowClick($event)"
                         (rowDragStart)="onRowDragStart($event)"
                         (rowDragEnd)="onRowDragEnd($event)"
                         (rowDrop)="onRowDrop($event)"
-                        [trackBy]="trackBy">
-                        <!-- selectColumnWidth="40">
+                        [trackBy]="trackBy"
+                        [showSelectColumn]="useSelectCol"
+                        selectColumnWidth="40">
                         <ng-template #selectColumnHeader let-all="all" let-none="none">
                             <div style="text-align: center">
                                 <label nz-checkbox [ngModel]="all" [nzIndeterminate]="!all && !none" (ngModelChange)="controller.setAllSelected(!none)"></label>
@@ -103,7 +116,7 @@
                             <div style="text-align: center">
                                 <label nz-checkbox [ngModel]="checked" (ngModelChange)="controller.toggleSelected(row[0])"></label>
                             </div>
-                        </ng-template> -->
+                        </ng-template>
                         <dm-column
                             minWidth="38"
                             resizable="false"
