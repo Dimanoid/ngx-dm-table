@@ -16,6 +16,7 @@ import { DmTableService } from '../dm-table.service';
 import { DmTableRowsGroup, DmTableSort, DmTableHeaderEvent, DmTableRowEvent, DmTableRowDragEvent, DmTableGrouppedRows } from '../models';
 import { DmTableController } from '../dm-table.controller';
 import { Subscription } from 'rxjs';
+import { DmTableResizePolicyFit, IDmTableResizePolicy } from '../dm-table-resize-policies';
 
 export const MIN_ITEM_SIZE = 30;
 
@@ -129,6 +130,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     @Input() @InputBoolean() showSelectColumn: boolean | string = false;
     @Input() @InputNumber() selectColumnWidth: number | string = 50;
+
+    @Input() resizePolicy: IDmTableResizePolicy<T> = new DmTableResizePolicyFit<T>();
 
     hasFooter: boolean = false;
     flexColumnId: string;
@@ -287,24 +290,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (!this.ctMap) {
             return;
         }
-        let cwChanged = false;
         if (this.tableWidth > 0) {
-            let tcw = 0;
-            for (const cid of this.colsOrder) {
-                const cd = this.ctMap[cid];
-                let w = this.colsWidth[cd.colId] || 0;
-                if (cd.minWidth && w < cd.minWidth) {
-                    w = +cd.minWidth;
-                }
-                else if (cd.maxWidth && w > cd.maxWidth) {
-                    w = +cd.maxWidth;
-                }
-                if (w != this.colsWidth[cd.colId]) {
-                    this.colsWidth[cd.colId] = w;
-                    cwChanged = true;
-                }
-                tcw += w;
-            }
+            const [tcw, cwChanged] = this.getNormalizedTableWidth();
             if (tcw < this.tableWidth) {
                 const ec = emptyValues(this.colsWidth, this.colsVisibility);
                 if (ec > 0) {
@@ -398,47 +385,15 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     resizeColumnUpdateWidth(delta: number): void {
-        const ct = this.ctMap[this.resizeColumnId];
-        const w = this.colsWidth[this.resizeColumnId];
-        let nw = w + delta;
-        if (ct.minWidth > nw) {
-            nw = +ct.minWidth;
-        }
-        else if (ct.maxWidth && ct.maxWidth < nw) {
-            nw = +ct.maxWidth;
-        }
-        const rd = nw - w;
-        if (rd > 0) {
-            this.colsWidthTmp[this.resizeColumnId] = nw;
-        }
-        else if (rd < 0) {
-            if (this.flexColumnId == this.resizeColumnId) {
-                this.colsWidthTmp[this.resizeColumnId] = nw;
-                let sv = sumValues(this.colsWidthTmp, this.colsVisibility);
-                if (this.tableWidth > sv) {
-                    const fci = this.colsOrder.indexOf(this.flexColumnId);
-                    if (fci > -1 && fci < this.colsOrder.length - 1) {
-                        const lid = this.colsOrder[this.colsOrder.length - 1];
-                        if (!this.ctMap[lid].maxWidth || this.tableWidth - sv + this.colsWidth[lid] <= this.ctMap[lid].maxWidth) {
-                            this.colsWidthTmp[lid] += this.tableWidth - sv;
-                        }
-                        else if (this.colsWidth[lid] < this.ctMap[lid].maxWidth) {
-                            const ld = +this.ctMap[lid].maxWidth - this.colsWidth[lid];
-                            sv -= ld;
-                            this.colsWidthTmp[lid] += ld;
-                        }
-                    }
-                    this.colsWidthTmp[this.resizeColumnId] += this.tableWidth - sv;
-                }
-            }
-            else {
-                this.colsWidthTmp[this.resizeColumnId] = nw;
-                const sv = sumValues(this.colsWidthTmp, this.colsVisibility);
-                if (this.tableWidth > sv) {
-                    this.colsWidthTmp[this.flexColumnId] = this.colsWidth[this.flexColumnId] - rd;
-                }
-            }
-        }
+        this.colsWidthTmp = this.resizePolicy.onColumnResize(
+            this.resizeColumnId,
+            this.tableWidth,
+            delta,
+            this.colsOrder,
+            this.colsVisibility,
+            this.colsWidth,
+            this.ctMap
+        );
     }
 
     shrinkTmpColumns(delta: number, withFlex = true): void {
@@ -446,6 +401,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         const fid = withFlex ? this.flexColumnId : this.colsOrder[this.colsOrder.length - 1];
         const fct = this.ctMap[fid];
         const fw = this.colsWidthTmp[fid];
+        console.log('[DMT] delta:', delta, 'fid:', fid, 'fw:', fw, 'fct:', fct);
         if (!fct) {
             return;
         }
@@ -767,6 +723,28 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (this.data instanceof DmTableController) {
             this.data.setAllSelected(!this.allRowsSelected);
         }
+    }
+
+    getNormalizedTableWidth(): [number, boolean] {
+        let cwChanged = false;
+        let tcw = 0;
+        for (const cid of this.colsOrder) {
+            const cd = this.ctMap[cid];
+            let w = this.colsWidth[cd.colId] || 0;
+            if (cd.minWidth && w < cd.minWidth) {
+                w = +cd.minWidth;
+            }
+            else if (cd.maxWidth && w > cd.maxWidth) {
+                w = +cd.maxWidth;
+            }
+            if (w != this.colsWidth[cd.colId]) {
+                this.colsWidth[cd.colId] = w;
+                cwChanged = true;
+            }
+            console.log(`\t\t[${cd.colId}]colsWidth: ${this.colsWidth[cd.colId]}, tcw(${tcw}) + w(${w})`);
+            tcw += w;
+        }
+        return [tcw, cwChanged];
     }
 
 }
