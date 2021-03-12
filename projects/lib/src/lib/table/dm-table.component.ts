@@ -401,7 +401,6 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         const fid = withFlex ? this.flexColumnId : this.colsOrder[this.colsOrder.length - 1];
         const fct = this.ctMap[fid];
         const fw = this.colsWidthTmp[fid];
-        console.log('[DMT] delta:', delta, 'fid:', fid, 'fw:', fw, 'fct:', fct);
         if (!fct) {
             return;
         }
@@ -741,7 +740,6 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 this.colsWidth[cd.colId] = w;
                 cwChanged = true;
             }
-            console.log(`\t\t[${cd.colId}]colsWidth: ${this.colsWidth[cd.colId]}, tcw(${tcw}) + w(${w})`);
             tcw += w;
         }
         return [tcw, cwChanged];
