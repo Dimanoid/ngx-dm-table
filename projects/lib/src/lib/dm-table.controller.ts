@@ -79,34 +79,38 @@ export class DmTableController<T, K = any> {
             this.trackBy = (_, v) => v as any;
         }
 
-        if (this.groupped) {
-            for (const g of (this._items as DmTableGrouppedRows<T>[])) {
-                for (const r of g.rows) {
-                    this.itemsMap.set(this.trackBy(-1, r), r);
-                }
-            }
-        }
-        else {
-            for (const r of (this._items as T[])) {
-                this.itemsMap.set(this.trackBy(-1, r), r);
-            }
-        }
-
-        if (this.selected.size > 0) {
-            const m: Map<K, boolean> = new Map();
+        if (items) {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
-                        if (this.selected.get((r as any).id)) {
-                            m.set((r as any).id, true);
-                        }
+                        this.itemsMap.set(this.trackBy(-1, r), r);
                     }
                 }
             }
             else {
                 for (const r of (this._items as T[])) {
-                    if (this.selected.get((r as any).id)) {
-                        m.set((r as any).id, true);
+                    this.itemsMap.set(this.trackBy(-1, r), r);
+                }
+            }
+        }
+
+        if (this.selected.size > 0) {
+            const m: Map<K, boolean> = new Map();
+            if (items) {
+                if (this.groupped) {
+                    for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                        for (const r of g.rows) {
+                            if (this.selected.get((r as any).id)) {
+                                m.set((r as any).id, true);
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (const r of (this._items as T[])) {
+                        if (this.selected.get((r as any).id)) {
+                            m.set((r as any).id, true);
+                        }
                     }
                 }
             }
