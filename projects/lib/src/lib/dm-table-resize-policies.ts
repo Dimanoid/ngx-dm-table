@@ -77,40 +77,40 @@ export class DmTableResizePolicyFit<T> implements IDmTableResizePolicy<T> {
         const rd = nw - w;
 
         if (rd > 0) {
-            // if (flexColumnId == resizeColumnId) {
-                colsWidthTmp[resizeColumnId] = nw;
-            // }
-            // else {
-            //     const sv = sumValues(colsWidthTmp, colsVisibility) + rd;
-            //     if (portalWidth >= sv) {
-            //         colsWidthTmp[flexColumnId] += portalWidth - sv;
-            //     }
-            //     else {
-            //         let d = sv - portalWidth;
-            //         if (colsWidthTmp[flexColumnId] > ctMap[flexColumnId].minWidth) {
-            //             const dd = colsWidthTmp[flexColumnId] - +ctMap[flexColumnId].minWidth;
-            //             if (d <= dd) {
-            //                 colsWidthTmp[flexColumnId] -= d;
-            //             }
-            //             else {
-            //                 colsWidthTmp[flexColumnId] -= dd;
-            //                 d -= dd;
-            //                 for (let i = colsOrder.length - 1; i > 0; i--) {
-            //                     const did = colsOrder[i];
-            //                     const ddd = colsWidthTmp[did] - +ctMap[did].minWidth;
-            //                     if (d <= ddd) {
-            //                         colsWidthTmp[did] -= d;
-            //                         break;
-            //                     }
-            //                     else {
-            //                         colsWidthTmp[did] -= ddd;
-            //                         d -= ddd;
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
+            colsWidthTmp[resizeColumnId] = nw;
+            if (flexColumnId != resizeColumnId) {
+                const sv = sumValues(colsWidthTmp, colsVisibility) + rd;
+                if (portalWidth >= sv) {
+                    colsWidthTmp[flexColumnId] += portalWidth - sv;
+                }
+                else {
+                    let d = sv - portalWidth - rd;
+                    if (colsWidthTmp[flexColumnId] > ctMap[flexColumnId].minWidth) {
+                        const dd = colsWidthTmp[flexColumnId] - +ctMap[flexColumnId].minWidth;
+                        if (d <= dd) {
+                            colsWidthTmp[flexColumnId] -= d;
+                        }
+                        else {
+                            colsWidthTmp[flexColumnId] -= dd;
+                            d -= dd;
+                            for (let i = colsOrder.length - 1; i > 0; i--) {
+                                const did = colsOrder[i];
+                                if (did != resizeColumnId) {
+                                    const ddd = colsWidthTmp[did] - +ctMap[did].minWidth;
+                                    if (d <= ddd) {
+                                        colsWidthTmp[did] -= d;
+                                        break;
+                                    }
+                                    else {
+                                        colsWidthTmp[did] -= ddd;
+                                        d -= ddd;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         else if (rd < 0) {
             if (flexColumnId == resizeColumnId) {
