@@ -151,7 +151,33 @@ export class DmTableResizePolicyFit<T> implements IDmTableResizePolicy<T> {
         colsWidth: { [id: string]: number },
         ctMap: { [colId: string]: DmColumnDirective<T>
     }): { [id: string]: number } {
-        return colsWidth;
+        const colsWidthTmp: { [id: string]: number } = Object.assign({}, colsWidth);
+        const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
+
+        if (delta > 0) {
+            colsWidthTmp[flexColumnId] += delta;
+        }
+        else if (delta < 0) {
+            const cw = dmtNormalizeWidth(colsWidthTmp[flexColumnId] + delta, ctMap[flexColumnId]);
+            let dr = Math.abs(delta) - colsWidthTmp[flexColumnId] + cw;
+            if (dr > 0) {
+                for (let i = colsOrder.length - 1; i > 0; i--) {
+                    const did = colsOrder[i];
+                    const ccw = dmtNormalizeWidth(colsWidthTmp[did] - dr, ctMap[did]);
+                    const ddr = dr - colsWidthTmp[did] + ccw;
+                    if (ddr <= 0) {
+                        colsWidthTmp[did] -= dr;
+                        break;
+                    }
+                    colsWidthTmp[did] = ddr;
+                    dr -= ddr;
+                }
+            }
+            else {
+                colsWidth[flexColumnId] += delta;
+            }
+        }
+        return colsWidthTmp;
     }
 
 }

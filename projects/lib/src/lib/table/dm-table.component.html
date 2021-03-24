@@ -6,7 +6,7 @@
         <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass">
             <colgroup>
                 <col *ngIf="showSelectColumn" [style.width.px]="selectColumnWidth">
-                <col *ngFor="let cid of colsOrder" [style.width.px]="resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid]">
+                <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder.length == 1 ? undefined : (resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid])">
             </colgroup>
             <thead>
                 <tr class="ngx-dmt-header-row"
@@ -51,7 +51,7 @@
             <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass">
                 <colgroup>
                     <col *ngIf="showSelectColumn" [style.width.px]="selectColumnWidth">
-                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
+                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder.length == 1 ? undefined : colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of rows; let ri = index; trackBy: trackByFn">
