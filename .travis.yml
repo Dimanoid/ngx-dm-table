@@ -7,13 +7,13 @@ sudo: required
 
 before_script:
   - npm install -g @angular/cli
-  - npm install -g coveralls
+#  - npm install -g coveralls
 script:
   - npm run lint
   - npm run build
   - npm run build:demo
 after_success:
-  # - npm run coverall
+#  - npm run coverall
   - cd dist/lib
 
 deploy:
