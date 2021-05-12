@@ -236,6 +236,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 this.stateSubscription = this.data.state.subscribe(state => {
                     this.allRowsSelected = state.itemsSelected == state.itemsTotal && state.itemsTotal > 0;
                     this.allRowsNotSelected = state.itemsSelected == 0;
+                    this.updateGlobalStyles();
                     this._cdr.markForCheck();
                 });
             }
@@ -743,6 +744,29 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             tcw += w;
         }
         return [tcw, cwChanged];
+    }
+
+    updateGlobalStyles(): void {
+        if (this.data instanceof DmTableController) {
+            if (this.data.state.getValue().itemsSelected > 0) {
+                this._r2.addClass(this._elemRef.nativeElement, 'ngx-dmt-selecting');
+            }
+            else {
+                this._r2.removeClass(this._elemRef.nativeElement, 'ngx-dmt-selecting');
+            }
+            if (this.allRowsSelected) {
+                this._r2.addClass(this._elemRef.nativeElement, 'ngx-dmt-selected-all');
+            }
+            else {
+                this._r2.removeClass(this._elemRef.nativeElement, 'ngx-dmt-selected-all');
+            }
+            if (this.allRowsNotSelected) {
+                this._r2.addClass(this._elemRef.nativeElement, 'ngx-dmt-selected-none');
+            }
+            else {
+                this._r2.removeClass(this._elemRef.nativeElement, 'ngx-dmt-selected-none');
+            }
+        }
     }
 
 }
