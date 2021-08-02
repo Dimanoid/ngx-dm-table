@@ -33,7 +33,7 @@ export class DmTableController<T, K = any> {
 
     readonly sort: BehaviorSubject<DmTableSort> = new BehaviorSubject(undefined);
     sortFn: ((items: T[], sort: DmTableSort) => T[])
-        | ((items: DmTableGrouppedRows<T>[]) => DmTableGrouppedRows<T>[])
+        | ((items: DmTableGrouppedRows<T>[], sort: DmTableSort) => DmTableGrouppedRows<T>[])
         | undefined;
 
     private _items: T[] | DmTableGrouppedRows<T>[];
