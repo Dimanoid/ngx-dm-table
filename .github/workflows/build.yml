@@ -24,7 +24,7 @@ jobs:
       - name: Install modules
         run: npm ci
       - name: Check the syntax
-        run: npm lint
+        run: npm run lint
       - name: Build library
         run: npm run build
       - name: Build demo application
@@ -39,4 +39,4 @@ jobs:
         with:
           dir: /home/runner/work/ngx-dm-table/ngx-dm-table/dist/demo-app
           branch: gh-pages
-          token: ${{ secrets.ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
