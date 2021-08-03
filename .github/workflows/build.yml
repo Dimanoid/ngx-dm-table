@@ -35,8 +35,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Deploy demo app to GHpages
-        uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          dir: /home/runner/work/ngx-dm-table/ngx-dm-table/dist/demo-app
-          branch: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /home/runner/work/ngx-dm-table/ngx-dm-table/dist/demo-app
