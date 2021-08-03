@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - projects/demo-app/package.json
-      - projects/demo-app/package-lock.json
+      - package.json
+      - package-lock.json
       - .github/workflows/build-demo.yaml
   workflow_dispatch:
 
