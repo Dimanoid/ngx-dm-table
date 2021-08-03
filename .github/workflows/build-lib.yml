@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - master
-  #   paths:
-  #     - projects/lib/package.json
-  #     - projects/lib/package-lock.json
-  #     - .github/workflows/build.yaml
-  # workflow_dispatch:
+    paths:
+      - projects/lib/package.json
+      - projects/lib/package-lock.json
+      - .github/workflows/build-lib.yaml
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,15 +27,8 @@ jobs:
         run: npm run lint
       - name: Build library
         run: npm run build
-      - name: Build demo application
-        run: npm run build:demo
       - name: Deploy lib to NPM
         run: cd /home/runner/work/ngx-dm-table/ngx-dm-table/dist/lib && npm publish --access public
         working-directory: projects/lib
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Deploy demo app to GHpages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: /home/runner/work/ngx-dm-table/ngx-dm-table/dist/demo-app

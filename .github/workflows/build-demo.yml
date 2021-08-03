@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - projects/demo-app/package.json
+      - projects/demo-app/package-lock.json
+      - .github/workflows/build-demo.yaml
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install modules
+        run: npm ci
+      - name: Check the syntax
+        run: npm run lint
+      - name: Build library
+        run: npm run build
+      - name: Build demo application
+        run: npm run build:demo
+      - name: Deploy demo app to GHpages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /home/runner/work/ngx-dm-table/ngx-dm-table/dist/demo-app
