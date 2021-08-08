@@ -41,7 +41,7 @@ export class DmTableController<T, K = any> {
     readonly itemsMap: Map<K, T> = new Map();
 
     constructor(
-        private trackBy: (item: T, index?: number) => K,
+        private trackBy?: (item: T, index?: number) => K,
         public groupped = false,
         filterFn?: (item: T, filter: any) => boolean,
         sortFn?: (items: T[]) => T[]
@@ -181,7 +181,7 @@ export class DmTableController<T, K = any> {
 
     setAllSelected(selected: boolean): void {
         this.selected.clear();
-        if (selected) {
+        if (selected && this.trackBy) {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
