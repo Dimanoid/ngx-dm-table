@@ -108,6 +108,11 @@
                         [showSelectColumn]="useSelectCol"
                         itemSize="42"
                         selectColumnWidth="40">
+                        <ng-template #noItems>
+                            <div class="layout fit center-center">
+                                <span>&lt;<b>noItems</b>&gt; template. Displayed (if provided) when zero rows in the table.</span>
+                            </div>
+                        </ng-template>
                         <ng-template #selectColumnHeader let-all="all" let-none="none">
                             <div style="text-align: center">
                                 <label nz-checkbox [ngModel]="all" [nzIndeterminate]="!all && !none" (ngModelChange)="controller.setAllSelected(!none)"></label>

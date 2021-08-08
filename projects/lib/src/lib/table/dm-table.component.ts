@@ -36,6 +36,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @ContentChild('selectColumnHeader', { static: false }) selectColumnHeaderTpl?: TemplateRef<any>;
     @ContentChild('groupHeader', { static: false }) groupHeaderTpl?: TemplateRef<any>;
     @ContentChild('groupFooter', { static: false }) groupFooterTpl?: TemplateRef<any>;
+    @ContentChild('noItems', { static: false }) noItemsTpl?: TemplateRef<any>;
+    @ContentChild('noItemsVisible', { static: false }) noItemsVisibleTpl?: TemplateRef<any>;
 
     private _columnTemplatesQL?: QueryList<DmColumnDirective<T>>;
     @ContentChildren(DmColumnDirective)
@@ -145,6 +147,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     noColumns?: boolean;
     allRowsSelected: boolean = false;
     allRowsNotSelected: boolean = true;
+    noItems: boolean = true;
+    noItemsVisible: boolean = false;
 
     constructor(
         private _elemRef: ElementRef,
@@ -231,11 +235,17 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     this.sortRows();
                 });
                 this.stateSubscription = this.data.state.subscribe(state => {
+                    this.noItems = state.itemsTotal == 0;
+                    this.noItemsVisible = state.itemsVisible == 0 && state.itemsTotal > 0;
                     this.allRowsSelected = state.itemsSelected == state.itemsTotal && state.itemsTotal > 0;
                     this.allRowsNotSelected = state.itemsSelected == 0;
                     this.updateGlobalStyles();
                     this._cdr.markForCheck();
                 });
+            }
+            else {
+                this.noItems = !this.data || this.data.length == 0;
+                this.noItemsVisible = false;
             }
             this.sortRows();
         }

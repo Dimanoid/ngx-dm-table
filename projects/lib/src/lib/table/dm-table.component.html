@@ -101,6 +101,8 @@
                 </tbody>
             </table>
         </cdk-virtual-scroll-viewport>
+        <ng-container *ngIf="noItems && noItemsTpl" [ngTemplateOutlet]="noItemsTpl"></ng-container>
+        <ng-container *ngIf="noItemsVisible && noItemsVisibleTpl" [ngTemplateOutlet]="noItemsVisibleTpl"></ng-container>
     </div>
     <div *ngIf="ctMap && hasFooter" class="ngx-dmt-footer-wrapper" [style.margin-right.px]="scrollBarWidth">
         <table class="ngx-dmt ngx-dmt-footer" [ngClass]="tableClass!">
