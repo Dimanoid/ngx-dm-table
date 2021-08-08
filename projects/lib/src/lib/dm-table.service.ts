@@ -9,11 +9,11 @@ export class DmTableColumnConfig {
     sortable: boolean = false;
     resizable: boolean = true;
     whitespace: string = 'normal';
-    minWidth: number;
-    headerClass: string;
-    cellClass: string;
-    footerClass: string;
-    sort: 'string' | 'number' | 'boolean' | ((a: any, b: any) => number);
+    minWidth?: number;
+    headerClass?: string;
+    cellClass?: string;
+    footerClass?: string;
+    sort?: 'string' | 'number' | 'boolean' | ((a: any, b: any) => number);
 
     constructor(json?: any) {
         if (!json || typeof json !== 'object') {
@@ -21,7 +21,7 @@ export class DmTableColumnConfig {
         }
         for (const fn of DMT_CONFIG_FIELDS) {
             if (json[fn] !== undefined) {
-                this[fn] = json[fn];
+                (this as any)[fn] = json[fn];
             }
         }
     }

@@ -19,7 +19,7 @@ export class DmDividerDirective {
     @Output() dmDividerDragEnd: EventEmitter<Point> = new EventEmitter();
     @Output() dmDividerMove: EventEmitter<Point> = new EventEmitter();
 
-    private start: Point;
+    private start?: Point;
     private _elem: HTMLElement;
 
     constructor(elemRef: ElementRef) {
@@ -57,7 +57,7 @@ export class DmDividerDirective {
                         endX = e.clientX;
                         endY = e.clientX;
                     }
-                    this.dmDividerMove.emit(new Point(endX - this.start.x, endY - this.start.y));
+                    this.dmDividerMove.emit(new Point(endX - this.start!.x, endY - this.start!.y));
                 };
 
                 document.body.onmouseup = (e: MouseEvent) => {
@@ -76,7 +76,7 @@ export class DmDividerDirective {
                         endX = e.clientX;
                         endY = e.clientX;
                     }
-                    this.dmDividerDragEnd.emit(new Point(endX - this.start.x, endY - this.start.y));
+                    this.dmDividerDragEnd.emit(new Point(endX - this.start!.x, endY - this.start!.y));
                     this.start = undefined;
                 };
             }

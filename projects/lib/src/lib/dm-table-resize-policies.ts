@@ -32,7 +32,7 @@ export function dmtGetFlexColumnId<T>(
     let flexColumnId = null;
     for (const cid of Object.keys(ctMap)) {
         const cd = ctMap[cid];
-        if (!colsVisibility || colsVisibility[cd.colId]) {
+        if (!colsVisibility || colsVisibility[cd.colId!]) {
             if (cd.flexible) {
                 flexColumnId = cd.colId;
             }
@@ -44,7 +44,7 @@ export function dmtGetFlexColumnId<T>(
             break;
         }
     }
-    return flexColumnId;
+    return flexColumnId!;
 }
 
 export function dmtNormalizeWidth(w: number, ct: { minWidth: number | string, maxWidth: number | string }): number {
@@ -73,7 +73,7 @@ export class DmTableResizePolicyFit<T> implements IDmTableResizePolicy<T> {
         const ct = ctMap[resizeColumnId];
         const w = colsWidth[resizeColumnId];
         const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
-        const nw = dmtNormalizeWidth(w + delta, ct);
+        const nw = dmtNormalizeWidth(w + delta, ct as any);
         const rd = nw - w;
 
         if (rd > 0) {
@@ -120,11 +120,11 @@ export class DmTableResizePolicyFit<T> implements IDmTableResizePolicy<T> {
                     const fci = colsOrder.indexOf(flexColumnId);
                     if (fci > -1 && fci < colsOrder.length - 1) {
                         const lid = colsOrder[colsOrder.length - 1];
-                        if (!ctMap[lid].maxWidth || portalWidth - sv + colsWidth[lid] <= ctMap[lid].maxWidth) {
+                        if (!ctMap[lid].maxWidth || portalWidth - sv + colsWidth[lid] <= ctMap[lid].maxWidth!) {
                             colsWidthTmp[lid] += portalWidth - sv;
                         }
-                        else if (colsWidth[lid] < ctMap[lid].maxWidth) {
-                            const ld = +ctMap[lid].maxWidth - colsWidth[lid];
+                        else if (colsWidth[lid] < ctMap[lid].maxWidth!) {
+                            const ld = +ctMap[lid].maxWidth! - colsWidth[lid];
                             sv -= ld;
                             colsWidthTmp[lid] += ld;
                         }
@@ -158,12 +158,12 @@ export class DmTableResizePolicyFit<T> implements IDmTableResizePolicy<T> {
             colsWidthTmp[flexColumnId] += delta;
         }
         else if (delta < 0) {
-            const cw = dmtNormalizeWidth(colsWidthTmp[flexColumnId] + delta, ctMap[flexColumnId]);
+            const cw = dmtNormalizeWidth(colsWidthTmp[flexColumnId] + delta, ctMap[flexColumnId] as any);
             let dr = Math.abs(delta) - colsWidthTmp[flexColumnId] + cw;
             if (dr > 0) {
                 for (let i = colsOrder.length - 1; i > 0; i--) {
                     const did = colsOrder[i];
-                    const ccw = dmtNormalizeWidth(colsWidthTmp[did] - dr, ctMap[did]);
+                    const ccw = dmtNormalizeWidth(colsWidthTmp[did] - dr, ctMap[did] as any);
                     const ddr = dr - colsWidthTmp[did] + ccw;
                     if (ddr <= 0) {
                         colsWidthTmp[did] -= dr;

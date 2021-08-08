@@ -32,9 +32,9 @@
         position: absolute;
         top: 0;
         bottom: 0;
-        width: $headerResizerWidth;
+        width: @headerResizerWidth;
         z-index: 1;
-        background-color: $headerResizerColor;
+        background-color: @headerResizerColor;
     }
     & > .ngx-dmt-body-wrapper-inner {
         position: absolute;
@@ -69,7 +69,7 @@
 table.ngx-dmt {
     border-collapse: separate;
     border-spacing: 0;
-    background-color: $tableBgColor;
+    background-color: @tableBgColor;
     width: 100%;
     table-layout: fixed;
     & > thead {
@@ -78,10 +78,10 @@ table.ngx-dmt {
                 white-space: nowrap;
                 text-align: center;
                 border-width: 0 1px 2px 0;
-                border-color: $tableBorderColor;
+                border-color: @tableBorderColor;
                 border-style: solid;
                 padding: 5px 15px;
-                background-color: $headerBgColor;
+                background-color: @headerBgColor;
                 font-weight: bold;
                 position: relative;
                 &.ngx-dmt-header-cell-select {
@@ -99,14 +99,14 @@ table.ngx-dmt {
                 & > .ngx-dmt-column-draghandle {
                     position: absolute;
                     left: 3px;
-                    color: $headerDraghandleColor;
+                    color: @headerDraghandleColor;
                     font-size: 10px;
                     cursor: grab;
                     top: 50%;
                     margin-top: -5px;
-                    box-shadow: 0 0 3px 2px $headerBgColor;
+                    box-shadow: 0 0 3px 2px @headerBgColor;
                     display: none;
-                    background-color: $headerBgColor;
+                    background-color: @headerBgColor;
                     & > .ngx-dmt-column-draghandle-icon:before {
                         content: "b";
                     }
@@ -114,14 +114,14 @@ table.ngx-dmt {
                 & > .ngx-dmt-column-sort-container {
                     position: absolute;
                     right: 3px;
-                    color: $headerSortColor;
+                    color: @headerSortColor;
                     font-size: 12px;
                     cursor: pointer;
                     top: 50%;
                     margin-top: -6px;
-                    box-shadow: 0 0 3px 2px $headerBgColor;
+                    box-shadow: 0 0 3px 2px @headerBgColor;
                     display: none;
-                    background-color: $headerBgColor;
+                    background-color: @headerBgColor;
                     & > .ngx-dmt-column-sort-toggle {
                         transition: transform .3s;
                         display: block;
@@ -134,7 +134,7 @@ table.ngx-dmt {
                 &.ngx-dmt-sorted {
                     & > .ngx-dmt-column-sort-container {
                         display: block;
-                        color: $headerSortActiveColor;
+                        color: @headerSortActiveColor;
                         & > .ngx-dmt-column-sort-toggle {
                             transform: rotate(0deg);
                             &:before {
@@ -169,21 +169,21 @@ table.ngx-dmt {
                 & > .ngx-dmt-resizer {
                     display: inline-block;
                     position: absolute;
-                    right: -($headerResizerWidth / 2);
+                    right: -(@headerResizerWidth / 2);
                     top: 0;
                     bottom: 0;
-                    width: $headerResizerWidth;
+                    width: @headerResizerWidth;
                     z-index: 1;
                     cursor: ew-resize;
                     background-color: transparent;
                     transition: background-color .3s;
                     height: 100%;
                     &:hover {
-                        background-color: $headerResizerColor;
+                        background-color: @headerResizerColor;
                     }
                     &:active,
                     &.ngx-dmt-resizer-dragging {
-                        background-color: $headerResizerColorActive;
+                        background-color: @headerResizerColorActive;
                     }
                 }
                 &:hover {
@@ -192,7 +192,7 @@ table.ngx-dmt {
                     }
                     & > .ngx-dmt-column-sort-container {
                         display: block;
-                        color: $headerSortHoverColor;
+                        color: @headerSortHoverColor;
                     }
                 }
             }
@@ -209,13 +209,13 @@ table.ngx-dmt {
 
     & > tbody {
         & > tr.ngx-dmt-row {
-            background-color: $bodyBgColor;
+            background-color: @bodyBgColor;
             & > td.ngx-dmt-cell {
                 cursor: pointer;
                 text-align: left;
                 border-width: 0 1px 0 0;
                 border-color: transparent;
-                border-right-color: $tableBorderColor !important;
+                border-right-color: @tableBorderColor !important;
                 border-style: solid;
                 padding: 7px 10px;
                 font-weight: normal;
@@ -233,7 +233,7 @@ table.ngx-dmt {
             }
         }
         & > tr.ngx-dmt-group-header-row {
-            background-color: $tableBorderColor;
+            background-color: @tableBorderColor;
             & > td.ngx-dmt-group-header-cell {
                 padding: 5px 10px;
                 text-overflow: ellipsis;
@@ -241,7 +241,7 @@ table.ngx-dmt {
             }
         }
         & > tr.ngx-dmt-group-footer-row {
-            background-color: $bodyBgColor;
+            background-color: @bodyBgColor;
             & > td.ngx-dmt-group-footer-cell {
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -252,12 +252,12 @@ table.ngx-dmt {
 
     & > tfoot {
         & > tr {
-            background-color: $bodyBgColor;
+            background-color: @bodyBgColor;
             & > td {
                 white-space: nowrap;
                 text-align: left;
                 border-width: 2px 1px 0 0;
-                border-color: $tableBorderColor;
+                border-color: @tableBorderColor;
                 border-style: solid;
                 padding: 5px 10px;
                 font-weight: normal;
@@ -280,6 +280,6 @@ th.ngx-dmt-header-cell.cdk-drag-preview {
 
 dm-table.ngx-dmt-stripes > .ngx-dmt-body-wrapper {
     table > tbody > tr:nth-child(even) {
-        background-color: $bodyBgColor2;
+        background-color: @bodyBgColor2;
     }
 }

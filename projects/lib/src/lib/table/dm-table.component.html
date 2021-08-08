@@ -3,10 +3,10 @@
 </ng-template>
 <ng-template [ngIf]="noColumns === false">
     <div *ngIf="ctMap" class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
-        <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass">
+        <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass!">
             <colgroup>
                 <col *ngIf="showSelectColumn" [style.width.px]="selectColumnWidth">
-                <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder.length == 1 ? undefined : (resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid])">
+                <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? undefined : (resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid])">
             </colgroup>
             <thead>
                 <tr class="ngx-dmt-header-row"
@@ -14,14 +14,14 @@
                     (cdkDropListDropped)="columnHeaderDrop($event)">
                     <th *ngIf="showSelectColumn" class="ngx-dmt-header-cell ngx-dmt-header-cell-select" (click)="toggleSelectAll($event)">
                         <ng-container
-                            [ngTemplateOutlet]="selectColumnHeaderTpl"
+                            [ngTemplateOutlet]="selectColumnHeaderTpl!"
                             [ngTemplateOutletContext]="{ all: allRowsSelected, none: allRowsNotSelected }">
                         </ng-container>
                     </th>
                     <th *ngFor="let cid of colsOrder; let ci = index; let f = first; let l = last"
                         class="ngx-dmt-header-cell"
                         [title]="ctMap[cid].headerTooltip ? ctMap[cid].headerTooltip : ''"
-                        [ngClass]="ctMap[cid].headerClass"
+                        [ngClass]="ctMap[cid].headerClass!"
                         [class.ngx-dmt-sortable]="ctMap[cid].sortable"
                         [class.ngx-dmt-resizable]="ctMap[cid].resizable && !l"
                         [class.ngx-dmt-sorted]="sort && (sort.colId == cid || sort.colId == ctMap[cid].colIdAlias)"
@@ -31,7 +31,7 @@
                         (contextmenu)="headerContextMenu.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         cdkDrag cdkDragLockAxis="x" [cdkDragDisabled]="!moveableColumns">
                         <div class="ngx-dmt-column-title" (click)="ctMap[cid].sortable ? toggleSort(cid) : null">
-                            <ng-container *ngIf="ctMap[cid].headerTpl" [ngTemplateOutlet]="ctMap[cid].headerTpl"></ng-container>
+                            <ng-container *ngIf="ctMap[cid].headerTpl" [ngTemplateOutlet]="ctMap[cid].headerTpl!"></ng-container>
                             <ng-template [ngIf]="!ctMap[cid].headerTpl">{{ ctMap[cid].title }}</ng-template>
                         </div>
                         <div *ngIf="moveableColumns" class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
@@ -48,15 +48,15 @@
     <div *ngIf="ctMap" class="ngx-dmt-body-wrapper">
         <div *ngIf="resizerDiv && resizeColumnId" class="ngx-dmt-resizer" [style.left.px]="resizerX"></div>
         <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
-            <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass">
+            <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass!">
                 <colgroup>
                     <col *ngIf="showSelectColumn" [style.width.px]="selectColumnWidth">
-                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder.length == 1 ? undefined : colsWidth[cid]">
+                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? undefined : colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
-                    <ng-container *cdkVirtualFor="let r of rows; let ri = index; trackBy: trackByFn">
+                    <ng-container *cdkVirtualFor="let r of $any(rows); let ri = index; trackBy: trackByFn">
                         <tr *ngIf="groupped && groupHeaderTpl && groupStart && groupStart[ri]" class="ngx-dmt-group-header-row">
-                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-header-cell">
+                            <td [colSpan]="colsOrder!.length" class="ngx-dmt-group-header-cell">
                                 <ng-container [ngTemplateOutlet]="groupHeaderTpl"
                                     [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupStart[ri] }">
                                 </ng-container>
@@ -75,25 +75,25 @@
                             #bodyRow>
                             <td *ngIf="showSelectColumn" class="ngx-dmt-cell ngx-dmt-cell-select" (click)="toggleSelect(r, $event)">
                                 <ng-container
-                                    [ngTemplateOutlet]="selectColumnTpl"
+                                    [ngTemplateOutlet]="selectColumnTpl!"
                                     [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r), ri: ri }">
                                 </ng-container>
                             </td>
                             <td *ngFor="let cid of colsOrder; let i = index"
                                 class="ngx-dmt-cell"
-                                [ngClass]="getCellClasses(r, cid, ri, i)"
+                                [ngClass]="getCellClasses(r, cid, ri, i)!"
                                 [style.white-space]="ctMap[cid].whitespace">
                                 <ng-container *ngIf="ctMap[cid].cellTpl"
-                                    [ngTemplateOutlet]="ctMap[cid].cellTpl"
+                                    [ngTemplateOutlet]="ctMap[cid].cellTpl!"
                                     [ngTemplateOutletContext]="{ row: r, ct: ctMap[cid], $implicit: r[cid], ci: i, ri: ri }">
                                 </ng-container>
                                 <ng-template [ngIf]="!ctMap[cid].cellTpl">{{ r[cid] }}</ng-template>
                             </td>
                         </tr>
-                        <tr *ngIf="groupped && groupFooterTpl && groupEnd[ri]" class="ngx-dmt-group-footer-row">
-                            <td [colSpan]="colsOrder.length" class="ngx-dmt-group-footer-cell">
+                        <tr *ngIf="groupped && groupFooterTpl && groupEnd![ri]" class="ngx-dmt-group-footer-row">
+                            <td [colSpan]="colsOrder!.length" class="ngx-dmt-group-footer-cell">
                                 <ng-container [ngTemplateOutlet]="groupFooterTpl"
-                                    [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupEnd[ri] }">
+                                    [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupEnd![ri] }">
                                 </ng-container>
                             </td>
                         </tr>
@@ -103,14 +103,14 @@
         </cdk-virtual-scroll-viewport>
     </div>
     <div *ngIf="ctMap && hasFooter" class="ngx-dmt-footer-wrapper" [style.margin-right.px]="scrollBarWidth">
-        <table class="ngx-dmt ngx-dmt-footer" [ngClass]="tableClass">
+        <table class="ngx-dmt ngx-dmt-footer" [ngClass]="tableClass!">
             <colgroup>
                 <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
             </colgroup>
             <tfoot>
                 <tr>
-                    <td *ngFor="let cid of colsOrder" [ngClass]="ctMap[cid].footerClass">
-                        <ng-container *ngIf="ctMap[cid].footerTpl" [ngTemplateOutlet]="ctMap[cid].footerTpl"></ng-container>
+                    <td *ngFor="let cid of colsOrder" [ngClass]="ctMap[cid].footerClass!">
+                        <ng-container *ngIf="ctMap[cid].footerTpl" [ngTemplateOutlet]="ctMap[cid].footerTpl!"></ng-container>
                         <ng-template [ngIf]="!ctMap[cid].footerTpl">&nbsp;</ng-template>
                     </td>
                 </tr>
