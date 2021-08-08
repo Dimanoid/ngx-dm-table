@@ -41,8 +41,8 @@ export class DmTableController<T, K = any> {
     readonly itemsMap: Map<K, T> = new Map();
 
     constructor(
+        private trackBy: (item: T, index?: number) => K,
         public groupped = false,
-        private trackBy: (index: number, item: T) => K,
         filterFn?: (item: T, filter: any) => boolean,
         sortFn?: (items: T[]) => T[]
     ) {
@@ -56,40 +56,40 @@ export class DmTableController<T, K = any> {
         this.sort.subscribe(() => this.invalidate());
     }
 
-    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy: (index: number, item: T) => K): void {
+    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (item: T, index?: number) => K): void {
         this._items = items;
         this.itemsMap.clear();
 
         if (trackBy) {
             this.trackBy = trackBy;
         }
-        else if (items) {
+        else if (items && !this.trackBy) {
             const item = this.groupped ? ((items[0] as any).rows ? (items[0] as any).rows[0] : undefined) : items[0];
             if (item && Array.isArray(item)) {
-                this.trackBy = (_, v: any) => v[0];
+                this.trackBy = (v: any) => v[0];
             }
             else if (item && typeof item == 'object' && (item as any).id !== undefined) {
-                this.trackBy = (_, v) => (v as any).id;
+                this.trackBy = (v) => (v as any).id;
             }
             else {
-                this.trackBy = (_, v) => v as any;
+                this.trackBy = (v) => v as any;
             }
         }
         else {
-            this.trackBy = (_, v) => v as any;
+            this.trackBy = (v) => v as any;
         }
 
         if (items) {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
-                        this.itemsMap.set(this.trackBy(-1, r), r);
+                        this.itemsMap.set(this.trackBy(r), r);
                     }
                 }
             }
             else {
                 for (const r of (this._items as T[])) {
-                    this.itemsMap.set(this.trackBy(-1, r), r);
+                    this.itemsMap.set(this.trackBy(r), r);
                 }
             }
         }
@@ -185,13 +185,13 @@ export class DmTableController<T, K = any> {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
-                        this.selected.set(this.trackBy(-1, r as any), true);
+                        this.selected.set(this.trackBy(r as any), true);
                     }
                 }
             }
             else {
                 for (const r of (this._items as T[])) {
-                    const k = this.trackBy(-1, r as any);
+                    const k = this.trackBy(r as any);
                     this.selected.set(k, true);
                 }
             }

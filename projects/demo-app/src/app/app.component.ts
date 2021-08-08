@@ -71,13 +71,13 @@ export class AppComponent implements OnInit {
 
     dragging: any;
     dropped: any;
-    dragIds?: string[];
+    dragIds?: number[];
 
     Object = Object;
     selectedFn = (row: { [colId: string]: any }) => !!(this.useSelectCol ? this.controller.selected.get(row[0]) : this.selected[row[0]]);
-    trackBy = (_index: number, item: any[]) => item[0];
+    trackBy = (item: any[]) => item[0];
 
-    controller: DmTableController<any[]> = new DmTableController(false, this.trackBy);
+    controller: DmTableController<any[], number> = new DmTableController(this.trackBy);
     state?: DmTableControllerState;
     useController: boolean = false;
     useSelectCol: boolean = false;
@@ -118,7 +118,7 @@ export class AppComponent implements OnInit {
 
     updateData() {
         this.data = this.dataTables[this.lines];
-        this.controller.setItems(this.data, (_, item) => item[0]);
+        this.controller.setItems(this.data);
     }
 
     customSort(a: any, b: any): number {
@@ -178,7 +178,7 @@ export class AppComponent implements OnInit {
         else {
             this.dragIds = this.useSelectCol
                 ? this.controller.getSelectedItemIds()
-                : Object.keys(this.selected).filter(id => this.selected[id as any]);
+                : Object.keys(this.selected).filter(id => this.selected[id as any]).map(id => +id);
             if (this.dragIds!.length == 0) {
                 this.dragIds!.push(e.row[0]);
             }

@@ -66,7 +66,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     groupStart?: { [index: number]: DmTableRowsGroup<T> };
     groupEnd?: { [index: number]: DmTableRowsGroup<T> };
     @Input() data?: T[] | DmTableGrouppedRows<T>[] | DmTableController<T>;
-    @Input() trackBy?: (index: number, item: T) => any;
+    @Input() trackBy?: (item: T, index?: number) => any;
     @Input() @InputBoolean() groupped: boolean | string = false;
 
     private _itemSize: number = MIN_ITEM_SIZE;
@@ -672,7 +672,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         return ro.x - to.x;
     }
 
-    trackByFn = (index: number, row: any): any => this.trackBy ? this.trackBy(index, row) : row;
+    trackByFn = (index: number, row: any): any => this.trackBy ? this.trackBy(row, index) : row;
 
     onRowDragStart(index: number, row: any, event: DragEvent) {
         this.rowDragStart.emit({ index, row, event });
@@ -716,7 +716,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     isRowSelected(row: any): boolean {
         if (this.data instanceof DmTableController) {
-            return !!this.data.selected.get(this.trackBy ? this.trackBy(-1, row) : row);
+            return !!this.data.selected.get(this.trackBy ? this.trackBy(row) : row);
         }
         else {
             return false;
@@ -727,7 +727,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         e.stopImmediatePropagation();
         e.preventDefault();
         if (this.data instanceof DmTableController) {
-            this.data.toggleSelected(this.trackBy ? this.trackBy(-1, row) : row);
+            this.data.toggleSelected(this.trackBy ? this.trackBy(row) : row);
         }
     }
 
