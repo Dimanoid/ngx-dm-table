@@ -32,8 +32,8 @@ export class DmTableController<T, K = any> {
     filterFn: (item: T, filter: any) => boolean | undefined = DM_TABLE_DEFAULT_FILTERFN;
 
     readonly sort: BehaviorSubject<DmTableSort | undefined> = new BehaviorSubject<DmTableSort | undefined>(undefined);
-    sortFn: ((items: T[], sort: DmTableSort) => T[])
-        | ((items: DmTableGrouppedRows<T>[], sort: DmTableSort) => DmTableGrouppedRows<T>[])
+    sortFn: ((items: T[], sort?: DmTableSort) => T[])
+        | ((items: DmTableGrouppedRows<T>[], sort?: DmTableSort) => DmTableGrouppedRows<T>[])
         | undefined;
 
     private _items?: T[] | DmTableGrouppedRows<T>[];
@@ -169,9 +169,8 @@ export class DmTableController<T, K = any> {
             state.itemsTotal = this._items.length;
         }
 
-        const sort = this.sort.getValue();
-        if (sort && this.sortFn) {
-            items = this.sortFn(items as any, sort);
+        if (this.sortFn) {
+            items = this.sortFn(items as any, this.sort.getValue());
         }
 
         this.visibleItems.next(items);
