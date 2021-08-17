@@ -46,6 +46,7 @@ export class DmTableController<T, K = any> {
         filterFn?: (item: T, filter: any) => boolean,
         sortFn?: (items: T[]) => T[]
     ) {
+        this.setTrackBy(trackBy);
         if (filterFn) {
             this.filterFn = filterFn;
         }
@@ -56,40 +57,45 @@ export class DmTableController<T, K = any> {
         this.sort.subscribe(() => this.invalidate());
     }
 
-    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (item: T, index?: number) => K): void {
-        this._items = items;
-        this.itemsMap.clear();
-
+    setTrackBy(trackBy?: (item: T, index?: number) => K): void {
         if (trackBy) {
             this.trackBy = trackBy;
         }
-        else if (items && !this.trackBy) {
-            const item = this.groupped ? ((items[0] as any).rows ? (items[0] as any).rows[0] : undefined) : items[0];
-            if (item && Array.isArray(item)) {
-                this.trackBy = (v: any) => v[0];
-            }
-            else if (item && typeof item == 'object' && (item as any).id !== undefined) {
-                this.trackBy = (v) => (v as any).id;
+        if (!this.trackBy) {
+            if (this._items) {
+                const item = this.groupped ? ((this._items[0] as any).rows ? (this._items[0] as any).rows[0] : undefined) : this._items[0];
+                if (item && Array.isArray(item)) {
+                    this.trackBy = (v: any) => v[0];
+                }
+                else if (item && typeof item == 'object' && (item as any).id !== undefined) {
+                    this.trackBy = (v) => (v as any).id;
+                }
+                else {
+                    this.trackBy = (v) => v as any;
+                }
             }
             else {
                 this.trackBy = (v) => v as any;
             }
         }
-        else {
-            this.trackBy = (v) => v as any;
-        }
+    }
+
+    setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (item: T, index?: number) => K): void {
+        this._items = items;
+        this.itemsMap.clear();
+        this.setTrackBy(trackBy);
 
         if (items) {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
-                        this.itemsMap.set(this.trackBy(r), r);
+                        this.itemsMap.set(this.trackBy!(r), r);
                     }
                 }
             }
             else {
                 for (const r of (this._items as T[])) {
-                    this.itemsMap.set(this.trackBy(r), r);
+                    this.itemsMap.set(this.trackBy!(r), r);
                 }
             }
         }
