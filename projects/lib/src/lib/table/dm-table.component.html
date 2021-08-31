@@ -1,7 +1,7 @@
-<ng-template [ngIf]="noColumns === true && !showSelectColumn">
+<ng-template [ngIf]="noColumns && !showSelectColumn">
     <div class="ngx-dmt-nocolumns"><span></span></div>
 </ng-template>
-<ng-template [ngIf]="noColumns === false || showSelectColumn">
+<ng-template [ngIf]="!noColumns || showSelectColumn">
     <div *ngIf="ctMap" class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
         <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass!">
             <colgroup>
@@ -73,7 +73,7 @@
                             (click)="rowClick.emit({ index: ri, row: r, event: $event })"
                             (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })"
                             #bodyRow>
-                            <td *ngIf="showSelectColumn" class="ngx-dmt-cell ngx-dmt-cell-select" (click)="toggleSelect(r, $event)">
+                            <td *ngIf="showSelectColumn" class="ngx-dmt-cell ngx-dmt-cell-select" (click)="noColumns ? undefined : toggleSelect(r, $event)">
                                 <ng-container
                                     [ngTemplateOutlet]="selectColumnTpl!"
                                     [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r), ri: ri }">
