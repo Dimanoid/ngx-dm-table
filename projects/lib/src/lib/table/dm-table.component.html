@@ -5,7 +5,7 @@
     <div *ngIf="ctMap" class="ngx-dmt-header-wrapper" [style.margin-right.px]="scrollBarWidth" #headerWrapper>
         <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass!">
             <colgroup>
-                <col *ngIf="showSelectColumn" [style.width.px]="selectColumnWidth">
+                <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
                 <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? undefined : (resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid])">
             </colgroup>
             <thead>
@@ -50,7 +50,7 @@
         <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
             <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass!">
                 <colgroup>
-                    <col *ngIf="showSelectColumn" [style.width.px]="noColumns ? undefined : selectColumnWidth">
+                    <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
                     <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? undefined : colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
