@@ -9,8 +9,8 @@
         "noFallthroughCasesInSwitch": true,
         "paths": {
             "lib": [
-            "dist/lib/lib",
-            "dist/lib"
+                "dist/lib/lib",
+                "dist/lib"
             ],
             "@dimanoid/ngx-dm-table": [
                 "dist/lib"
@@ -18,7 +18,7 @@
             "@dimanoid/ngx-dm-table/*": [
                 "dist/lib/*"
             ]
-            },
+        },
         "sourceMap": true,
         "declaration": false,
         "downlevelIteration": true,
@@ -30,12 +30,13 @@
         "lib": [
             "es2018",
             "dom"
-        ]
+        ],
+        "resolveJsonModule": true
     },
     "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true
     }
 }

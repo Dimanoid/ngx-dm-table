@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { DmTableController, DmTableSort, DmTableRowDragEvent, DmTableControllerState, DmTableRowEvent } from '@dimanoid/ngx-dm-table';
 import { Point } from './dm-divider.module';
+import { version } from '../../../lib/package.json';
 
 const ICONS = [
     'rocket',
@@ -39,6 +40,7 @@ const COLS_WIDTH = { 0: 38, 1: 100, 2: 160, 3: 200, 4: 200, 5: 30, 6: 400, 7: 10
 export class AppComponent implements OnInit {
     @ViewChild('dragHelper', { static: false }) dragHelper?: ElementRef;
 
+    ver = version;
     dataTables: { [key: string]: any[][] } = {};
     stripes: boolean = false;
     data: any[][] = [];
@@ -202,7 +204,7 @@ export class AppComponent implements OnInit {
             const data = JSON.parse(e.event.dataTransfer!.getData('text/plain'));
             dd.droppedIds = data;
         }
-        catch (ex) {
+        catch (ex: any) {
             dd.error = ex.toString();
         }
         this.dropped = dd;

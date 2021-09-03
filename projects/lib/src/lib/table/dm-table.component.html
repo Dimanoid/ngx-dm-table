@@ -6,7 +6,7 @@
         <table class="ngx-dmt ngx-dmt-header" [ngClass]="tableClass!">
             <colgroup>
                 <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
-                <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? undefined : (resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid])">
+                <col *ngFor="let cid of colsOrder" [style.width]="colsOrder!.length == 1 ? '100%' : (resizeColumnId ? colsWidthTmp[cid] : colsWidth[cid]) + 'px'">
             </colgroup>
             <thead>
                 <tr class="ngx-dmt-header-row"
@@ -51,7 +51,7 @@
             <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass!">
                 <colgroup>
                     <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
-                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? undefined : colsWidth[cid]">
+                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? '100%' : colsWidth[cid]">
                 </colgroup>
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of $any(rows); let ri = index; trackBy: trackByFn">
@@ -107,7 +107,8 @@
     <div *ngIf="ctMap && hasFooter" class="ngx-dmt-footer-wrapper" [style.margin-right.px]="scrollBarWidth">
         <table class="ngx-dmt ngx-dmt-footer" [ngClass]="tableClass!">
             <colgroup>
-                <col *ngFor="let cid of colsOrder" [style.width.px]="colsWidth[cid]">
+                <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
+                <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? '100%' : colsWidth[cid]">
             </colgroup>
             <tfoot>
                 <tr>
