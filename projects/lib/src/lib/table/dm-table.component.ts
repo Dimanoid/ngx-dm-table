@@ -61,6 +61,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     columnTemplates?: DmColumnDirective<T>[];
     ctMap?: { [colId: string]: DmColumnDirective<T> };
 
+    @Input() @InputBoolean() debug: boolean | string = false;
+
     rows?: T[] | DmTableGrouppedRows<T>[];
     groups?: DmTableRowsGroup<T>[];
     groupStart?: { [index: number]: DmTableRowsGroup<T> };
@@ -782,5 +784,13 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             }
         }
     }
+
+    _log = Function.prototype.bind.apply(console.log, [console, '[DmTable]']);
+    _D(label: string, ...x: any[]): void {
+        if (this.debug) {
+            this._log(label, ...x);
+        }
+    }
+
 
 }

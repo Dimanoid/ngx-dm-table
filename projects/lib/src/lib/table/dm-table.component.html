@@ -51,7 +51,7 @@
             <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass!">
                 <colgroup>
                     <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
-                    <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? '100%' : colsWidth[cid]">
+                    <col *ngFor="let cid of colsOrder" [style.width]="colsOrder!.length == 1 ? '100%' : colsWidth[cid] + 'px'">
                 </colgroup>
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of $any(rows); let ri = index; trackBy: trackByFn">
@@ -108,7 +108,7 @@
         <table class="ngx-dmt ngx-dmt-footer" [ngClass]="tableClass!">
             <colgroup>
                 <col *ngIf="showSelectColumn" [style.width]="noColumns ? '100%' : selectColumnWidth + 'px'">
-                <col *ngFor="let cid of colsOrder" [style.width.px]="colsOrder!.length == 1 ? '100%' : colsWidth[cid]">
+                <col *ngFor="let cid of colsOrder" [style.width]="colsOrder!.length == 1 ? '100%' : colsWidth[cid] + 'px'">
             </colgroup>
             <tfoot>
                 <tr>
