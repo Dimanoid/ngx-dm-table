@@ -143,7 +143,7 @@ export class DmTableController<T, K = any> {
         state.itemsVisible = 0;
         state.itemsTotal = 0;
 
-        if (filter && this.filterFn) {
+        if (this.filterFn) {
             if (this.groupped) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     const rows: T[] = [];
