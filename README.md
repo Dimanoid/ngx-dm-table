@@ -8,7 +8,7 @@ Demo page: https://dimanoid.github.io/ngx-dm-table/
 
 Install the library and dependecies:
 
-  `npm i -S @angular/cdk resize-observer-polyfill @dimanoid/ngx-dm-table`
+  `npm i -S @angular/cdk @dimanoid/ngx-dm-table`
 
 Add module to imports:
 
