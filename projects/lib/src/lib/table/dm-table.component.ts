@@ -94,7 +94,6 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
     @Output() colsOrderChange: EventEmitter<string[]> = new EventEmitter();
 
-    private _colsWidthEmited: { [id: string]: number } = {};
     private _colsWidth: { [id: string]: number } = {};
     @Input()
     set colsWidth(v: { [id: string]: number }) {
@@ -151,6 +150,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     allRowsNotSelected: boolean = true;
     noItems: boolean = true;
     noItemsVisible: boolean = false;
+    disableChanges: boolean = false;
 
     constructor(
         private _elemRef: ElementRef,
@@ -260,11 +260,12 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             this.updateColumnsOrder();
         }
         if (changes['colsWidth']) {
-            if (!this.isSameWidths(this.colsWidth, this._colsWidthEmited)) {
-                this._colsWidthEmited = {};
-                this.updateColumnsOrder();
-                this.initColumnWidths();
+            if (this.disableChanges) {
+                this.disableChanges = false;
+                return;
             }
+            this.updateColumnsOrder();
+            this.initColumnWidths();
         }
     }
 
@@ -660,7 +661,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     colsWidthChangeEmit(v: { [id: string]: number }): void {
-        this._colsWidthEmited = v;
+        this.disableChanges = true;
+        setTimeout(() => this.disableChanges = false);
         this.colsWidthChange.emit(v);
     }
 
@@ -696,7 +698,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         this._r2.addClass(el, this.rowDropAllowed({ index, row, event }) ? 'ngx-dmt-row-drop-allowed' : 'ngx-dmt-row-drop-forbiden');
     }
 
-    onRowDragLeave(index: number, row: any, event: DragEvent, el: HTMLTableRowElement) {
+    onRowDragLeave(_index: number, _row: any, _event: DragEvent, el: HTMLTableRowElement) {
         this._removeDragClasses(el);
     }
 
@@ -797,20 +799,6 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (this.debug) {
             this._log(label, ...x);
         }
-    }
-
-    isSameWidths(v1: { [id: string]: number }, v2: { [id: string]: number }): boolean {
-        for (const k of Object.keys(v1)) {
-            if (v1[k] !== v2[k]) {
-                return false;
-            }
-        }
-        for (const k of Object.keys(v2)) {
-            if (v1[k] !== v2[k]) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }
