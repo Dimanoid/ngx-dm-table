@@ -224,4 +224,8 @@ export class AppComponent implements OnInit {
         this.colsVisibility = Object.assign({}, this.colsVisibility);
     }
 
+    _log(...args: any): void {
+        console.log('[DmTableDemoApp]', ...args);
+    }
+
 }

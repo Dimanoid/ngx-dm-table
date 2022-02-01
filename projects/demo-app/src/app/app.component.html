@@ -95,6 +95,7 @@
                         [rowClasses]="{ 'dmt-selected': selectedFn }"
                         [colsVisibility]="hideAll ? { '8': true } : colsVisibility"
                         [(colsWidth)]="colsWidth"
+                        (colsWidthChange)="_log($event)"
                         [(colsOrder)]="colsOrder"
                         [(sort)]="sort"
                         [rowsDragEnabled]="dndEnabled"

@@ -260,7 +260,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             this.updateColumnsOrder();
         }
         if (changes['colsWidth']) {
-            if (this.colsWidth != this._colsWidthEmited) {
+            if (!this.isSameWidths(this.colsWidth, this._colsWidthEmited)) {
                 this._colsWidthEmited = {};
                 this.updateColumnsOrder();
                 this.initColumnWidths();
@@ -799,5 +799,18 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         }
     }
 
+    isSameWidths(v1: { [id: string]: number }, v2: { [id: string]: number }): boolean {
+        for (const k of Object.keys(v1)) {
+            if (v1[k] !== v2[k]) {
+                return false;
+            }
+        }
+        for (const k of Object.keys(v2)) {
+            if (v1[k] !== v2[k]) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
