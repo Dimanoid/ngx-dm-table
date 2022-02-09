@@ -30,6 +30,7 @@ export class DmTableController<T, K = any> {
 
     readonly filter: BehaviorSubject<any> = new BehaviorSubject(undefined);
     filterFn: (item: T, filter: any) => boolean | undefined = DM_TABLE_DEFAULT_FILTERFN;
+    hiddenFilterFn?: (item: T) => boolean | undefined;
 
     readonly sort: BehaviorSubject<DmTableSort | undefined> = new BehaviorSubject<DmTableSort | undefined>(undefined);
     sortFn: ((items: T[], sort?: DmTableSort) => T[])
@@ -143,37 +144,41 @@ export class DmTableController<T, K = any> {
         state.itemsVisible = 0;
         state.itemsTotal = 0;
 
-        if (this.filterFn) {
-            if (this.groupped) {
-                for (const g of (this._items as DmTableGrouppedRows<T>[])) {
-                    const rows: T[] = [];
-                    for (const r of g.rows) {
-                        state.itemsTotal++;
-                        if (this.filterFn(r, filter)) {
-                            rows.push(r);
-                            state.itemsVisible++;
-                        }
+        if (this.groupped) {
+            for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                const rows: T[] = [];
+                for (const r of g.rows) {
+                    if (this.hiddenFilterFn && !this.hiddenFilterFn(r)) {
+                        continue;
                     }
-                    if (rows.length > 0) {
-                        (items as DmTableGrouppedRows<T>[]).push({ rows, data: g.data })
-                    }
-                }
-            }
-            else {
-                for (const r of (this._items as T[])) {
                     state.itemsTotal++;
-                    if (this.filterFn(r, filter)) {
-                        (items as T[]).push(r);
+                    if (!this.filterFn || this.filterFn(r, filter)) {
+                        rows.push(r);
                         state.itemsVisible++;
                     }
+                }
+                if (rows.length > 0) {
+                    (items as DmTableGrouppedRows<T>[]).push({ rows, data: g.data })
                 }
             }
         }
         else {
-            this._items.forEach((v: any) => items.push(v));
-            state.itemsVisible = this._items.length;
-            state.itemsTotal = this._items.length;
+            for (const r of (this._items as T[])) {
+                if (this.hiddenFilterFn && !this.hiddenFilterFn(r)) {
+                    continue;
+                }
+                state.itemsTotal++;
+                if (!this.filterFn || this.filterFn(r, filter)) {
+                    (items as T[]).push(r);
+                    state.itemsVisible++;
+                }
+            }
         }
+        // else {
+        //     this._items.filter((v: any) => !this.hiddenFilterFn || this.hiddenFilterFn(v)).forEach((v: any) => items.push(v));
+        //     state.itemsVisible = items.length;
+        //     state.itemsTotal = items.length;
+        // }
 
         if (this.sortFn) {
             items = this.sortFn(items as any, this.sort.getValue());
