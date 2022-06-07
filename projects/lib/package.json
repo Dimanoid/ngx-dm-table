@@ -6,8 +6,8 @@
     "license": "MIT",
     "version": "0.7.16",
     "peerDependencies": {
-        "@angular/common": "^13.2.0",
-        "@angular/core": "^13.2.0",
-        "@angular/cdk": "^13.2.0"
+        "@angular/common": ">=13.2.0",
+        "@angular/core": ">=13.2.0",
+        "@angular/cdk": ">=13.2.0"
     }
 }
