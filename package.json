@@ -1,9 +1,9 @@
 {
     "name": "@dimanoid/ngx-dm-table",
-    "version": "14.0.9",
+    "version": "14.0.10",
     "scripts": {
         "build": "ng build lib",
-        "build:demo": "ng build --aot --prod --base-href /ngx-dm-table/ demo-app",
+        "build:demo": "ng build --configuration=prod --base-href /ngx-dm-table/ demo-app",
         "bl": "ng b lib && ./node_modules/.bin/ngcc -s ./dist && ng s",
         "test": "jest --verbose projects/lib",
         "test:watch": "jest projects/lib --watch --notify",
