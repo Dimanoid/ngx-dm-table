@@ -40,6 +40,7 @@ export class DmTableController<T, K = any> {
     private _items?: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<K, boolean> = new Map();
     readonly itemsMap: Map<K, T> = new Map();
+    readonly visibleItemsMap: Map<K, T> = new Map();
 
     constructor(
         private trackBy?: (item: T, index?: number) => K,
@@ -143,6 +144,7 @@ export class DmTableController<T, K = any> {
         const state = Object.assign({}, this.state.getValue());
         state.itemsVisible = 0;
         state.itemsTotal = 0;
+        this.visibleItemsMap.clear();
 
         if (this.groupped) {
             for (const g of (this._items as DmTableGrouppedRows<T>[])) {
@@ -152,6 +154,7 @@ export class DmTableController<T, K = any> {
                         continue;
                     }
                     state.itemsTotal++;
+                    this.visibleItemsMap.set(this.trackBy!(r), r);
                     if (!this.filterFn || this.filterFn(r, filter)) {
                         rows.push(r);
                         state.itemsVisible++;
@@ -168,6 +171,7 @@ export class DmTableController<T, K = any> {
                     continue;
                 }
                 state.itemsTotal++;
+                this.visibleItemsMap.set(this.trackBy!(r), r);
                 if (!this.filterFn || this.filterFn(r, filter)) {
                     (items as T[]).push(r);
                     state.itemsVisible++;
@@ -191,16 +195,17 @@ export class DmTableController<T, K = any> {
 
     setAllSelected(selected: boolean): void {
         this.selected.clear();
+        const items = this.visibleItems.getValue();
         if (selected && this.trackBy) {
             if (this.groupped) {
-                for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                for (const g of (items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
                         this.selected.set(this.trackBy(r as any), true);
                     }
                 }
             }
             else {
-                for (const r of (this._items as T[])) {
+                for (const r of (items as T[])) {
                     const k = this.trackBy(r as any);
                     this.selected.set(k, true);
                 }
@@ -213,10 +218,22 @@ export class DmTableController<T, K = any> {
 
     setSelected(keys: K | K[], selected: boolean): void {
         if (Array.isArray(keys)) {
-            keys.forEach(k => this.selected.set(k, selected))
+            keys.forEach(k => {
+                if (this.visibleItemsMap.get(k)) {
+                    this.selected.set(k, selected);
+                }
+                else {
+                    this.selected.delete(k);
+                }
+            });
         }
         else {
-            this.selected.set(keys, selected);
+            if (this.visibleItemsMap.get(keys)) {
+                this.selected.set(keys, selected);
+            }
+            else {
+                this.selected.delete(keys);
+            }
         }
         const state = Object.assign({}, this.state.getValue());
         let count = 0;

@@ -241,7 +241,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 this.stateSubscription = this.data.state.subscribe(state => {
                     this.noItems = state.itemsTotal == 0;
                     this.noItemsVisible = state.itemsVisible == 0 && state.itemsTotal > 0;
-                    this.allRowsSelected = state.itemsSelected == state.itemsTotal && state.itemsTotal > 0;
+                    this.allRowsSelected = state.itemsSelected >= state.itemsVisible && state.itemsVisible > 0;
                     this.allRowsNotSelected = state.itemsSelected == 0;
                     this.updateGlobalStyles();
                     this._cdr.markForCheck();
