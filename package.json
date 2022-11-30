@@ -1,6 +1,6 @@
 {
     "name": "@dimanoid/ngx-dm-table",
-    "version": "14.0.2",
+    "version": "14.0.4",
     "scripts": {
         "build": "ng build lib",
         "build:demo": "ng build --aot --prod --base-href /ngx-dm-table/ demo-app",
@@ -12,7 +12,7 @@
         "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
         "lint": "ng lint",
         "publish": "npm publish dist/lib --access public",
-        "up": "cd projects/lib && npm version patch && git add package.json && git commit -m \"version bump [ci skip]\" package*.json && cd ../.. && npm version patch",
+        "up": "cd projects/lib && npm version patch && cd ../.. && npm version patch &&  git add package*.json && git commit -m \"version bump [ci skip]\" package*.json",
         "up:minor": "cd projects/lib && npm version minor && git add package.json && git commit -m \"version bump [ci skip]\" package*.json && cd ../.. && npm version minor"
     },
     "dependencies": {
