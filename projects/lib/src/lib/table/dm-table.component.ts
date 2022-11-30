@@ -636,7 +636,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     getRowClasses(row: any, index: number): string {
-        let res = '';
+        let res = this.isRowSelected(row) ? 'ngx-dmt-selected' : '';
         if (this.rowClasses) {
             for (const k in this.rowClasses) {
                 if (this.rowClasses[k](row, index, this.groupStart ? this.groupStart[index] : undefined)) {
