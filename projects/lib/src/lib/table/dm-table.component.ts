@@ -110,7 +110,20 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     @Input() defaultColumnConfig: any;
     @Input() tableClass?: string;
-    @Input() colsVisibility?: { [id: string]: boolean };
+
+    private _colsVisibility?: { [id: string]: boolean };
+    @Input()
+    set colsVisibility(v: { [id: string]: boolean } | undefined) {
+        this._colsVisibility = v;
+        setTimeout(() => {
+            this.initColumnWidths();
+            this._cdr.markForCheck();
+        });
+    }
+    get colsVisibility(): { [id: string]: boolean } | undefined {
+        return this._colsVisibility;
+    }
+
     @Input() rowClasses: {
         [className: string]: (row: { [colId: string]: any }, index: number, group?: DmTableRowsGroup<T>) => boolean
     } = {};
@@ -194,7 +207,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                             colsWidthTmp[this.flexColumnId!] += rd;
                         }
                         else {
-                            colsWidthTmp[this.flexColumnId!] += this.tableWidth - sumValues(colsWidthTmp, this.colsVisibility!);
+                            colsWidthTmp[this.flexColumnId!] += this.tableWidth - sumValues(colsWidthTmp, this._colsVisibility!);
                         }
                         this.colsWidthTmp = this.resizeColumnId ? colsWidthTmp : {};
                         this._colsWidth = colsWidthTmp;
@@ -281,7 +294,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         this.noColumns = false;
         this.flexColumnId = undefined;
         for (const cd of this.columnTemplates) {
-            if (!this.colsVisibility || this.colsVisibility[cd.colId!]) {
+            if (!this._colsVisibility || this._colsVisibility[cd.colId!]) {
                 if (cd.footerTpl) {
                     this.hasFooter = true;
                 }
@@ -306,7 +319,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (this.tableWidth > 0) {
             const [tcw, cwChanged] = this.getNormalizedTableWidth();
             if (tcw < this.tableWidth) {
-                const ec = emptyValues(this.colsWidth, this.colsVisibility);
+                const ec = emptyValues(this.colsWidth, this._colsVisibility);
                 if (ec > 0) {
                     const w = Math.trunc((this.tableWidth - tcw) / ec);
                     const extraW = this.tableWidth - tcw - w * ec;
@@ -317,7 +330,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     }
                     this.colsWidth[this.flexColumnId!] += extraW;
                 }
-                this.colsWidth[this.flexColumnId!] += this.tableWidth - sumValues(this.colsWidth, this.colsVisibility);
+                this.colsWidth[this.flexColumnId!] += this.tableWidth - sumValues(this.colsWidth, this._colsVisibility);
             }
             else if (tcw > this.tableWidth) {
                 this.colsWidthTmp = Object.assign({}, this.colsWidth);
@@ -403,7 +416,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             this.tableWidth,
             delta,
             this.colsOrder!,
-            this.colsVisibility!,
+            this._colsVisibility!,
             this.colsWidth,
             this.ctMap!
         );
@@ -478,7 +491,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         this._colsOrder = this._colsOrderOriginal.slice();
         i = this._colsOrder.length;
         while (i--) {
-            if (this.colsVisibility && !this.colsVisibility[this._colsOrder[i]]) {
+            if (this._colsVisibility && !this._colsVisibility[this._colsOrder[i]]) {
                 this._colsOrder.splice(i, 1);
             }
         }
