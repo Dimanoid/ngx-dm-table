@@ -56,7 +56,7 @@
                 <tbody *ngIf="rows">
                     <ng-container *cdkVirtualFor="let r of $any(rows); let ri = index; trackBy: trackByFn">
                         <tr *ngIf="groupped && groupHeaderTpl && groupStart && groupStart[ri]" class="ngx-dmt-group-header-row">
-                            <td [colSpan]="colsOrder!.length" class="ngx-dmt-group-header-cell">
+                            <td [colSpan]="colsOrder!.length + (showSelectColumn ? 1 : 0)" class="ngx-dmt-group-header-cell">
                                 <ng-container [ngTemplateOutlet]="groupHeaderTpl"
                                     [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupStart[ri] }">
                                 </ng-container>
@@ -91,7 +91,7 @@
                             </td>
                         </tr>
                         <tr *ngIf="groupped && groupFooterTpl && groupEnd![ri]" class="ngx-dmt-group-footer-row">
-                            <td [colSpan]="colsOrder!.length" class="ngx-dmt-group-footer-cell">
+                            <td [colSpan]="colsOrder!.length + (showSelectColumn ? 1 : 0)" class="ngx-dmt-group-footer-cell">
                                 <ng-container [ngTemplateOutlet]="groupFooterTpl"
                                     [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupEnd![ri] }">
                                 </ng-container>
