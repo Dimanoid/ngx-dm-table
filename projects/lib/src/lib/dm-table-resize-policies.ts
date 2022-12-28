@@ -202,7 +202,12 @@ export class DmTableResizePolicyFullWidth<T> implements IDmTableResizePolicy<T> 
         colsWidthTmp[resizeColumnId] = nw;
         const tw = Object.values(colsWidthTmp).reduce((c, w) => c + w, 0);
         if (tw < portalWidth) {
-            colsWidthTmp[flexColumnId] += portalWidth - tw;
+            if (resizeColumnId != flexColumnId) {
+                colsWidthTmp[flexColumnId] += portalWidth - tw;
+            }
+            else {
+                colsWidthTmp[colsOrder[colsOrder.length - 1]] += portalWidth - tw;
+            }
         }
 
         return colsWidthTmp;
