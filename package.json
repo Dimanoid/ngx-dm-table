@@ -1,6 +1,6 @@
 {
     "name": "@dimanoid/ngx-dm-table",
-    "version": "14.0.16",
+    "version": "14.0.17",
     "scripts": {
         "build": "ng build lib",
         "build:demo": "ng build --configuration=production --base-href /ngx-dm-table/ demo-app",
@@ -12,8 +12,9 @@
         "coverall": "jest projects/lib --coverage && cat ./coverage/lcov.info | coveralls",
         "lint": "ng lint",
         "publish": "npm publish dist/lib --access public",
-        "up": "cd projects/lib && npm version patch && cd ../.. && npm version patch &&  git add package*.json **/package*.json && git commit -m \"version $npm_package_version\"",
-        "up:minor": "cd projects/lib && npm version minor && cd ../.. && npm version minor &&  git add package*.json **/package*.json && git commit -m \"version $npm_package_version\""
+        "up": "cd projects/lib && npm version patch && cd ../.. && npm version patch &&  git add package*.json **/package*.json && npm run commit",
+        "up:minor": "cd projects/lib && npm version minor && cd ../.. && npm version minor &&  git add package*.json **/package*.json && npm run commit",
+        "commit": "git commit -m \"version $npm_package_version\""
     },
     "dependencies": {
         "@angular/animations": ">=14, <15",
