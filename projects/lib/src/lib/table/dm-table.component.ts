@@ -15,7 +15,7 @@ import { DmTableService } from '../dm-table.service';
 import { DmTableRowsGroup, DmTableSort, DmTableHeaderEvent, DmTableRowEvent, DmTableRowDragEvent, DmTableGrouppedRows } from '../models';
 import { DmTableController } from '../dm-table.controller';
 import { Subscription } from 'rxjs';
-import { DmTableResizePolicyFit, IDmTableResizePolicy } from '../dm-table-resize-policies';
+import { DmTableResizePolicyMap, TDmTableResizePolicy } from '../dm-table-resize-policies';
 
 export const MIN_ITEM_SIZE = 30;
 
@@ -144,7 +144,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @Input() @InputBoolean() showSelectColumn: boolean | string = false;
     @Input() @InputNumber() selectColumnWidth: number | string = 50;
 
-    @Input() resizePolicy: IDmTableResizePolicy<T> = new DmTableResizePolicyFit<T>();
+    @Input() resizePolicy: TDmTableResizePolicy<T> = 'default';
 
     hasFooter: boolean = false;
     flexColumnId?: string;
@@ -411,7 +411,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     resizeColumnUpdateWidth(delta: number): void {
-        this.colsWidthTmp = this.resizePolicy.onColumnResize(
+        const rp = (typeof this.resizePolicy == 'string' ? DmTableResizePolicyMap[this.resizePolicy] : this.resizePolicy) || DmTableResizePolicyMap.default;
+        this.colsWidthTmp = rp.onColumnResize(
             this.resizeColumnId!,
             this.tableWidth,
             delta,
