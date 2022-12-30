@@ -16,6 +16,12 @@
                                 <nz-option *ngFor="let ln of linesList" [nzValue]="ln" [nzLabel]="ln"></nz-option>
                             </nz-select>
                         </div>
+                        <div class="layout center">
+                            <span class="mr05">Column resize policy:</span>
+                            <nz-select style="width: 120px;" [(ngModel)]="resizePolicy">
+                                <nz-option *ngFor="let ln of ['fit', 'simple', 'msword']" [nzValue]="ln" [nzLabel]="ln"></nz-option>
+                            </nz-select>
+                        </div>
                         <div class="layout center mt05">
                             <nz-switch nzSize="small" [(ngModel)]="stripes"></nz-switch>
                             <span class="ml05">Zebra stripped</span>
@@ -89,6 +95,7 @@
             <div class="layout flex relative">
                 <div class="layout fit scroll">
                     <dm-table #example1
+                        [resizePolicy]="$any(resizePolicy)"
                         [data]="useController ? controller : data"
                         [class.ngx-dmt-stripes]="stripes"
                         [defaultColumnConfig]="{ minWidth: 200 }"

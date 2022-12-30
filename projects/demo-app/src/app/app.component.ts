@@ -24,7 +24,7 @@ const NAMES = [
     'Charlie Chaplin',
     'Louis XIV',
     'Isaac Newton',
-    '‎Gregory House',
+    'Gregory House',
     'Gautama Buddha',
     'Mary Poppins'
 ];
@@ -68,6 +68,7 @@ export class AppComponent implements OnInit {
     dndEnabled: boolean = true;
     multiLineDnd: boolean = false;
     evenRowDrop: boolean = false;
+    resizePolicy: string = 'fit';
     isEvenFn = (row: any, colId: number | string) => !(row[colId] % 2);
     dropAllowedFn = (e: DmTableRowDragEvent<any[]>) => !this.evenRowDrop || !(e.row[0] % 2);
 
