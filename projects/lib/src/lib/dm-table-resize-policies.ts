@@ -134,7 +134,7 @@ export const DmTableResizePolicySimple: TDmTableResizePolicyBase<any> = {
     }
 }
 
-export const DmTableResizePolicyFit: TDmTableResizePolicyBase<any> = {
+export const DmTableResizePolicyFlex: TDmTableResizePolicyBase<any> = {
     onColumnResize(
         resizeColumnId: string,
         portalWidth: number,
@@ -352,10 +352,10 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
     }
 }
 
-export type TDmTableResizePolicy<T> = 'simple' | 'fit' | 'msword' | TDmTableResizePolicyBase<T>;
+export type TDmTableResizePolicy<T> = 'simple' | 'flex' | 'msword' | TDmTableResizePolicyBase<T>;
 
 export const DmTableResizePolicyMap = {
     'simple': DmTableResizePolicySimple,
-    'fit': DmTableResizePolicyFit,
+    'flex': DmTableResizePolicyFlex,
     'msword': DmTableResizePolicyMsword
 };

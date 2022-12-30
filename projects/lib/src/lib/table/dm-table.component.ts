@@ -144,7 +144,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @Input() @InputBoolean() showSelectColumn: boolean | string = false;
     @Input() @InputNumber() selectColumnWidth: number | string = 50;
 
-    @Input() resizePolicy: TDmTableResizePolicy<T> = 'fit';
+    @Input() resizePolicy: TDmTableResizePolicy<T> = 'flex';
 
     hasFooter: boolean = false;
     flexColumnId?: string;

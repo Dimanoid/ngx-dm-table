@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
     dndEnabled: boolean = true;
     multiLineDnd: boolean = false;
     evenRowDrop: boolean = false;
-    resizePolicy: string = 'fit';
+    resizePolicy: string = 'flex';
     isEvenFn = (row: any, colId: number | string) => !(row[colId] % 2);
     dropAllowedFn = (e: DmTableRowDragEvent<any[]>) => !this.evenRowDrop || !(e.row[0] % 2);
 
