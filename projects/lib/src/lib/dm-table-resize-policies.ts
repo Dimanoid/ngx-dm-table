@@ -100,6 +100,7 @@ export function dmtNormalizeTableWidth(
 ): void {
     const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
     const tw = Object.keys(colsWidthTmp).filter(id => colsVisibility[id]).map(id => colsWidthTmp[id]).reduce((c, w) => c + w, 0);
+    // console.log('\t\t\t flexColumnId:', flexColumnId, 'tw:', tw, 'portalWidth:', portalWidth);
     if (tw < portalWidth) {
         colsWidthTmp[flexColumnId] += portalWidth - tw;
     }
@@ -268,41 +269,61 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
         // console.log('DmTableResizePolicyMsword <<<', {...colsWidth});
         const colsWidthTmp: { [id: string]: number } = { ...colsWidth };
         let nw = dmtNormalizeWidth(colsWidth[resizeColumnId] + delta, ctMap[resizeColumnId]);
-        const left = delta - (nw - colsWidth[resizeColumnId]);
+        const left = Math.abs(delta - (nw - colsWidth[resizeColumnId]));
+        const vcs = colsOrder.filter(id => colsVisibility[id]);
+        const ri = vcs.findIndex(id => id == resizeColumnId);
         
-        // console.log('\t\t\t left:', left, 'delta:', delta, 'nw:', nw, 'colsWidth[resizeColumnId]:', colsWidth[resizeColumnId]);
+        // console.log('\t\t\t left:', left, 'delta:', delta, 'nw:', nw, 'portalWidth:', portalWidth);
+        // console.log('\t\t\t ri:', ri, 'resizeColumnId:', resizeColumnId, 'colsWidth[resizeColumnId]:', colsWidth[resizeColumnId], 'vcs:', vcs);
         if (delta > 0) {
             let d = left;
-            let after = false;
-            for (const id of colsOrder) {
-                if (after && (!colsVisibility || colsVisibility[id])) {
+            if (left > 0 && ri > 0) {
+                for (let i = ri - 1; i > 0; i--) {
+                    const id = vcs[i];
                     colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
-                    d = d - (colsWidthTmp[id] - colsWidth[id]);
+                    d -= colsWidthTmp[id] - colsWidth[id];
                     if (d < 1) {
                         d = 0;
                         break;
                     }
-                }
-                else if (id == resizeColumnId) {
-                    after = true;
                 }
             }
-            nw += d;
-        }
-        else if (delta < 0) {
-            let d = -left;
-            let before = false;
-            for (const id of [...colsOrder].reverse()) {
-                if (before && (!colsVisibility || colsVisibility[id])) {
+            d = delta - d;
+            if (ri < vcs.length - 1 && d > 0) {
+                for (let i = ri + 1; i < vcs.length; i++) {
+                    const id = vcs[i];
                     colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
-                    d = d - (colsWidthTmp[id] - colsWidth[id]);
+                    d -= colsWidth[id] - colsWidthTmp[id];
                     if (d < 1) {
                         d = 0;
                         break;
                     }
                 }
-                else if (id == resizeColumnId) {
-                    before = true;
+            }
+        }
+        else if (delta < 0) {
+            let d = left;
+            if (left > 0 && ri > 0) {
+                for (let i = ri - 1; i > 0; i--) {
+                    const id = vcs[i];
+                    colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
+                    d -= colsWidth[id] - colsWidthTmp[id];
+                    if (d < 1) {
+                        d = 0;
+                        break;
+                    }
+                }
+            }
+            d = -delta - d;
+            if (ri < vcs.length - 1 && d > 0) {
+                for (let i = ri + 1; i < vcs.length; i++) {
+                    const id = vcs[i];
+                    colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
+                    d -= colsWidthTmp[id] - colsWidth[id];
+                    if (d < 1) {
+                        d = 0;
+                        break;
+                    }
                 }
             }
         }
