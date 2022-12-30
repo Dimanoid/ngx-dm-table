@@ -144,7 +144,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @Input() @InputBoolean() showSelectColumn: boolean | string = false;
     @Input() @InputNumber() selectColumnWidth: number | string = 50;
 
-    @Input() resizePolicy: TDmTableResizePolicy<T> = 'default';
+    @Input() resizePolicy: TDmTableResizePolicy<T> = 'fit';
 
     hasFooter: boolean = false;
     flexColumnId?: string;
@@ -411,7 +411,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     resizeColumnUpdateWidth(delta: number): void {
-        const rp = (typeof this.resizePolicy == 'string' ? DmTableResizePolicyMap[this.resizePolicy] : this.resizePolicy) || DmTableResizePolicyMap.default;
+        const rp = (typeof this.resizePolicy == 'string' ? DmTableResizePolicyMap[this.resizePolicy] : this.resizePolicy) || DmTableResizePolicyMap.simple;
+        this._D('resizeColumnUpdateWidth', 'rp:', rp);
         this.colsWidthTmp = rp.onColumnResize(
             this.resizeColumnId!,
             this.tableWidth,

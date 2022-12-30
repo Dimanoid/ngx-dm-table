@@ -40,9 +40,14 @@ export function dmtGetFlexColumnId<T>(
     }
     if (flexColumnId == null) {
         for (let i = colsOrder.length - 1; i > 0; i--) {
-            flexColumnId = colsOrder[i];
-            break;
+            if (!colsVisibility || colsVisibility[colsOrder[i]]) {
+                flexColumnId = colsOrder[i];
+                break;
+            }
         }
+    }
+    if (flexColumnId == null) {
+        flexColumnId = colsOrder[0];
     }
     return flexColumnId!;
 }
@@ -76,7 +81,7 @@ export function dmtGetNextVisibleColumnRight(colId: string, colsOrder: string[],
     return resId;
 }
 
-export function dmtGetLastVisibleColumn(colId: string, colsOrder: string[], colsVisibility: { [id: string]: boolean }): string | undefined {
+export function dmtGetLastVisibleColumn(colsOrder: string[], colsVisibility: { [id: string]: boolean }): string | undefined {
     let resId: string | undefined;
     colsOrder?.forEach(id => {
         if (colsVisibility[id]) {
@@ -86,7 +91,21 @@ export function dmtGetLastVisibleColumn(colId: string, colsOrder: string[], cols
     return resId;
 }
 
-export const DmTableResizePolicyDefault: TDmTableResizePolicyBase<any> = {
+export function dmtNormalizeTableWidth(
+    portalWidth: number,
+    colsOrder: string[],
+    colsVisibility: { [id: string]: boolean },
+    colsWidthTmp: { [id: string]: number },
+    ctMap: { [colId: string]: DmColumnDirective<any> },
+): void {
+    const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
+    const tw = Object.keys(colsWidthTmp).filter(id => colsVisibility[id]).map(id => colsWidthTmp[id]).reduce((c, w) => c + w, 0);
+    if (tw < portalWidth) {
+        colsWidthTmp[flexColumnId] += portalWidth - tw;
+    }
+}
+
+export const DmTableResizePolicySimple: TDmTableResizePolicyBase<any> = {
     onColumnResize(
         resizeColumnId: string,
         portalWidth: number,
@@ -98,6 +117,7 @@ export const DmTableResizePolicyDefault: TDmTableResizePolicyBase<any> = {
     ): { [id: string]: number } {
         const colsWidthTmp: { [id: string]: number } = { ...colsWidth };
         colsWidthTmp[resizeColumnId] = dmtNormalizeWidth(colsWidth[resizeColumnId] + delta, ctMap[resizeColumnId]);
+        dmtNormalizeTableWidth(portalWidth, colsOrder, colsVisibility, colsWidthTmp, ctMap);
         return colsWidthTmp;
     },
 
@@ -235,7 +255,7 @@ export const DmTableResizePolicyFit: TDmTableResizePolicyBase<any> = {
     }
 }
 
-export const DmTableResizePolicyFullWidth: TDmTableResizePolicyBase<any> = {
+export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
     onColumnResize(
         resizeColumnId: string,
         portalWidth: number,
@@ -245,64 +265,17 @@ export const DmTableResizePolicyFullWidth: TDmTableResizePolicyBase<any> = {
         colsWidth: { [id: string]: number },
         ctMap: { [colId: string]: DmColumnDirective<any> }
     ): { [id: string]: number } {
-        const colsWidthTmp: { [id: string]: number } = { ...colsWidth };
-        const ct = ctMap[resizeColumnId];
-        const w = colsWidth[resizeColumnId];
-        const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
-        const nw = dmtNormalizeWidth(w + delta, ct);
-        
-        colsWidthTmp[resizeColumnId] = nw;
-        const tw = Object.values(colsWidthTmp).reduce((c, w) => c + w, 0);
-        if (tw < portalWidth) {
-            colsWidthTmp[flexColumnId] += portalWidth - tw;
-        }
-
-        return colsWidthTmp;
-    },
-
-    onTableResize(
-        portalWidth: number,
-        delta: number,
-        colsOrder: string[],
-        colsVisibility: { [id: string]: boolean },
-        colsWidth: { [id: string]: number },
-        ctMap: { [colId: string]: DmColumnDirective<any>
-    }): { [id: string]: number } {
-        const colsWidthTmp: { [id: string]: number } = Object.assign({}, colsWidth);
-        const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
-
-        colsWidthTmp[flexColumnId] += delta;
-        if (delta < 0) {
-            colsWidthTmp[flexColumnId] = dmtNormalizeWidth(colsWidthTmp[flexColumnId] + delta, ctMap[flexColumnId]);
-        }
-        const tw = Object.values(colsWidthTmp).reduce((c, w) => c + w, 0);
-        if (tw < portalWidth) {
-            colsWidthTmp[flexColumnId] += portalWidth - tw;
-        }
-
-        return colsWidthTmp;
-    }
-}
-
-export const DmTableResizePolicyNeibor: TDmTableResizePolicyBase<any> = {
-    onColumnResize(
-        resizeColumnId: string,
-        portalWidth: number,
-        delta: number,
-        colsOrder: string[],
-        colsVisibility: { [id: string]: boolean },
-        colsWidth: { [id: string]: number },
-        ctMap: { [colId: string]: DmColumnDirective<any> }
-    ): { [id: string]: number } {
+        // console.log('DmTableResizePolicyMsword <<<', {...colsWidth});
         const colsWidthTmp: { [id: string]: number } = { ...colsWidth };
         let nw = dmtNormalizeWidth(colsWidth[resizeColumnId] + delta, ctMap[resizeColumnId]);
         const left = delta - (nw - colsWidth[resizeColumnId]);
         
-        if (left > 0) {
+        // console.log('\t\t\t left:', left, 'delta:', delta, 'nw:', nw, 'colsWidth[resizeColumnId]:', colsWidth[resizeColumnId]);
+        if (delta > 0) {
             let d = left;
             let after = false;
             for (const id of colsOrder) {
-                if (after && colsVisibility[id]) {
+                if (after && (!colsVisibility || colsVisibility[id])) {
                     colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
                     d = d - (colsWidthTmp[id] - colsWidth[id]);
                     if (d < 1) {
@@ -316,11 +289,11 @@ export const DmTableResizePolicyNeibor: TDmTableResizePolicyBase<any> = {
             }
             nw += d;
         }
-        else if (left < 0) {
+        else if (delta < 0) {
             let d = -left;
             let before = false;
             for (const id of [...colsOrder].reverse()) {
-                if (before && colsVisibility[id]) {
+                if (before && (!colsVisibility || colsVisibility[id])) {
                     colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
                     d = d - (colsWidthTmp[id] - colsWidth[id]);
                     if (d < 1) {
@@ -334,7 +307,8 @@ export const DmTableResizePolicyNeibor: TDmTableResizePolicyBase<any> = {
             }
         }
         colsWidthTmp[resizeColumnId] = nw
-        
+        dmtNormalizeTableWidth(portalWidth, colsOrder, colsVisibility, colsWidthTmp, ctMap);
+        // console.log('\t\t\t>>>>>>>>>>>>>>>>> ', {...colsWidthTmp});
         return colsWidthTmp;
     },
 
@@ -348,25 +322,19 @@ export const DmTableResizePolicyNeibor: TDmTableResizePolicyBase<any> = {
     }): { [id: string]: number } {
         const colsWidthTmp: { [id: string]: number } = Object.assign({}, colsWidth);
         const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
-
         colsWidthTmp[flexColumnId] += delta;
         if (delta < 0) {
             colsWidthTmp[flexColumnId] = dmtNormalizeWidth(colsWidthTmp[flexColumnId] + delta, ctMap[flexColumnId]);
         }
-        const tw = Object.values(colsWidthTmp).reduce((c, w) => c + w, 0);
-        if (tw < portalWidth) {
-            colsWidthTmp[flexColumnId] += portalWidth - tw;
-        }
-
+        dmtNormalizeTableWidth(portalWidth, colsOrder, colsVisibility, colsWidthTmp, ctMap);
         return colsWidthTmp;
     }
 }
 
-export type TDmTableResizePolicy<T> = 'default' | 'fit' | 'fullWidth' | 'neibor' | TDmTableResizePolicyBase<T>;
+export type TDmTableResizePolicy<T> = 'simple' | 'fit' | 'msword' | TDmTableResizePolicyBase<T>;
 
 export const DmTableResizePolicyMap = {
-    'default': DmTableResizePolicyDefault,
+    'simple': DmTableResizePolicySimple,
     'fit': DmTableResizePolicyFit,
-    'fullWidth': DmTableResizePolicyFullWidth,
-    'neibor': DmTableResizePolicyNeibor
+    'msword': DmTableResizePolicyMsword
 };
