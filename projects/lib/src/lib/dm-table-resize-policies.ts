@@ -73,7 +73,7 @@ export function dmtGetNextVisibleColumnRight(colId: string, colsOrder: string[],
                     f = true;
                 }
             }
-            else if (colsVisibility[id]) {
+            else if (!colsVisibility || colsVisibility[id]) {
                 resId = id;
             }
         }
@@ -84,7 +84,7 @@ export function dmtGetNextVisibleColumnRight(colId: string, colsOrder: string[],
 export function dmtGetLastVisibleColumn(colsOrder: string[], colsVisibility: { [id: string]: boolean }): string | undefined {
     let resId: string | undefined;
     colsOrder?.forEach(id => {
-        if (colsVisibility[id]) {
+        if (!colsVisibility || colsVisibility[id]) {
             resId = id;
         }
     });
@@ -99,7 +99,7 @@ export function dmtNormalizeTableWidth(
     ctMap: { [colId: string]: DmColumnDirective<any> },
 ): void {
     const flexColumnId = dmtGetFlexColumnId(colsOrder, colsVisibility, ctMap);
-    const tw = Object.keys(colsWidthTmp).filter(id => colsVisibility[id]).map(id => colsWidthTmp[id]).reduce((c, w) => c + w, 0);
+    const tw = Object.keys(colsWidthTmp).filter(id => !colsVisibility || colsVisibility[id]).map(id => colsWidthTmp[id]).reduce((c, w) => c + w, 0);
     // console.log('\t\t\t flexColumnId:', flexColumnId, 'tw:', tw, 'portalWidth:', portalWidth);
     if (tw < portalWidth) {
         colsWidthTmp[flexColumnId] += portalWidth - tw;
@@ -270,7 +270,7 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
         const colsWidthTmp: { [id: string]: number } = { ...colsWidth };
         let nw = dmtNormalizeWidth(colsWidth[resizeColumnId] + delta, ctMap[resizeColumnId]);
         const left = Math.abs(delta - (nw - colsWidth[resizeColumnId]));
-        const vcs = colsOrder.filter(id => colsVisibility[id]);
+        const vcs = colsOrder.filter(id => !colsVisibility || colsVisibility[id]);
         const ri = vcs.findIndex(id => id == resizeColumnId);
         
         // console.log('\t\t\t left:', left, 'delta:', delta, 'nw:', nw, 'portalWidth:', portalWidth);
