@@ -280,7 +280,9 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
             if (left > 0 && ri > 0) {
                 for (let i = ri - 1; i > 0; i--) {
                     const id = vcs[i];
-                    colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
+                    if (ctMap[id].resizable) {
+                        colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
+                    }
                     d -= colsWidthTmp[id] - colsWidth[id];
                     if (d < 1) {
                         d = 0;
@@ -292,7 +294,9 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
             if (ri < vcs.length - 1 && d > 0) {
                 for (let i = ri + 1; i < vcs.length; i++) {
                     const id = vcs[i];
-                    colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
+                    if (ctMap[id].resizable) {
+                        colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
+                    }
                     d -= colsWidth[id] - colsWidthTmp[id];
                     if (d < 1) {
                         d = 0;
@@ -306,7 +310,9 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
             if (left > 0 && ri > 0) {
                 for (let i = ri - 1; i > 0; i--) {
                     const id = vcs[i];
-                    colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
+                    if (ctMap[id].resizable) {
+                        colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] - d, ctMap[id]);
+                    }
                     d -= colsWidth[id] - colsWidthTmp[id];
                     if (d < 1) {
                         d = 0;
@@ -318,7 +324,9 @@ export const DmTableResizePolicyMsword: TDmTableResizePolicyBase<any> = {
             if (ri < vcs.length - 1 && d > 0) {
                 for (let i = ri + 1; i < vcs.length; i++) {
                     const id = vcs[i];
-                    colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
+                    if (ctMap[id].resizable) {
+                        colsWidthTmp[id] = dmtNormalizeWidth(colsWidthTmp[id] + d, ctMap[id]);
+                    }
                     d -= colsWidthTmp[id] - colsWidth[id];
                     if (d < 1) {
                         d = 0;
