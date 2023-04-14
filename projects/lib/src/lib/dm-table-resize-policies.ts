@@ -54,10 +54,10 @@ export function dmtGetFlexColumnId<T>(
 
 export function dmtNormalizeWidth(w: number, ct: { minWidth?: number | string, maxWidth?: number | string }): number {
     let nw = w;
-    if (ct.minWidth && ct.minWidth > nw) {
+    if (ct.minWidth && +ct.minWidth > nw) {
         nw = +ct.minWidth;
     }
-    else if (ct.maxWidth && ct.maxWidth < nw) {
+    else if (ct.maxWidth && +ct.maxWidth < nw) {
         nw = +ct.maxWidth;
     }
     return nw;
@@ -160,7 +160,7 @@ export const DmTableResizePolicyFlex: TDmTableResizePolicyBase<any> = {
                 }
                 else {
                     let d = sv - portalWidth - rd;
-                    if (colsWidthTmp[flexColumnId] > ctMap[flexColumnId].minWidth) {
+                    if (colsWidthTmp[flexColumnId] > +ctMap[flexColumnId].minWidth) {
                         const dd = colsWidthTmp[flexColumnId] - +ctMap[flexColumnId].minWidth;
                         if (d <= dd) {
                             colsWidthTmp[flexColumnId] -= d;
@@ -195,10 +195,10 @@ export const DmTableResizePolicyFlex: TDmTableResizePolicyBase<any> = {
                     const fci = colsOrder.indexOf(flexColumnId);
                     if (fci > -1 && fci < colsOrder.length - 1) {
                         const lid = colsOrder[colsOrder.length - 1];
-                        if (!ctMap[lid].maxWidth || portalWidth - sv + colsWidth[lid] <= ctMap[lid].maxWidth!) {
+                        if (!ctMap[lid].maxWidth || portalWidth - sv + colsWidth[lid] <= +ctMap[lid].maxWidth!) {
                             colsWidthTmp[lid] += portalWidth - sv;
                         }
-                        else if (colsWidth[lid] < ctMap[lid].maxWidth!) {
+                        else if (colsWidth[lid] < +ctMap[lid].maxWidth!) {
                             const ld = +ctMap[lid].maxWidth! - colsWidth[lid];
                             sv -= ld;
                             colsWidthTmp[lid] += ld;

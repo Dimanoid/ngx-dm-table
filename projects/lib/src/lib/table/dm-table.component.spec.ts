@@ -9,7 +9,7 @@ import { DmTableComponent } from './dm-table.component';
 import { DmColumnDirective } from '../column/dm-column.directive';
 
 describe('DmTableComponent', () => {
-    let spectator: SpectatorHost<DmTableComponent>;
+    let spectator: SpectatorHost<DmTableComponent<any>>;
     const createHost = createHostFactory({
         component: DmTableComponent,
         declarations: [DmColumnDirective],
@@ -47,11 +47,11 @@ describe('DmTableComponent', () => {
         expect(spectator.query('.ngx-dmt-footer-wrapper')).not.toExist();
         // console.log(spectator.query('.ngx-dmt-header-wrapper > table.ngx-dmt.ngx-dmt-header > thead').children[0]);
         // expect(spectator.query('.ngx-dmt-header-wrapper > table.ngx-dmt.ngx-dmt-header > thead > tr').children.length).toEqual(5);
-        expect(spectator.component.columnTemplates.length).toEqual(5);
+        expect(spectator.component.columnTemplates?.length).toEqual(5);
         let count = 0;
         const cids = ['cid1', 'cid2', 'cid3', 'cid4', 'cid5'];
-        for (const ct of spectator.component.columnTemplates) {
-            const ind = cids.indexOf(ct.colId);
+        for (const ct of spectator.component.columnTemplates!) {
+            const ind = cids.indexOf(ct.colId!);
             if (ind != -1) {
                 count++;
                 cids.splice(ind, 1);

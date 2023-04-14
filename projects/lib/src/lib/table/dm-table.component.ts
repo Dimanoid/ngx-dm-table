@@ -74,7 +74,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     private _itemSize: number = MIN_ITEM_SIZE;
     @Input() @InputNumber()
     set itemSize(v: number | string) {
-        this._itemSize = v && v > MIN_ITEM_SIZE ? +v : MIN_ITEM_SIZE;
+        this._itemSize = v && +v > MIN_ITEM_SIZE ? +v : MIN_ITEM_SIZE;
     }
     get itemSize(): number | string{
         return this._itemSize;
@@ -411,7 +411,10 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     resizeColumnUpdateWidth(delta: number): void {
-        const rp = (typeof this.resizePolicy == 'string' ? DmTableResizePolicyMap[this.resizePolicy] : this.resizePolicy) || DmTableResizePolicyMap.simple;
+        let rp = (typeof this.resizePolicy == 'string' ? DmTableResizePolicyMap[this.resizePolicy] : this.resizePolicy);
+        if (!rp || !rp.onColumnResize) {
+            rp = DmTableResizePolicyMap.simple;
+        }
         this._D('resizeColumnUpdateWidth', 'rp:', rp);
         this.colsWidthTmp = rp.onColumnResize(
             this.resizeColumnId!,
@@ -432,11 +435,11 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (!fct) {
             return;
         }
-        if (fw - d >= fct.minWidth) {
+        if (fw - d >= +fct.minWidth) {
             this.colsWidthTmp[fid] -= d;
             return;
         }
-        else if (fw > fct.minWidth) {
+        else if (fw > +fct.minWidth) {
             d -= fw - +fct.minWidth;
             this.colsWidthTmp[fid] = +fct.minWidth;
         }
@@ -446,11 +449,11 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             if (id != fid) {
                 const ct = this.ctMap![id];
                 const cw = this.colsWidthTmp[id];
-                if (cw - d >= ct.minWidth) {
+                if (cw - d >= +ct.minWidth) {
                     this.colsWidthTmp[id] -= d;
                     return;
                 }
-                else if (cw > ct.minWidth) {
+                else if (cw > +ct.minWidth) {
                     d -= cw - +ct.minWidth;
                     this.colsWidthTmp[id] = +ct.minWidth;
                 }
@@ -771,10 +774,10 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         for (const cid of this.colsOrder!) {
             const cd = this.ctMap![cid];
             let w = this.colsWidth[cd.colId!] || 0;
-            if (cd.minWidth && w < cd.minWidth) {
+            if (cd.minWidth && w < +cd.minWidth) {
                 w = +cd.minWidth;
             }
-            else if (cd.maxWidth && w > cd.maxWidth) {
+            else if (cd.maxWidth && w > +cd.maxWidth) {
                 w = +cd.maxWidth;
             }
             if (w != this.colsWidth[cd.colId!]) {
