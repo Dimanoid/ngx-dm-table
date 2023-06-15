@@ -107,6 +107,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     @Input() @InputBoolean() externalSort: boolean | string = false;
     @Input() sort?: DmTableSort;
     @Output() sortChange: EventEmitter<DmTableSort> = new EventEmitter();
+    @Input() multiSort?: { [colId: string]: number };
 
     @Input() defaultColumnConfig: any;
     @Input() tableClass?: string;
@@ -164,6 +165,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     noItems: boolean = true;
     noItemsVisible: boolean = false;
     disableChanges: boolean = false;
+
+    abs = Math.abs;
 
     constructor(
         private _elemRef: ElementRef,
@@ -227,6 +230,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     dataSubscription?: Subscription;
     sortSubscription?: Subscription;
+    multiSortSubscription?: Subscription;
     stateSubscription?: Subscription;
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
@@ -237,6 +241,10 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             if (this.sortSubscription) {
                 this.sortSubscription.unsubscribe();
                 this.sortSubscription = undefined;
+            }
+            if (this.multiSortSubscription) {
+                this.multiSortSubscription.unsubscribe();
+                this.multiSortSubscription = undefined;
             }
             if (this.stateSubscription) {
                 this.stateSubscription.unsubscribe();
@@ -250,6 +258,10 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     if (!this.externalSort) {
                         this.sortRows();
                     }
+                });
+                this.multiSortSubscription = this.data.multiSort.subscribe(ms => {
+                    this.multiSort = ms;
+                    this._cdr.markForCheck();
                 });
                 this.stateSubscription = this.data.state.subscribe(state => {
                     this.noItems = state.itemsTotal == 0;

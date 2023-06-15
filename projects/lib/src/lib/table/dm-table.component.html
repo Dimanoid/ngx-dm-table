@@ -24,9 +24,9 @@
                         [ngClass]="ctMap[cid].headerClass!"
                         [class.ngx-dmt-sortable]="ctMap[cid].sortable"
                         [class.ngx-dmt-resizable]="ctMap[cid].resizable && !l"
-                        [class.ngx-dmt-sorted]="sort && (sort.colId == cid || sort.colId == ctMap[cid].colIdAlias)"
-                        [class.ngx-dmt-sorted-asc]="sort && sort.order > 0"
-                        [class.ngx-dmt-sorted-desc]="sort && sort.order < 0"
+                        [class.ngx-dmt-sorted]="(sort && (sort.colId == cid || sort.colId == ctMap[cid].colIdAlias)) || (multiSort && multiSort[cid] != null)"
+                        [class.ngx-dmt-sorted-asc]="(sort && sort.order > 0) || (multiSort && multiSort[cid] > 0)"
+                        [class.ngx-dmt-sorted-desc]="(sort && sort.order < 0) || (multiSort && multiSort[cid] < 0)"
                         (click)="headerClick.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         (contextmenu)="headerContextMenu.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                         cdkDrag cdkDragLockAxis="x" [cdkDragDisabled]="!moveableColumns">
@@ -35,7 +35,10 @@
                             <ng-template [ngIf]="!ctMap[cid].headerTpl">{{ ctMap[cid].title }}</ng-template>
                         </div>
                         <div *ngIf="moveableColumns" class="ngx-dmt-column-draghandle" cdkDragHandle><i class="ngx-dmt-column-draghandle-icon ngx-dmt-icon-font"></i></div>
-                        <div *ngIf="ctMap[cid].sortable" class="ngx-dmt-column-sort-container" (click)="toggleSort(cid)"><i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i></div>
+                        <div *ngIf="ctMap[cid].sortable" class="ngx-dmt-column-sort-container" (click)="toggleSort(cid)">
+                            <i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i>
+                            <span *ngIf="multiSort && multiSort[cid] != null" class="ngx-dmt-column-sort-count">{{ abs(multiSort[cid]) }}</span>
+                        </div>
                         <div *ngIf="ctMap[cid].resizable" class="ngx-dmt-resizer"
                             [class.ngx-dmt-resizer-dragging]="resizeColumnId == cid"
                             (mousedown)="resizeColumnStart(cid, resizer, $event)" #resizer>

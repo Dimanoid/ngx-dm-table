@@ -36,6 +36,7 @@ export class DmTableController<T, K = any> {
     sortFn: ((items: T[], sort?: DmTableSort) => T[])
         | ((items: DmTableGrouppedRows<T>[], sort?: DmTableSort) => DmTableGrouppedRows<T>[])
         | undefined;
+    readonly multiSort: BehaviorSubject<{ [colId: string]: number } | undefined> = new BehaviorSubject<{ [colId: string]: number } | undefined>(undefined);
 
     private _items?: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<K, boolean> = new Map();
