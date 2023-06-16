@@ -638,6 +638,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         };
         if (this.data instanceof DmTableController) {
             this.data.sort.next(this.sort);
+            this.data.multiSort.next(undefined);
         }
         else {
             this.sortChange.emit(this.sort);

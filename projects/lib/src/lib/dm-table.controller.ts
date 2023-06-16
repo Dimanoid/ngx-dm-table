@@ -57,7 +57,10 @@ export class DmTableController<T, K = any> {
             this.sortFn = sortFn;
         }
         this.filter.subscribe(() => this.invalidate());
-        this.sort.subscribe(() => this.invalidate());
+        this.sort.subscribe(() => {
+            this.multiSort.next(undefined);
+            this.invalidate();
+        });
     }
 
     setTrackBy(trackBy?: (item: T, index?: number) => K): void {
