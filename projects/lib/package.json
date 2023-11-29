@@ -4,10 +4,10 @@
         "url": "https://github.com/Dimanoid/ngx-dm-table.git"
     },
     "license": "MIT",
-    "version": "16.0.3",
+    "version": "17.0.0",
     "peerDependencies": {
-        "@angular/common": ">=16, <17",
-        "@angular/core": ">=16, <17",
-        "@angular/cdk": ">=16, <17"
+        "@angular/common": ">=17",
+        "@angular/core": ">=17",
+        "@angular/cdk": ">=17"
     }
 }

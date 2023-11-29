@@ -22,7 +22,7 @@ export class DmColumnDirective<T> implements OnInit {
     private _minWidth: number = 0;
     @Input() @InputNumber()
     set minWidth(v: number | string) {
-        this._minWidth = v && v > MIN_COLUMN_WIDTH ? +v : MIN_COLUMN_WIDTH;
+        this._minWidth = v && +v > MIN_COLUMN_WIDTH ? +v : MIN_COLUMN_WIDTH;
     }
     get minWidth(): number | string {
         return this._minWidth;
@@ -60,7 +60,7 @@ export class DmColumnDirective<T> implements OnInit {
         if (!this._minWidth || this._minWidth < MIN_COLUMN_WIDTH) {
             this._minWidth = MIN_COLUMN_WIDTH;
         }
-        if (this.sortable && this.minWidth && this.minWidth < MIN_COLUMN_SORT_WIDTH) {
+        if (this.sortable && this.minWidth && +this.minWidth < MIN_COLUMN_SORT_WIDTH) {
             this._minWidth = MIN_COLUMN_SORT_WIDTH;
         }
     }
