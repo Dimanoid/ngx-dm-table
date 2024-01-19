@@ -228,48 +228,37 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         this.initColumns();
     }
 
-    dataSubscription?: Subscription;
-    sortSubscription?: Subscription;
-    multiSortSubscription?: Subscription;
-    stateSubscription?: Subscription;
+    private _S: { [id: string]: Subscription } = {};
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['data']) {
-            if (this.dataSubscription) {
-                this.dataSubscription.unsubscribe();
-                this.dataSubscription = undefined;
-            }
-            if (this.sortSubscription) {
-                this.sortSubscription.unsubscribe();
-                this.sortSubscription = undefined;
-            }
-            if (this.multiSortSubscription) {
-                this.multiSortSubscription.unsubscribe();
-                this.multiSortSubscription = undefined;
-            }
-            if (this.stateSubscription) {
-                this.stateSubscription.unsubscribe();
-                this.stateSubscription = undefined;
-            }
+            Object.keys(this._S).forEach(k => {
+                this._S[k]?.unsubscribe();
+                delete this._S[k];
+            });
             if (this.data instanceof DmTableController) {
-                this.dataSubscription = this.data.visibleItems.subscribe(() => this.sortRows());
-                this.sortSubscription = this.data.sort.subscribe(sort => {
+                this._S.data = this.data.visibleItems.subscribe(() => this.sortRows());
+                this._S.sort = this.data.sort.subscribe(sort => {
                     this.sort = sort;
                     this.sortChange.emit(sort);
                     if (!this.externalSort) {
                         this.sortRows();
                     }
                 });
-                this.multiSortSubscription = this.data.multiSort.subscribe(ms => {
+                this._S.multiSort = this.data.multiSort.subscribe(ms => {
                     this.multiSort = ms;
                     this._cdr.markForCheck();
                 });
-                this.stateSubscription = this.data.state.subscribe(state => {
+                this._S.state = this.data.state.subscribe(state => {
                     this.noItems = state.itemsTotal == 0;
                     this.noItemsVisible = state.itemsVisible == 0 && state.itemsTotal > 0;
                     this.allRowsSelected = state.itemsSelected >= state.itemsVisible && state.itemsVisible > 0;
                     this.allRowsNotSelected = state.itemsSelected == 0;
                     this.updateGlobalStyles();
                     this._cdr.markForCheck();
+                });
+                this._S.groupped = this.data.groupped.subscribe(gr => {
+                    this.groupped = gr;
+                    this.sortRows();
                 });
             }
             else {
@@ -557,7 +546,9 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                         first: this.rows.length,
                         last: this.rows.length,
                         rows: group.rows,
-                        data: group.data
+                        data: group.data,
+                        collapsed: group.collapsed,
+                        collapsible: group.collapsible
                     };
                     this.rows.push(...group.rows);
                     gr.last = this.rows.length - 1;

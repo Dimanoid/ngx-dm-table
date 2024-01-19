@@ -5,7 +5,7 @@ import { DmTableService } from '../dm-table.service';
 import { DmColumnDirective, MIN_COLUMN_WIDTH, MIN_COLUMN_SORT_WIDTH } from './dm-column.directive';
 
 describe('DmColumnDirective', () => {
-    let spectator: SpectatorDirective<DmColumnDirective>;
+    let spectator: SpectatorDirective<DmColumnDirective<any>>;
     const createDirective = createDirectiveFactory({
         directive: DmColumnDirective,
         providers: [DmTableService]

@@ -31,25 +31,26 @@ export class DmTableController<T, K = any> {
     readonly filter: BehaviorSubject<any> = new BehaviorSubject(undefined);
     filterFn: (item: T, filter: any) => boolean | undefined = DM_TABLE_DEFAULT_FILTERFN;
     hiddenFilterFn?: (item: T) => boolean | undefined;
+    groupFilterFn?: (item: DmTableGrouppedRows<T>) => boolean | undefined;
 
     readonly sort: BehaviorSubject<DmTableSort | undefined> = new BehaviorSubject<DmTableSort | undefined>(undefined);
-    sortFn: ((items: T[], sort?: DmTableSort) => T[])
-        | ((items: DmTableGrouppedRows<T>[], sort?: DmTableSort) => DmTableGrouppedRows<T>[])
-        | undefined;
+    sortFn?: ((items: T[], sort?: DmTableSort) => T[]) | ((items: DmTableGrouppedRows<T>[], sort?: DmTableSort) => DmTableGrouppedRows<T>[])
     readonly multiSort: BehaviorSubject<{ [colId: string]: number } | undefined> = new BehaviorSubject<{ [colId: string]: number } | undefined>(undefined);
 
     private _items?: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<K, boolean> = new Map();
     readonly itemsMap: Map<K, T> = new Map();
     readonly visibleItemsMap: Map<K, T> = new Map();
+    readonly groupped: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(
         private trackBy?: (item: T, index?: number) => K,
-        public groupped = false,
+        groupped = false,
         filterFn?: (item: T, filter: any) => boolean,
         sortFn?: (items: T[]) => T[]
     ) {
         this.setTrackBy(trackBy);
+        this.groupped.next(groupped);
         if (filterFn) {
             this.filterFn = filterFn;
         }
@@ -69,7 +70,7 @@ export class DmTableController<T, K = any> {
         }
         if (!this.trackBy) {
             if (this._items) {
-                const item = this.groupped ? ((this._items[0] as any).rows ? (this._items[0] as any).rows[0] : undefined) : this._items[0];
+                const item = this.groupped.getValue() ? ((this._items[0] as any).rows ? (this._items[0] as any).rows[0] : undefined) : this._items[0];
                 if (item && Array.isArray(item)) {
                     this.trackBy = (v: any) => v[0];
                 }
@@ -92,7 +93,7 @@ export class DmTableController<T, K = any> {
         this.setTrackBy(trackBy);
 
         if (items) {
-            if (this.groupped) {
+            if (this.groupped.getValue()) {
                 for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
                         this.itemsMap.set(this.trackBy!(r), r);
@@ -109,7 +110,7 @@ export class DmTableController<T, K = any> {
         if (this.selected.size > 0) {
             const m: Map<K, boolean> = new Map();
             if (items) {
-                if (this.groupped) {
+                if (this.groupped.getValue()) {
                     for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                         for (const r of g.rows) {
                             if (this.selected.get((r as any).id)) {
@@ -150,7 +151,7 @@ export class DmTableController<T, K = any> {
         state.itemsTotal = 0;
         this.visibleItemsMap.clear();
 
-        if (this.groupped) {
+        if (this.groupped.getValue()) {
             for (const g of (this._items as DmTableGrouppedRows<T>[])) {
                 const rows: T[] = [];
                 for (const r of g.rows) {
@@ -164,8 +165,8 @@ export class DmTableController<T, K = any> {
                         state.itemsVisible++;
                     }
                 }
-                if (rows.length > 0) {
-                    (items as DmTableGrouppedRows<T>[]).push({ rows, data: g.data })
+                if (rows.length > 0 || (this.groupFilterFn && this.groupFilterFn(g))) {
+                    (items as DmTableGrouppedRows<T>[]).push({ rows, data: g.data, collapsed: g.collapsed });
                 }
             }
         }
@@ -201,7 +202,7 @@ export class DmTableController<T, K = any> {
         this.selected.clear();
         const items = this.visibleItems.getValue();
         if (selected && this.trackBy) {
-            if (this.groupped) {
+            if (this.groupped.getValue()) {
                 for (const g of (items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
                         this.selected.set(this.trackBy(r as any), true);

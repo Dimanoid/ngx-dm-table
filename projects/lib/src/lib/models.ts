@@ -1,6 +1,8 @@
 export type DmTableGrouppedRows<T> = {
-    rows: T[],
-    data: any
+    rows: T[];
+    data: any;
+    collapsible?: boolean;
+    collapsed?: boolean;
 }
 
 export interface DmTableSort {
@@ -28,6 +30,8 @@ export interface DmTableRowsGroup<T> {
     last: number;
     rows: T[];
     data: any;
+    collapsible?: boolean;
+    collapsed?: boolean;
 }
 
 export interface DmTableRowDragEvent<T> {
