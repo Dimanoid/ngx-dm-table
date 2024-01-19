@@ -92,7 +92,7 @@
                                     </td>
                                 </tr>
                             }
-                            @if (!groupped || (groupStart && groupStart[ri] && groupStart[ri].collapsible && !groupStart[ri].collapsed)) {
+                            <!-- @if (!groupped || (groupStart && groupStart[ri] && groupStart[ri].collapsible && !groupStart[ri].collapsed)) { -->
                                 <tr class="ngx-dmt-row"
                                     [ngClass]="getRowClasses(r, ri)"
                                     [draggable]="rowsDragEnabled"
@@ -135,7 +135,7 @@
                                         </td>
                                     </tr>
                                 }
-                            }
+                            <!-- } -->
                         </ng-container>
                     </tbody>
                 }
