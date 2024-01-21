@@ -1,13 +1,13 @@
 export type DmTableGrouppedRows<T> = {
+    id?: string;
     rows: T[];
     data: any;
     collapsible?: boolean;
     collapsed?: boolean;
 }
 
-export interface DmTableSort {
-    colId: string;
-    order: number;
+export type DmTableSort = {
+    [colId: string]: number;
 }
 
 export interface DmTableRowEvent<T> {
@@ -25,10 +25,11 @@ export interface DmTableHeaderEvent {
 }
 
 export interface DmTableRowsGroup<T> {
+    id: string;
     index: number;
     first: number;
     last: number;
-    rows: T[];
+    // rows: T[];
     data: any;
     collapsible?: boolean;
     collapsed?: boolean;

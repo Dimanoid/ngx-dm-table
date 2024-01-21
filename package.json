@@ -4,7 +4,7 @@
     "scripts": {
         "build": "ng build lib",
         "build:demo": "ng build --configuration=production --base-href /ngx-dm-table/ demo-app",
-        "bl": "ng b lib && ./node_modules/.bin/ngcc -s ./dist && ng s",
+        "bl": "ng b lib && ng s",
         "test": "jest --verbose projects/lib",
         "test:watch": "jest projects/lib --watch --notify",
         "test:ci": "jest --runInBand",

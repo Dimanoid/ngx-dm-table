@@ -7,7 +7,7 @@ import {
     ContentChild, TemplateRef, Renderer2
 } from '@angular/core';
 import { DmColumnDirective } from '../column/dm-column.directive';
-import { getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues } from '../utils';
+import { getScrollBarSize, Point, InputNumber, SortStringsBy, SortNumbersBy, SortBooleansBy, emptyValues, multiSortFn } from '../utils';
 import { InputBoolean, sumValues } from '../utils';
 
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -54,6 +54,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
             }
             this.ctMap[this.columnTemplates[i].colId!] = this.columnTemplates[i];
         }
+        this.checkSortFn();
     }
     get columnTemplatesQL(): QueryList<DmColumnDirective<T>> | undefined {
         return this._columnTemplatesQL;
@@ -63,13 +64,11 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     @Input() @InputBoolean() debug: boolean | string = false;
 
-    rows?: T[] | DmTableGrouppedRows<T>[];
+    rows?: ({ row: T | DmTableGrouppedRows<T> } | { type: 1 | 2, group: DmTableRowsGroup<T> })[];
     groups?: DmTableRowsGroup<T>[];
     groupStart?: { [index: number]: DmTableRowsGroup<T> };
     groupEnd?: { [index: number]: DmTableRowsGroup<T> };
-    @Input() data?: T[] | DmTableGrouppedRows<T>[] | DmTableController<T>;
-    @Input() trackBy?: (item: T, index?: number) => any;
-    @Input() @InputBoolean() groupped: boolean | string = false;
+    @Input() controller?: DmTableController<T>;
 
     private _itemSize: number = MIN_ITEM_SIZE;
     @Input() @InputNumber()
@@ -103,11 +102,6 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         return this._colsWidth;
     }
     @Output() colsWidthChange: EventEmitter<{ [id: string]: number }> = new EventEmitter();
-
-    @Input() @InputBoolean() externalSort: boolean | string = false;
-    @Input() sort?: DmTableSort;
-    @Output() sortChange: EventEmitter<DmTableSort> = new EventEmitter();
-    @Input() multiSort?: { [colId: string]: number };
 
     @Input() defaultColumnConfig: any;
     @Input() tableClass?: string;
@@ -165,6 +159,10 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     noItems: boolean = true;
     noItemsVisible: boolean = false;
     disableChanges: boolean = false;
+    groupped: boolean = false;
+    sort?: DmTableSort;
+    sortCount: number = 0;
+    sortFn?: <K = T | DmTableGrouppedRows<T>>(items: K[], sort?: DmTableSort) => K[];
 
     abs = Math.abs;
 
@@ -230,25 +228,18 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
 
     private _S: { [id: string]: Subscription } = {};
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes['data']) {
+        if (changes['controller']) {
             Object.keys(this._S).forEach(k => {
                 this._S[k]?.unsubscribe();
                 delete this._S[k];
             });
-            if (this.data instanceof DmTableController) {
-                this._S.data = this.data.visibleItems.subscribe(() => this.sortRows());
-                this._S.sort = this.data.sort.subscribe(sort => {
+            if (this.controller) {
+                this._S.sort = this.controller.sort.subscribe(sort => {
                     this.sort = sort;
-                    this.sortChange.emit(sort);
-                    if (!this.externalSort) {
-                        this.sortRows();
-                    }
-                });
-                this._S.multiSort = this.data.multiSort.subscribe(ms => {
-                    this.multiSort = ms;
+                    this.sortCount = sort ? Object.keys(sort).length : 0;
                     this._cdr.markForCheck();
                 });
-                this._S.state = this.data.state.subscribe(state => {
+                this._S.state = this.controller.state.subscribe(state => {
                     this.noItems = state.itemsTotal == 0;
                     this.noItemsVisible = state.itemsVisible == 0 && state.itemsTotal > 0;
                     this.allRowsSelected = state.itemsSelected >= state.itemsVisible && state.itemsVisible > 0;
@@ -256,19 +247,17 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                     this.updateGlobalStyles();
                     this._cdr.markForCheck();
                 });
-                this._S.groupped = this.data.groupped.subscribe(gr => {
+                this._S.groupped = this.controller.groupped.subscribe(gr => {
                     this.groupped = gr;
-                    this.sortRows();
+                    this.updateRows();
+                    this._cdr.markForCheck();
+                });
+                this._S.items = this.controller.visibleItems.subscribe(items => {
+                    this.updateRows();
+                    this._cdr.markForCheck();
                 });
             }
-            else {
-                this.noItems = !this.data || this.data.length == 0;
-                this.noItemsVisible = false;
-            }
-            this.sortRows();
-        }
-        else if (changes['sort']) {
-            this.sortRows();
+            this.checkSortFn();
         }
         if (changes['colsVisibility']) {
             this.updateColumnsOrder();
@@ -416,7 +405,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (!rp || !rp.onColumnResize) {
             rp = DmTableResizePolicyMap.simple;
         }
-        this._D('resizeColumnUpdateWidth', 'rp:', rp);
+        this._L('resizeColumnUpdateWidth', 'rp:', rp);
         this.colsWidthTmp = rp.onColumnResize(
             this.resizeColumnId!,
             this.tableWidth,
@@ -522,120 +511,60 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         }
     }
 
-    sortRows(): void {
-        let data: T[] | DmTableGrouppedRows<T>[] | undefined;
-        if (this.data instanceof DmTableController) {
-            data = this.data.visibleItems.getValue();
-        }
-        else {
-            data = this.data;
-        }
-        if (!data) {
-            return;
-        }
-        if (this.groupped) {
-            this.rows = [] as T[];
-            this.groups = [];
-            this.groupStart = {};
-            this.groupEnd = {};
-            for (const row of data) {
-                const group = row as DmTableGrouppedRows<T>;
-                if (group.rows) {
-                    const gr = {
-                        index: this.groups.length,
-                        first: this.rows.length,
-                        last: this.rows.length,
-                        rows: group.rows,
-                        data: group.data,
-                        collapsed: group.collapsed,
-                        collapsible: group.collapsible
-                    };
-                    this.rows.push(...group.rows);
-                    gr.last = this.rows.length - 1;
-                    this.groups.push(gr);
-                    this.groupStart[gr.first] = gr;
-                    this.groupEnd[gr.last] = gr;
+    updateRows(): void {
+        this._W('updateRows', this.controller);
+        if (this.controller) {
+            const items = this.controller.visibleItems.getValue();
+            this._L('updateRows', items);
+            if (items) {
+                if (this.groupped) {
+                    this.rows = [];
+                    this.groups = [];
+                    this.groupStart = {};
+                    this.groupEnd = {};
+                    for (const row of items) {
+                        const group = row as DmTableGrouppedRows<T>;
+                        if (group.rows?.length || group.collapsible) {
+                            const gr = {
+                                id: group.id!,
+                                index: this.groups.length,
+                                first: this.rows?.length || 0,
+                                last: this.rows?.length || 0,
+                                // rows: group.rows,
+                                data: group.data,
+                                collapsed: group.collapsed,
+                                collapsible: group.collapsible
+                            };
+                            if (this.groupHeaderTpl) {
+                                this.rows.push({ type: 1, group: gr });
+                            }
+                            if (group.rows?.length && (!group.collapsible || !group.collapsed)) {
+                                this.rows.push(...group.rows.map(row => ({ row })));
+                                gr.last = this.rows.length - 1;
+                                if (this.groupFooterTpl) {
+                                    this.rows.push({ type: 2, group: gr });
+                                }
+                            }
+                            this.groups.push(gr);
+                            this.groupStart[gr.first] = gr;
+                            this.groupEnd[gr.last] = gr;
+                        }
+                    }
+                }
+                else {
+                    this.rows = items.map(row => ({ row }));
                 }
             }
         }
-        else {
-            this.rows = data;
-        }
-
-        if (!data || !this.sort || !this.columnTemplates) {
-            this._cdr.markForCheck();
-            return;
-        }
-        const ct = this.columnTemplates.find(item => item.colId == this.sort?.colId);
-        if (!ct) {
-            this._cdr.markForCheck();
-            return;
-        }
-        if (this.externalSort) {
-            this._cdr.markForCheck();
-            return;
-        }
-
-        let sort: (a: any, b: any) => number;
-        if (typeof ct.sort != 'function') {
-            if (ct.sort == 'number') {
-                sort = SortNumbersBy(ct.colId!);
-            }
-            else if (ct.sort == 'boolean') {
-                sort = SortBooleansBy(ct.colId!);
-            }
-            else {
-                sort = SortStringsBy(ct.colId!);
-            }
-        }
-        else {
-            sort = ct.sort;
-        }
-        if (this.groupped) {
-            for (const group of this.groups!) {
-                if (this.sort) {
-                    group.rows = group.rows.sort((a, b) => this.sort!.order < 0 ? sort(b, a) : sort(a, b));
-                }
-            }
-            if (this.sort) {
-                this.groups = this.groups!.sort(
-                    (a, b) => this.sort!.order < 0 ? sort(b.rows[0], a.rows[0]) : sort(a.rows[0], b.rows[0])
-                );
-            }
-            this.groupStart = {};
-            this.groupEnd = {};
-            for (let i = 0; i < this.groups!.length; i++) {
-                const group = this.groups![i];
-                group.index = i;
-                this.groupStart[this.rows.length] = group;
-                (this.rows as T[]).push(...group.rows);
-                this.groupStart[this.rows.length - 1] = group;
-            }
-        }
-        else {
-            this.rows = this.sort ?  data.sort((a: any, b: any) => this.sort!.order < 0 ? sort(b, a) : sort(a, b)) : data;
-        }
-        this.rows = this.rows.slice();
+        this._L('updateRows', this.rows);
+        // this.rows = this.rows.slice();
         this._cdr.markForCheck();
     }
 
     toggleSort(id: string) {
-        if (this.ctMap && this.ctMap[id].colIdAlias) {
-            id = this.ctMap[id].colIdAlias!;
-        }
-        this.sort = {
-            colId: id,
-            order: this.sort && this.sort.colId == id ? -this.sort.order : 1
-        };
-        if (this.data instanceof DmTableController) {
-            this.data.sort.next(this.sort);
-            this.data.multiSort.next(undefined);
-        }
-        else {
-            this.sortChange.emit(this.sort);
-            if (!this.externalSort) {
-                this.sortRows();
-            }
+        this.sort = { [id]: -(this.sort?.[id] || -1) };
+        if (this.controller) {
+            this.controller.sort.next(this.sort);
         }
         this._cdr.markForCheck();
     }
@@ -705,7 +634,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         return ro.x - to.x;
     }
 
-    trackByFn = (index: number, row: any): any => this.trackBy ? this.trackBy(row, index) : row;
+    trackByFn = (index: number, row: any): any => this.controller?.trackBy ? this.controller.trackBy(row, index) : row;
 
     onRowDragStart(index: number, row: any, event: DragEvent) {
         this.rowDragStart.emit({ index, row, event });
@@ -748,8 +677,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     isRowSelected(row: any): boolean {
-        if (this.data instanceof DmTableController) {
-            return !!this.data.selected.get(this.trackBy ? this.trackBy(row) : row);
+        if (this.controller) {
+            return !!this.controller.selected.get(this.controller.trackBy ? this.controller.trackBy(row) : row);
         }
         else {
             return false;
@@ -759,16 +688,16 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     toggleSelect(row: any, e: MouseEvent): void {
         e.stopImmediatePropagation();
         e.preventDefault();
-        if (this.data instanceof DmTableController) {
-            this.data.toggleSelected(this.trackBy ? this.trackBy(row) : row);
+        if (this.controller) {
+            this.controller.toggleSelected(this.controller.trackBy ? this.controller.trackBy(row) : row);
         }
     }
 
     toggleSelectAll(e: MouseEvent): void {
         e.stopImmediatePropagation();
         e.preventDefault();
-        if (this.data instanceof DmTableController) {
-            this.data.setAllSelected(!this.allRowsSelected);
+        if (this.controller) {
+            this.controller.setAllSelected(!this.allRowsSelected);
         }
     }
 
@@ -794,8 +723,8 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     updateGlobalStyles(): void {
-        if (this.data instanceof DmTableController) {
-            if (this.data.state.getValue().itemsSelected > 0) {
+        if (this.controller) {
+            if (this.controller.state.getValue().itemsSelected > 0) {
                 this._r2.addClass(this._elemRef.nativeElement, 'ngx-dmt-selecting');
             }
             else {
@@ -816,8 +745,51 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         }
     }
 
+    sortItems<K = T | DmTableGrouppedRows<T>>(items: K[], sort?: DmTableSort): K[] {
+        this._L('sortItems', sort, items);
+        if (this.ctMap && items.length > 1 && sort) {
+            const sfns: ((a: T, b: T) => number)[] = [];
+            for (const id of Object.keys(sort).sort((a, b) => Math.abs(sort[a]) - Math.abs(sort[b]))) {
+                if (this.ctMap[id]?.sortable) {
+                    if (!this.ctMap[id].sort || this.ctMap[id].sort == 'string') {
+                        sfns.push(sort[id] > 0 ? SortStringsBy(id) : (a, b) => SortStringsBy(id)(b, a));
+                    }
+                    else if (this.ctMap[id].sort == 'number') {
+                        sfns.push(sort[id] > 0 ? SortNumbersBy(id) : (a, b) => SortNumbersBy(id)(b, a));
+                    }
+                    else if (this.ctMap[id].sort == 'boolean') {
+                        sfns.push(sort[id] > 0 ? SortBooleansBy(id) : (a, b) => SortBooleansBy(id)(b, a));
+                    }
+                    else if (typeof this.ctMap[id].sort == 'function') {
+                        sfns.push(sort[id] > 0 ? this.ctMap[id].sort as any : (a, b) => (this.ctMap![id].sort as any)(b, a));
+                    }
+                }
+            }
+            if (sfns.length > 0) {
+                if (this.groupped) {
+                    (items as  DmTableGrouppedRows<T>[]).forEach(g => {
+                        if (g?.rows) {
+                            g.rows.sort(multiSortFn(sfns));
+                        }
+                    });
+                }
+                else {
+                    (items as any).sort(multiSortFn(sfns));
+                }
+            }
+        }
+        return items;
+    }
+
+    checkSortFn(): void {
+        if (this.controller && !this.controller.sortFn) {
+            this.controller.sortFn = (items, sort) => this.sortItems(items, sort);
+        }
+    }
+
     _log = Function.prototype.bind.apply(console.log, [console, '[DmTable]']);
-    _D(label: string, ...x: any[]): void {
+    _W = Function.prototype.bind.apply(console.warn, [console, '[DmTable]']);
+    _L(label: string, ...x: any[]): void {
         if (this.debug) {
             this._log(label, ...x);
         }

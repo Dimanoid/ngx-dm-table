@@ -23,3 +23,15 @@ export function SortBooleansBy(name: string) {
         ? 0
         : (a[name] ? -1 : 1);
 }
+
+export function multiSortFn<T>(sortFns: ((a: T, b: T) => number)[]): (a: T, b: T) => number {
+    return (a: T, b: T) => {
+        for (const f of sortFns) {
+            const res = f(a, b);
+            if (res !== 0) {
+                return res;
+            }
+        }
+        return 0;
+    }
+}

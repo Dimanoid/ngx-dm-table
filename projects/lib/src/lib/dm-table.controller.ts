@@ -34,8 +34,7 @@ export class DmTableController<T, K = any> {
     groupFilterFn?: (item: DmTableGrouppedRows<T>) => boolean | undefined;
 
     readonly sort: BehaviorSubject<DmTableSort | undefined> = new BehaviorSubject<DmTableSort | undefined>(undefined);
-    sortFn?: ((items: T[], sort?: DmTableSort) => T[]) | ((items: DmTableGrouppedRows<T>[], sort?: DmTableSort) => DmTableGrouppedRows<T>[])
-    readonly multiSort: BehaviorSubject<{ [colId: string]: number } | undefined> = new BehaviorSubject<{ [colId: string]: number } | undefined>(undefined);
+    sortFn?: <K = T | DmTableGrouppedRows<T>>(items: K[], sort?: DmTableSort) => K[];
 
     private _items?: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<K, boolean> = new Map();
@@ -43,11 +42,14 @@ export class DmTableController<T, K = any> {
     readonly visibleItemsMap: Map<K, T> = new Map();
     readonly groupped: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+    debug: boolean = false;
+    private groupsMap: { [id: string]: DmTableGrouppedRows<T> } = {};
+
     constructor(
-        private trackBy?: (item: T, index?: number) => K,
+        public trackBy?: (item: T, index?: number) => K,
         groupped = false,
         filterFn?: (item: T, filter: any) => boolean,
-        sortFn?: (items: T[]) => T[]
+        sortFn?: <K = T | DmTableGrouppedRows<T>>(items: K[], sort?: DmTableSort) => K[]
     ) {
         this.setTrackBy(trackBy);
         this.groupped.next(groupped);
@@ -58,10 +60,7 @@ export class DmTableController<T, K = any> {
             this.sortFn = sortFn;
         }
         this.filter.subscribe(() => this.invalidate());
-        this.sort.subscribe(() => {
-            this.multiSort.next(undefined);
-            this.invalidate();
-        });
+        this.sort.subscribe(() => this.invalidate());
     }
 
     setTrackBy(trackBy?: (item: T, index?: number) => K): void {
@@ -89,16 +88,21 @@ export class DmTableController<T, K = any> {
 
     setItems(items: T[] | DmTableGrouppedRows<T>[] | undefined, trackBy?: (item: T, index?: number) => K): void {
         this._items = items;
+        this.groupsMap = {};
         this.itemsMap.clear();
         this.setTrackBy(trackBy);
 
         if (items) {
             if (this.groupped.getValue()) {
-                for (const g of (this._items as DmTableGrouppedRows<T>[])) {
+                (this._items as DmTableGrouppedRows<T>[]).forEach((g, i) => {
+                    if (!g.id) {
+                        g.id = 'i' + i;
+                    }
+                    this.groupsMap[g.id] = g;
                     for (const r of g.rows) {
                         this.itemsMap.set(this.trackBy!(r), r);
                     }
-                }
+                });
             }
             else {
                 for (const r of (this._items as T[])) {
@@ -144,7 +148,7 @@ export class DmTableController<T, K = any> {
             return;
         }
 
-        let items: T[] | DmTableGrouppedRows<T>[] = [];
+        let items: any[] = [];
         const filter = this.filter.getValue();
         const state = Object.assign({}, this.state.getValue());
         state.itemsVisible = 0;
@@ -166,7 +170,7 @@ export class DmTableController<T, K = any> {
                     }
                 }
                 if (rows.length > 0 || (this.groupFilterFn && this.groupFilterFn(g))) {
-                    (items as DmTableGrouppedRows<T>[]).push({ rows, data: g.data, collapsed: g.collapsed });
+                    (items as DmTableGrouppedRows<T>[]).push({ id: g.id, rows, data: g.data, collapsed: g.collapsed, collapsible: g.collapsible });
                 }
             }
         }
@@ -190,12 +194,11 @@ export class DmTableController<T, K = any> {
         // }
 
         if (this.sortFn) {
-            items = this.sortFn(items as any, this.sort.getValue());
+            items = this.sortFn(items, this.sort.getValue());
         }
 
         this.visibleItems.next(items);
         this.state.next(state);
-
     }
 
     setAllSelected(selected: boolean): void {
@@ -276,5 +279,30 @@ export class DmTableController<T, K = any> {
         }
         return res;
     }
+
+    setGroupsCollapsed(groupIds: string[], collapsed: boolean): void {
+        this._L('setGroupsCollapsed', groupIds, collapsed);
+        if (this.groupped.getValue()) {
+            groupIds.forEach(id => {
+                if (this.groupsMap[id]) {
+                    this._L('setGroupsCollapsed', 'item:', this.groupsMap[id]);
+                    if (this.groupsMap[id]?.collapsible) {
+                        this.groupsMap[id].collapsed = collapsed;
+                    }
+                }
+            });
+            this._L('setGroupsCollapsed', '_items:', [...this._items || []]);
+            this.invalidate();
+        }
+    }
+
+    _log = Function.prototype.bind.apply(console.log, [console, '[DmTableController]']);
+    _W = Function.prototype.bind.apply(console.warn, [console, '[DmTableController]']);
+    _L(label: string, ...x: any[]): void {
+        if (this.debug) {
+            this._log(label, ...x);
+        }
+    }
+
 
 }

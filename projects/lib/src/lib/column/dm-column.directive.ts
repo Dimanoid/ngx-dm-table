@@ -12,7 +12,6 @@ export const MIN_COLUMN_SORT_WIDTH = MIN_COLUMN_WIDTH + 20;
 })
 export class DmColumnDirective<T> implements OnInit {
     @Input() colId?: string;
-    @Input() colIdAlias?: string;
     @Input() title?: string;
     @Input() @InputBoolean() pinnable?: boolean | string;
     @Input() @InputBoolean() sortable?: boolean | string;

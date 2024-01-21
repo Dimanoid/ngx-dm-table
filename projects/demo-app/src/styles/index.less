@@ -49,3 +49,15 @@ pre {
 .fs-3xs {
     font-size: 8px !important;
 }
+
+.expand {
+    transition: transform 0.2s ease-out;
+    cursor: pointer;
+    line-height: 1;
+    margin-top: -1px !important;
+    display: inline-block;
+    &.expanded {
+        transform: rotate(90deg);
+    }
+}
+

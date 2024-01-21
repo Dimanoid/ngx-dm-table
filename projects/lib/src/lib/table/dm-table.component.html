@@ -27,9 +27,9 @@
                             [ngClass]="ctMap[cid].headerClass!"
                             [class.ngx-dmt-sortable]="ctMap[cid].sortable"
                             [class.ngx-dmt-resizable]="ctMap[cid].resizable && !l"
-                            [class.ngx-dmt-sorted]="(sort && (sort.colId == cid || sort.colId == ctMap[cid].colIdAlias)) || (!sort && multiSort && multiSort[cid] != null)"
-                            [class.ngx-dmt-sorted-asc]="(sort && sort.order > 0) || (!sort && multiSort && multiSort[cid] > 0)"
-                            [class.ngx-dmt-sorted-desc]="(sort && sort.order < 0) || (!sort && multiSort && multiSort[cid] < 0)"
+                            [class.ngx-dmt-sorted]="sort && sort[cid] != null"
+                            [class.ngx-dmt-sorted-asc]="sort && sort[cid] > 0"
+                            [class.ngx-dmt-sorted-desc]="sort && sort[cid] < 0"
                             (click)="headerClick.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                             (contextmenu)="headerContextMenu.emit({ colId: cid, index: ci, first: f, last: l, event: $event })"
                             cdkDrag cdkDragLockAxis="x" [cdkDragDisabled]="!moveableColumns">
@@ -47,8 +47,8 @@
                             @if (ctMap[cid].sortable) {
                                 <div class="ngx-dmt-column-sort-container" (click)="toggleSort(cid)">
                                     <i class="ngx-dmt-column-sort-toggle ngx-dmt-icon-font"></i>
-                                    @if (multiSort && multiSort[cid] != null) {
-                                        <span class="ngx-dmt-column-sort-count">{{ abs(multiSort[cid]) }}</span>
+                                    @if (sortCount > 1 && sort && sort[cid] != null) {
+                                        <span class="ngx-dmt-column-sort-count">{{ abs(sort[cid]) }}</span>
                                     }
                                 </div>
                             }
@@ -69,7 +69,11 @@
         @if (resizerDiv && resizeColumnId) {
             <div class="ngx-dmt-resizer" [style.left.px]="resizerX"></div>
         }
-        <cdk-virtual-scroll-viewport [itemSize]="itemSize" class="ngx-dmt-body-wrapper-inner" (scroll)="scroll($event)">
+        <cdk-virtual-scroll-viewport class="ngx-dmt-body-wrapper-inner"
+            [itemSize]="itemSize"
+            [minBufferPx]="500"
+            [maxBufferPx]="1000"
+            (scroll)="scroll($event)">
             <table class="ngx-dmt ngx-dmt-body" [ngClass]="tableClass!">
                 <colgroup>
                     @if (showSelectColumn) {
@@ -81,61 +85,61 @@
                 </colgroup>
                 @if (rows) {
                     <tbody>
-                        <ng-container *cdkVirtualFor="let r of $any(rows); let ri = index; trackBy: trackByFn">
-                            @if (groupped && groupHeaderTpl && groupStart && groupStart[ri]) {
+                        <ng-container *cdkVirtualFor="let r of rows; let ri = index; trackBy: trackByFn">
+                            @if (groupHeaderTpl && r.type == 1 && r.group) {
                                 <tr class="ngx-dmt-group-header-row">
                                     <td [colSpan]="colsOrder!.length + (showSelectColumn ? 1 : 0)"
                                         class="ngx-dmt-group-header-cell"
-                                        [class.ngx-dmt-group-header-cell-collapsible]="groupStart[ri].collapsible"
-                                        [class.ngx-dmt-group-header-cell-collapsed]="groupStart[ri].collapsed">
-                                        <ng-container [ngTemplateOutlet]="groupHeaderTpl" [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupStart[ri] }" />
+                                        [class.ngx-dmt-group-header-cell-collapsible]="r.group.collapsible"
+                                        [class.ngx-dmt-group-header-cell-collapsed]="r.group.collapsed">
+                                        <ng-container [ngTemplateOutlet]="groupHeaderTpl" [ngTemplateOutletContext]="{ ri: ri, group: r.group }" />
                                     </td>
                                 </tr>
                             }
-                            <!-- @if (!groupped || (groupStart && groupStart[ri] && groupStart[ri].collapsible && !groupStart[ri].collapsed)) { -->
+                            @else if (!r.type) {
                                 <tr class="ngx-dmt-row"
-                                    [ngClass]="getRowClasses(r, ri)"
+                                    [ngClass]="getRowClasses(r.row, ri)"
                                     [draggable]="rowsDragEnabled"
-                                    (dragstart)="onRowDragStart(ri, r, $event)"
-                                    (dragend)="onRowDragEnd(ri, r, $event)"
-                                    (dragleave)="onRowDragLeave(ri, r, $event, bodyRow)"
-                                    (dragenter)="onRowDragEnter(ri, r, $event, bodyRow)"
-                                    (dragover)="onRowDragOver(ri, r, $event, bodyRow)"
-                                    (drop)="onRowDrop(ri, r, $event, bodyRow)"
-                                    (click)="rowClick.emit({ index: ri, row: r, event: $event })"
-                                    (contextmenu)="rowContextMenu.emit({ index: ri, row: r, event: $event })"
+                                    (dragstart)="onRowDragStart(ri, r.row, $event)"
+                                    (dragend)="onRowDragEnd(ri, r.row, $event)"
+                                    (dragleave)="onRowDragLeave(ri, r.row, $event, bodyRow)"
+                                    (dragenter)="onRowDragEnter(ri, r.row, $event, bodyRow)"
+                                    (dragover)="onRowDragOver(ri, r.row, $event, bodyRow)"
+                                    (drop)="onRowDrop(ri, r.row, $event, bodyRow)"
+                                    (click)="rowClick.emit({ index: ri, row: r.row, event: $event })"
+                                    (contextmenu)="rowContextMenu.emit({ index: ri, row: r.row, event: $event })"
                                     #bodyRow>
                                     @if (showSelectColumn) {
-                                        <td class="ngx-dmt-cell ngx-dmt-cell-select" (click)="noColumns ? undefined : toggleSelect(r, $event)">
+                                        <td class="ngx-dmt-cell ngx-dmt-cell-select" (click)="noColumns ? undefined : toggleSelect(r.row, $event)">
                                             <ng-container
                                                 [ngTemplateOutlet]="selectColumnTpl!"
-                                                [ngTemplateOutletContext]="{ row: r, $implicit: isRowSelected(r), ri: ri }">
+                                                [ngTemplateOutletContext]="{ row: r.row, $implicit: isRowSelected(r.row), ri: ri }">
                                             </ng-container>
                                         </td>
                                     }
                                     @for (cid of colsOrder; track cid; let i = $index) {
                                         <td class="ngx-dmt-cell"
-                                            [ngClass]="getCellClasses(r, cid, ri, i)!"
+                                            [ngClass]="getCellClasses(r.row, cid, ri, i)!"
                                             [style.white-space]="ctMap[cid].whitespace">
                                             @if (ctMap[cid].cellTpl) {
-                                                <ng-container [ngTemplateOutlet]="ctMap[cid].cellTpl!" [ngTemplateOutletContext]="{ row: r, ct: ctMap[cid], $implicit: r[cid], ci: i, ri: ri }" />
+                                                <ng-container [ngTemplateOutlet]="ctMap[cid].cellTpl!" [ngTemplateOutletContext]="{ row: r.row, ct: ctMap[cid], $implicit: r.row[cid], ci: i, ri: ri }" />
                                             }
                                             @else {
-                                                {{ r[cid] }}
+                                                {{ r.row[cid] }}
                                             }
                                         </td>
                                     }
                                 </tr>
-                                @if (groupped && groupFooterTpl && groupEnd![ri]) {
-                                    <tr class="ngx-dmt-group-footer-row">
-                                        <td [colSpan]="colsOrder!.length + (showSelectColumn ? 1 : 0)" class="ngx-dmt-group-footer-cell">
-                                            <ng-container [ngTemplateOutlet]="groupFooterTpl"
-                                                [ngTemplateOutletContext]="{ row: r, ri: ri, group: groupEnd![ri] }">
-                                            </ng-container>
-                                        </td>
-                                    </tr>
-                                }
-                            <!-- } -->
+                            }
+                            @else if (groupFooterTpl && r.type == 2 && r.group) {
+                                <tr class="ngx-dmt-group-footer-row">
+                                    <td [colSpan]="colsOrder!.length + (showSelectColumn ? 1 : 0)" class="ngx-dmt-group-footer-cell">
+                                        <ng-container [ngTemplateOutlet]="groupFooterTpl"
+                                            [ngTemplateOutletContext]="{ri: ri, group: r.group }">
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                            }
                         </ng-container>
                     </tbody>
                 }
