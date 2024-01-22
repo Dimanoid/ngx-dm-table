@@ -92,6 +92,7 @@ export class AppComponent implements OnInit {
         this.generateData();
         this.updateData();
         this.controller.state.subscribe(state => this.state = state);
+        this.controller.groupSortFn = this.sortStringsBy(g => g.data.name);
         this.controller.debug = true;
     }
 
@@ -230,6 +231,16 @@ export class AppComponent implements OnInit {
         if (this.groupped) {
             this.controller.setGroupsCollapsed([id], collapsed);
         }
+    }
+
+    sortStringsBy(fn: (obj: any) => string): (a: any, b: any) => number {
+        return (a: any, b: any) => fn(a) == null
+            ? (fn(b) == null ? 0 : -1)
+            : (
+                fn(b) == null
+                    ? 1
+                    : (fn(a) as string).toLocaleLowerCase().localeCompare(fn(b).toLocaleLowerCase())
+            );
     }
 
     _log(...args: any): void {
