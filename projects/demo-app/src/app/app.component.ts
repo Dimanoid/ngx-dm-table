@@ -92,7 +92,7 @@ export class AppComponent implements OnInit {
         this.generateData();
         this.updateData();
         this.controller.state.subscribe(state => this.state = state);
-        this.controller.groupSortFn = this.sortStringsBy(g => g.data.name);
+        this.controller.groupSortFn = items => items.sort(this.sortStringsBy(g => g.data.name));
         this.controller.debug = true;
     }
 
