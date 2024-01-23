@@ -34,7 +34,8 @@ export class DmTableController<T, K = any> {
     groupFilterFn?: (item: DmTableGrouppedRows<T>) => boolean | undefined;
 
     readonly sort: BehaviorSubject<DmTableSort | undefined> = new BehaviorSubject<DmTableSort | undefined>(undefined);
-    sortFn?: <K = T | DmTableGrouppedRows<T>>(items: K[], sort?: DmTableSort) => K[];
+    sortFn?: (items: T[], sort?: DmTableSort) => T[];
+    groupSortFn?: (items: DmTableGrouppedRows<T>[], sort?: DmTableSort) => DmTableGrouppedRows<T>[];
 
     private _items?: T[] | DmTableGrouppedRows<T>[];
     readonly selected: Map<K, boolean> = new Map();
@@ -157,7 +158,7 @@ export class DmTableController<T, K = any> {
 
         if (this.groupped.getValue()) {
             for (const g of (this._items as DmTableGrouppedRows<T>[])) {
-                const rows: T[] = [];
+                let rows: T[] = [];
                 for (const r of g.rows) {
                     if (this.hiddenFilterFn && !this.hiddenFilterFn(r)) {
                         continue;
@@ -169,9 +170,15 @@ export class DmTableController<T, K = any> {
                         state.itemsVisible++;
                     }
                 }
+                if (this.sortFn) {
+                    rows = this.sortFn(rows, this.sort.getValue());
+                }
                 if (rows.length > 0 || (this.groupFilterFn && this.groupFilterFn(g))) {
                     (items as DmTableGrouppedRows<T>[]).push({ id: g.id, rows, data: g.data, collapsed: g.collapsed, collapsible: g.collapsible });
                 }
+            }
+            if (this.groupSortFn) {
+                items = this.groupSortFn(items, this.sort.getValue());
             }
         }
         else {
@@ -186,15 +193,9 @@ export class DmTableController<T, K = any> {
                     state.itemsVisible++;
                 }
             }
-        }
-        // else {
-        //     this._items.filter((v: any) => !this.hiddenFilterFn || this.hiddenFilterFn(v)).forEach((v: any) => items.push(v));
-        //     state.itemsVisible = items.length;
-        //     state.itemsTotal = items.length;
-        // }
-
-        if (this.sortFn) {
-            items = this.sortFn(items, this.sort.getValue());
+            if (this.sortFn) {
+                items = this.sortFn(items, this.sort.getValue());
+            }
         }
 
         this.visibleItems.next(items);
@@ -281,17 +282,17 @@ export class DmTableController<T, K = any> {
     }
 
     setGroupsCollapsed(groupIds: string[], collapsed: boolean): void {
-        this._L('setGroupsCollapsed', groupIds, collapsed);
+        // this._L('setGroupsCollapsed', groupIds, collapsed);
         if (this.groupped.getValue()) {
             groupIds.forEach(id => {
                 if (this.groupsMap[id]) {
-                    this._L('setGroupsCollapsed', 'item:', this.groupsMap[id]);
+                    // this._L('setGroupsCollapsed', 'item:', this.groupsMap[id]);
                     if (this.groupsMap[id]?.collapsible) {
                         this.groupsMap[id].collapsed = collapsed;
                     }
                 }
             });
-            this._L('setGroupsCollapsed', '_items:', [...this._items || []]);
+            // this._L('setGroupsCollapsed', '_items:', [...this._items || []]);
             this.invalidate();
         }
     }

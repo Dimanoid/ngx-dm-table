@@ -1,4 +1,4 @@
-export function SortStringsBy(name: string) {
+export function SortStringsBy(name: string): (a: any, b: any) => number {
     return (a: any, b: any) => a[name] == null
         ? (b[name] == null ? 0 : -1)
         : (
@@ -8,7 +8,7 @@ export function SortStringsBy(name: string) {
         );
 }
 
-export function SortNumbersBy(name: string) {
+export function SortNumbersBy(name: string): (a: any, b: any) => number {
     return (a: any, b: any) => a[name] == null
         ? (b[name] == null ? 0 : -1)
         : (
@@ -18,7 +18,7 @@ export function SortNumbersBy(name: string) {
         );
 }
 
-export function SortBooleansBy(name: string) {
+export function SortBooleansBy(name: string): (a: any, b: any) => number {
     return (a: any, b: any) => a[name] == b[name]
         ? 0
         : (a[name] ? -1 : 1);

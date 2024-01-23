@@ -405,7 +405,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
         if (!rp || !rp.onColumnResize) {
             rp = DmTableResizePolicyMap.simple;
         }
-        this._L('resizeColumnUpdateWidth', 'rp:', rp);
+        // this._L('resizeColumnUpdateWidth', 'rp:', rp);
         this.colsWidthTmp = rp.onColumnResize(
             this.resizeColumnId!,
             this.tableWidth,
@@ -512,10 +512,10 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     updateRows(): void {
-        this._W('updateRows', this.controller);
+        // this._W('updateRows', this.controller);
         if (this.controller) {
             const items = this.controller.visibleItems.getValue();
-            this._L('updateRows', items);
+            // this._L('updateRows', items);
             if (items) {
                 if (this.groupped) {
                     this.rows = [];
@@ -556,7 +556,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
                 }
             }
         }
-        this._L('updateRows', this.rows);
+        // this._L('updateRows', this.rows);
         // this.rows = this.rows.slice();
         this._cdr.markForCheck();
     }
@@ -746,7 +746,7 @@ export class DmTableComponent<T> implements OnInit, AfterViewInit, OnChanges, Af
     }
 
     sortItems<K = T | DmTableGrouppedRows<T>>(items: K[], sort?: DmTableSort): K[] {
-        this._L('sortItems', sort, items);
+        // this._L('sortItems', sort, items);
         if (this.ctMap && items.length > 1 && sort) {
             const sfns: ((a: T, b: T) => number)[] = [];
             for (const id of Object.keys(sort).sort((a, b) => Math.abs(sort[a]) - Math.abs(sort[b]))) {
