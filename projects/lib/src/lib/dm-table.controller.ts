@@ -205,7 +205,7 @@ export class DmTableController<T, K = any> {
     setAllSelected(selected: boolean): void {
         this.selected.clear();
         const items = this.visibleItems.getValue();
-        if (selected && this.trackBy) {
+        if (items && Array.isArray(items) && selected && this.trackBy) {
             if (this.groupped.getValue()) {
                 for (const g of (items as DmTableGrouppedRows<T>[])) {
                     for (const r of g.rows) {
